@@ -110,17 +110,6 @@ const Activities = () => {
               </Card>
             ))}
           </div>
-          
-          {/* Shuffleboard image showcase */}
-          <div className="mt-8">
-            <Card className="overflow-hidden shadow-card max-w-2xl mx-auto">
-              <img 
-                src="/lovable-uploads/8f87047a-8292-43b5-9e51-897dce1af98e.png"
-                alt="Dart och Shuffleboard"
-                className="w-full h-64 object-cover"
-              />
-            </Card>
-          </div>
         </div>
       </div>
     </section>
