@@ -1,16 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
-import padelImage from "@/assets/padel-court.jpg";
-import minigolfImage from "@/assets/minigolf.jpg";
-import bowlingImage from "@/assets/bowling-action.jpg";
 
 const Activities = () => {
   const activities = [
     {
       title: "Bowling",
       description: "Professionella bowlingbanor med modern utrustning. Perfekt för familj, vänner eller företag.",
-      image: bowlingImage,
+      image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png",
       features: ["Professionella banor", "Modern utrustning", "Skor ingår", "Barnrännor"],
       bookingUrl: "https://secure.meriq.com/markaryd/",
       gradient: "from-primary to-primary-glow"
@@ -18,7 +15,7 @@ const Activities = () => {
     {
       title: "Padel",
       description: "2 utomhusbanor med tak som gör att du kan spela hela året runt, oavsett väder.",
-      image: padelImage,
+      image: "/lovable-uploads/049208ba-6f61-4a7e-b21f-7e1d71f82299.png",
       features: ["2 banor", "Tak över banorna", "Året runt-spel", "Rackets uthyres"],
       bookingUrl: "https://playtomic.com/clubs/padel-i-markaryd-markaryd",
       gradient: "from-secondary to-orange-400"
@@ -26,7 +23,7 @@ const Activities = () => {
     {
       title: "Minigolf",
       description: "Rolig minigolfbana inomhus med kreativa hinder och utmaningar för hela familjen.",
-      image: minigolfImage,
+      image: "/lovable-uploads/79c2dec9-9425-477a-8ec7-066148a87897.png",
       features: ["Inomhus", "Familjevänligt", "Kreativa hinder", "Utrustning ingår"],
       bookingUrl: "#kontakt",
       gradient: "from-green-500 to-emerald-400"
@@ -104,7 +101,7 @@ const Activities = () => {
         {/* Other Activities */}
         <div>
           <h3 className="text-2xl font-bold text-foreground text-center mb-8">Övriga Aktiviteter</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {otherActivities.map((activity) => (
               <Card key={activity.title} className="p-6 text-center hover:shadow-card transition-shadow">
                 <div className="text-4xl mb-4">{activity.icon}</div>
@@ -112,6 +109,17 @@ const Activities = () => {
                 <p className="text-muted-foreground">{activity.description}</p>
               </Card>
             ))}
+          </div>
+          
+          {/* Shuffleboard image showcase */}
+          <div className="mt-8">
+            <Card className="overflow-hidden shadow-card max-w-2xl mx-auto">
+              <img 
+                src="/lovable-uploads/8f87047a-8292-43b5-9e51-897dce1af98e.png"
+                alt="Dart och Shuffleboard"
+                className="w-full h-64 object-cover"
+              />
+            </Card>
           </div>
         </div>
       </div>
