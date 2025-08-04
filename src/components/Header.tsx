@@ -7,11 +7,13 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigation = [
-    { name: "Hem", href: "#" },
-    { name: "Aktiviteter", href: "#aktiviteter" },
-    { name: "Meny", href: "#meny" },
-    { name: "Öppettider", href: "#oppettider" },
-    { name: "Kontakt", href: "#kontakt" },
+    { name: "Hem", href: "/" },
+    { name: "Aktiviteter", href: "#activities" },
+    { name: "Meny", href: "/menu" },
+    { name: "Livestream", href: "/livestream" },
+    { name: "Evenemang", href: "/events" },
+    { name: "Öppettider", href: "#hours" },
+    { name: "Kontakt", href: "#contact" },
   ];
 
   return (

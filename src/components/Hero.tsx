@@ -5,13 +5,23 @@ import heroImage from "@/assets/hero-bowling.jpg";
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Video */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Markaryds Bowlinghall interiör" 
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
           className="w-full h-full object-cover"
-        />
+          poster={heroImage}
+        >
+          <source src="https://www.markarydsbowling.se/wp-content/uploads/2022/10/markarydsbowling.mp4" type="video/mp4" />
+          <img 
+            src={heroImage} 
+            alt="Markaryds Bowlinghall interiör" 
+            className="w-full h-full object-cover"
+          />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/60 to-secondary/70"></div>
       </div>
 

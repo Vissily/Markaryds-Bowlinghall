@@ -68,18 +68,13 @@ const Activities = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
           {activities.map((activity, index) => (
             <Card key={activity.title} className="group overflow-hidden shadow-card hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
-              <div className="relative">
+                <div className="relative">
                 <img 
                   src={activity.image} 
                   alt={activity.title}
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-t ${activity.gradient} opacity-80`}></div>
-                <div className="absolute top-4 right-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {index + 1}
-                  </div>
-                </div>
+                <div className={`absolute inset-0 bg-gradient-to-t ${activity.gradient} opacity-60`}></div>
               </div>
               
               <div className="p-6">
