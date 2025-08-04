@@ -22,7 +22,7 @@ const Hero = () => {
             className="w-full h-full object-cover"
           />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/60 to-secondary/70"></div>
+        <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
       {/* Content */}
