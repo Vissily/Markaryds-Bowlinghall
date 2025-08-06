@@ -22,7 +22,7 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video */}
+      {/* Background Video with Fallback */}
       <div className="absolute inset-0 z-0">
         <video 
           autoPlay 
@@ -30,8 +30,19 @@ const Hero = () => {
           muted 
           playsInline
           className="w-full h-full object-cover"
+          onError={(e) => {
+            console.log('Video failed to load, showing fallback image');
+            const target = e.target as HTMLVideoElement;
+            if (target.parentElement) {
+              target.parentElement.style.backgroundImage = `url(${heroImage})`;
+              target.parentElement.style.backgroundSize = 'cover';
+              target.parentElement.style.backgroundPosition = 'center';
+              target.style.display = 'none';
+            }
+          }}
         >
           <source src="https://www.markarydsbowling.se/wp-content/uploads/2022/10/markarydsbowling.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
