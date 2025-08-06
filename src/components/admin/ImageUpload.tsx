@@ -40,11 +40,11 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
       return;
     }
 
-    // Validate file size (max 100MB)
-    if (file.size > 100 * 1024 * 1024) {
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
       toast({
         title: "Filen är för stor",
-        description: "Max filstorlek är 100MB",
+        description: "Max filstorlek är 50MB",
         variant: "destructive"
       });
       return;
@@ -166,7 +166,7 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
       let errorMessage = "Något gick fel. Försök igen.";
       
       if (error?.message?.includes('Payload too large')) {
-        errorMessage = "Filen är för stor. Max 100MB tillåten.";
+        errorMessage = "Filen är för stor. Max 50MB tillåten.";
       } else if (error?.message?.includes('Invalid file type')) {
         errorMessage = "Filtypen stöds inte.";
       } else if (error?.message) {
@@ -203,7 +203,7 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="file-upload">Välj fil (bilder, videor, PDF - max 100MB)</Label>
+          <Label htmlFor="file-upload">Välj fil (bilder, videor, PDF - max 50MB)</Label>
           <Input
             id="file-upload"
             type="file"
