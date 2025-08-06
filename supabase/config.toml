@@ -1,4 +1,1 @@
 project_id = "suoffsrethbczunoanmn"
-
-[functions.create-admin-user]
-verify_jwt = false
