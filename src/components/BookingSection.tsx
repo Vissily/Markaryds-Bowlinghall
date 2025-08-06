@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Users, ExternalLink, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
 
 const BookingSection = () => {
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   return (
     <section id="booking" className="py-24 px-4 bg-gradient-primary">
@@ -58,46 +56,21 @@ const BookingSection = () => {
         </div>
 
         <div className="text-center">
-          <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-            <DialogTrigger asChild>
-              <Button 
-                size="xl" 
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-12 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              >
-                <Calendar className="w-6 h-6 mr-3" />
-                Boka Nu - Markaryds Bowling
-                <ExternalLink className="w-5 h-5 ml-3" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-5xl w-[95vw] h-[85vh] p-0">
-              <DialogHeader className="p-6 border-b">
-                <div className="flex items-center justify-between">
-                  <DialogTitle className="text-2xl font-bold">Boka Din Aktivitet</DialogTitle>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setIsBookingOpen(false)}
-                    className="rounded-full w-8 h-8 p-0"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-                <DialogDescription className="sr-only">
-                  Bokningssystem för Markaryds Bowlinghall aktiviteter
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex-1 relative">
-                <iframe
-                  src="https://secure.meriq.com/markaryd/"
-                  className="w-full h-[calc(85vh-120px)] border-0"
-                  title="Markaryds Bowling Booking System"
-                  allow="payment; camera; microphone; geolocation"
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
-                  loading="eager"
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Button 
+            size="xl" 
+            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-12 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            asChild
+          >
+            <a 
+              href="https://secure.meriq.com/markaryd/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Calendar className="w-6 h-6 mr-3" />
+              Boka Nu - Markaryds Bowling
+              <ExternalLink className="w-5 h-5 ml-3" />
+            </a>
+          </Button>
           
           <p className="mt-6 text-primary-foreground/70">
             Har du frågor om bokningen? 

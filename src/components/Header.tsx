@@ -60,14 +60,15 @@ const Header = () => {
               variant="hero" 
               size="lg" 
               className="hidden md:flex"
-              onClick={() => {
-                const bookingSection = document.getElementById('booking');
-                if (bookingSection) {
-                  bookingSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              asChild
             >
-              Boka Nu
+              <a 
+                href="https://secure.meriq.com/markaryd/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Boka Nu
+              </a>
             </Button>
             
             <button
@@ -113,15 +114,16 @@ const Header = () => {
               variant="hero" 
               size="lg" 
               className="mt-4"
-              onClick={() => {
-                setIsMenuOpen(false);
-                const bookingSection = document.getElementById('booking');
-                if (bookingSection) {
-                  bookingSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              asChild
             >
-              Boka Nu
+              <a 
+                href="https://secure.meriq.com/markaryd/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Boka Nu
+              </a>
             </Button>
           </nav>
         </div>
