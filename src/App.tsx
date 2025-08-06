@@ -9,7 +9,7 @@ import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
 import Events from "./pages/Events";
 import Auth from "./pages/Auth";
-import Admin from "./pages/Admin";
+import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,7 +27,7 @@ const App = () => (
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/events" element={<Events />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<AdminSimple />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
