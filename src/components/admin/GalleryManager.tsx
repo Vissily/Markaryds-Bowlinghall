@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Star, StarOff, Save, X } from "lucide-react";
+import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ImageUpload from "./ImageUpload";
@@ -17,6 +17,7 @@ interface GalleryImage {
   file_size: number | null;
   mime_type: string | null;
   is_featured: boolean;
+  show_in_slideshow: boolean;
   sort_order: number;
   created_at: string;
 }
@@ -95,6 +96,32 @@ const GalleryManager = () => {
     }
   };
 
+  const handleToggleSlideshow = async (id: string, currentSlideshow: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('gallery_images')
+        .update({ show_in_slideshow: !currentSlideshow })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setImages(images.map(img => 
+        img.id === id ? { ...img, show_in_slideshow: !currentSlideshow } : img
+      ));
+
+      toast({
+        title: currentSlideshow ? "Bild borttagen från slideshow" : "Bild tillagd i slideshow",
+        description: currentSlideshow ? "Bilden visas inte längre i bildspelet" : "Bilden visas nu i bildspelet"
+      });
+    } catch (error) {
+      console.error('Error toggling slideshow:', error);
+      toast({
+        title: "Fel vid uppdatering",
+        description: "Kunde inte uppdatera slideshow-status",
+        variant: "destructive"
+      });
+    }
+  };
   const handleToggleFeatured = async (id: string, currentFeatured: boolean) => {
     try {
       const { error } = await supabase
@@ -210,6 +237,12 @@ const GalleryManager = () => {
                         Utvald
                       </Badge>
                     )}
+                    {image.show_in_slideshow && (
+                      <Badge className="absolute top-2 right-2" variant="default">
+                        <Monitor className="w-3 h-3 mr-1" />
+                        Slideshow
+                      </Badge>
+                    )}
                   </div>
                   <CardContent className="p-3">
                     {editingId === image.id ? (
@@ -251,6 +284,13 @@ const GalleryManager = () => {
                             onClick={() => startEdit(image)}
                           >
                             <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleToggleSlideshow(image.id, image.show_in_slideshow)}
+                          >
+                            {image.show_in_slideshow ? <MonitorOff className="w-3 h-3" /> : <Monitor className="w-3 h-3" />}
                           </Button>
                           <Button
                             size="sm"

@@ -58,6 +58,7 @@ const GallerySection = () => {
         const { data, error } = await supabase
           .from('gallery_images')
           .select('id, title, description, file_path')
+          .eq('show_in_slideshow', true)
           .order('sort_order', { ascending: true });
 
         if (error) throw error;
@@ -111,7 +112,7 @@ const GallerySection = () => {
   if (loading) {
     return (
       <section id="gallery" className="py-24 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-5xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-muted-foreground">Laddar galleri...</p>
@@ -123,7 +124,7 @@ const GallerySection = () => {
 
   return (
     <section id="gallery" className="py-24 px-4 bg-muted/30">
-      <div className="container mx-auto max-w-5xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Upplev Atmosfären
@@ -135,91 +136,96 @@ const GallerySection = () => {
 
         <Card className="overflow-hidden shadow-elegant border-2">
           <CardContent className="p-0 relative">
-            {/* Main slideshow */}
-            <div className="relative aspect-[16/9] overflow-hidden">
-              {galleryImages.map((image, index) => (
-                <div
-                  key={image.id}
-                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-                    index === currentSlide ? 'translate-x-0' : 
-                    index < currentSlide ? '-translate-x-full' : 'translate-x-full'
-                  }`}
-                >
-                  <img
-                    src={image.file_path}
-                    alt={image.title}
-                    className="w-full h-full object-cover object-center"
-                    style={{ 
-                      imageRendering: 'crisp-edges',
-                      filter: 'contrast(1.05) brightness(1.02)'
-                    }}
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <h3 className="text-white font-bold text-2xl md:text-3xl mb-2">
-                      {image.title}
-                    </h3>
-                    <p className="text-white/90 text-lg">
-                      {image.description}
-                    </p>
-                  </div>
+            {galleryImages.length === 0 ? (
+              <div className="aspect-[21/9] flex items-center justify-center bg-muted">
+                <p className="text-muted-foreground">Inga bilder markerade för slideshow än.</p>
+              </div>
+            ) : (
+              <>
+                {/* Main slideshow */}
+                <div className="relative aspect-[21/9] overflow-hidden">
+                  {galleryImages.map((image, index) => (
+                    <div
+                      key={image.id}
+                      className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
+                        index === currentSlide ? 'translate-x-0' : 
+                        index < currentSlide ? '-translate-x-full' : 'translate-x-full'
+                      }`}
+                    >
+                      <img
+                        src={image.file_path}
+                        alt={image.title}
+                        className="w-full h-full object-cover object-center"
+                        style={{ 
+                          imageRendering: 'crisp-edges',
+                          filter: 'contrast(1.05) brightness(1.02)'
+                        }}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+
+                  {/* Navigation arrows - only show if there are multiple images */}
+                  {galleryImages.length > 1 && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                        onClick={prevSlide}
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                        onClick={nextSlide}
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </Button>
+
+                      {/* Play/Pause button */}
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                        onClick={() => setIsPlaying(!isPlaying)}
+                      >
+                        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      </Button>
+                    </>
+                  )}
                 </div>
-              ))}
 
-              {/* Navigation arrows */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-                onClick={prevSlide}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-                onClick={nextSlide}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-
-              {/* Play/Pause button */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-                onClick={() => setIsPlaying(!isPlaying)}
-              >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              </Button>
-            </div>
-
-            {/* Thumbnail navigation */}
-            <div className="flex justify-center gap-2 p-6 bg-card">
-              {galleryImages.map((image, index) => (
-                <button
-                  key={image.id}
-                  onClick={() => goToSlide(index)}
-                  className={`w-16 h-12 rounded overflow-hidden border-2 transition-all duration-300 ${
-                    index === currentSlide 
-                      ? 'border-primary scale-110' 
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                >
-                  <img
-                    src={image.file_path}
-                    alt={image.title}
-                    className="w-full h-full object-cover object-center"
-                    style={{ 
-                      imageRendering: 'crisp-edges',
-                      filter: 'contrast(1.05) brightness(1.02)'
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
+                {/* Thumbnail navigation - only show if there are multiple images */}
+                {galleryImages.length > 1 && (
+                  <div className="flex justify-center gap-2 p-6 bg-card">
+                    {galleryImages.map((image, index) => (
+                      <button
+                        key={image.id}
+                        onClick={() => goToSlide(index)}
+                        className={`w-16 h-12 rounded overflow-hidden border-2 transition-all duration-300 ${
+                          index === currentSlide 
+                            ? 'border-primary scale-110' 
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <img
+                          src={image.file_path}
+                          alt={image.title}
+                          className="w-full h-full object-cover object-center"
+                          style={{ 
+                            imageRendering: 'crisp-edges',
+                            filter: 'contrast(1.05) brightness(1.02)'
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </CardContent>
         </Card>
 
