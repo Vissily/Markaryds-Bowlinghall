@@ -84,6 +84,25 @@ const PriceList = () => {
     return acc;
   }, {} as Record<string, PriceItem[]>);
 
+  // Sort items within each category - members first, then non-members
+  Object.keys(groupedItems).forEach(category => {
+    groupedItems[category].sort((a, b) => {
+      const aIsMember = a.name.toLowerCase().includes('medlem');
+      const bIsMember = b.name.toLowerCase().includes('medlem');
+      const aIsNonMember = a.name.toLowerCase().includes('ej medlem');
+      const bIsNonMember = b.name.toLowerCase().includes('ej medlem');
+      
+      // Members first, then non-members, then others
+      if (aIsMember && !bIsMember) return -1;
+      if (!aIsMember && bIsMember) return 1;
+      if (aIsNonMember && !bIsNonMember && !bIsMember) return 1;
+      if (!aIsNonMember && bIsNonMember && !aIsMember) return -1;
+      
+      // If both are members or both are non-members, sort by sort_order
+      return a.sort_order - b.sort_order;
+    });
+  });
+
   // Sort categories to put bowling-related items first
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
     const aBowling = a.toLowerCase().includes('bowling') || a.toLowerCase().includes('timdebitering');
