@@ -6,7 +6,7 @@ import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
 const BookingSection = () => {
 
   return (
-    <section id="booking" className="py-24 px-4 bg-card">
+    <section id="booking" className="py-24 px-4 bg-card border-t-4 border-b-4 border-primary/20">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
