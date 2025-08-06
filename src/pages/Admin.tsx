@@ -199,20 +199,47 @@ const Admin = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted/50 rounded-lg p-6 text-center">
-                  <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Lovable Chat</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Chatten för att redigera hemsidan kommer att visas här när Lovable är aktivt.
-                    Som admin kan du göra ändringar i text, bilder, layout och funktionalitet.
+                <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-6 border border-primary/20">
+                  <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+                    <MessageCircle className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-center">✅ Du använder redan Lovable Chat!</h3>
+                  <p className="text-muted-foreground mb-6 text-center">
+                    Chatten till vänster är din admin-verktyg. Som inloggad admin kan du redigera hemsidan direkt genom att skriva meddelanden där.
                   </p>
-                  <div className="text-sm text-muted-foreground bg-background p-4 rounded border">
-                    <strong>Exempel på vad du kan fråga:</strong>
-                    <ul className="list-disc list-inside mt-2 text-left max-w-md mx-auto">
-                      <li>"Ändra färgen på knapparna till blå"</li>
-                      <li>"Lägg till en ny sektion för priser"</li>
-                      <li>"Uppdatera texten på startsidan"</li>
-                      <li>"Lägg till fler bilder i galleriet"</li>
+                  
+                  <div className="bg-background/50 backdrop-blur rounded-lg p-5 border">
+                    <h4 className="font-semibold mb-3 text-center">🎯 Så här fungerar det:</h4>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-xs font-semibold">1</span>
+                        </div>
+                        <p>Skriv dina önskemål i chatten till vänster</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-xs font-semibold">2</span>
+                        </div>
+                        <p>Jag (AI:n) gör ändringarna åt dig direkt</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-xs font-semibold">3</span>
+                        </div>
+                        <p>Du ser förändringarna live på hemsidan</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 bg-secondary/10 rounded-lg p-4 border border-secondary/20">
+                    <h4 className="font-semibold mb-2 text-secondary">💡 Exempel på vad du kan be om:</h4>
+                    <ul className="text-sm space-y-1 text-muted-foreground">
+                      <li>• "Ändra färgen på knapparna till blå"</li>
+                      <li>• "Lägg till en ny sektion för priser"</li>
+                      <li>• "Uppdatera texten på startsidan"</li>
+                      <li>• "Lägg till fler bilder i galleriet"</li>
+                      <li>• "Gör menyn mer responsiv"</li>
                     </ul>
                   </div>
                 </div>
