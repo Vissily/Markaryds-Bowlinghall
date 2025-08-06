@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
 import Events from "./pages/Events";
+import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
 import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/menu" element={<Menu />} />
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminSimple />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -40,6 +40,15 @@ const Hours = () => {
     return days[dayOfWeek];
   };
 
+  const getCurrentDayOfWeek = () => {
+    return new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+  };
+
+  const getTodaysHours = () => {
+    const today = getCurrentDayOfWeek();
+    return openingHours.find(hour => hour.day_of_week === today);
+  };
+
   const formatTime = (time: string | null) => {
     if (!time) return '';
     if (time === '24:00') return '00:00';
@@ -70,7 +79,27 @@ const Hours = () => {
               <span className="text-accent-foreground font-medium">Öppettider</span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          {/* Today's Hours Highlight */}
+          <div className="text-center mb-12">
+            {(() => {
+              const todaysHours = getTodaysHours();
+              if (todaysHours) {
+                return (
+                  <div className="inline-flex items-center space-x-4 bg-primary/10 rounded-lg px-6 py-3 border border-primary/20">
+                    <div className="text-sm text-muted-foreground">
+                      <strong>Idag ({getDayName(todaysHours.day_of_week)})</strong>
+                    </div>
+                    <div className="font-mono text-lg font-semibold text-primary">
+                      {todaysHours.is_closed ? 'Stängt' : `${formatTime(todaysHours.open_time)} - ${formatTime(todaysHours.close_time)}`}
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               Öppet 7 Dagar i Veckan
             </h2>
             <p className="text-xl text-muted-foreground">

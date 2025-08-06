@@ -90,8 +90,8 @@ const Footer = () => {
               <div className="flex items-start space-x-2 opacity-80">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div>Bowlinggatan 1</div>
-                  <div>285 33 Markaryd</div>
+                  <div>Hannabadsvägen 2F</div>
+                  <div>285 32 Markaryd</div>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@ const Footer = () => {
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="hover:opacity-100 transition-opacity">GDPR</a>
-            <a href="#" className="hover:opacity-100 transition-opacity">Prislista</a>
+            <a href="/prislista" className="hover:opacity-100 transition-opacity">Prislista</a>
             <a href="#" className="hover:opacity-100 transition-opacity">Markarydsligan</a>
             <a href="/auth" className="hover:opacity-100 transition-opacity">Admin</a>
           </div>

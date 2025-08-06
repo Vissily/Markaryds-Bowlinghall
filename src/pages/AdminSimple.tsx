@@ -16,6 +16,7 @@ import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
 import EventsManager from '@/components/admin/EventsManager';
 import LivestreamsManager from '@/components/admin/LivestreamsManager';
 import GalleryManager from '@/components/admin/GalleryManager';
+import PriceManager from '@/components/admin/PriceManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 interface SiteContent {
@@ -265,11 +266,12 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="analytics" className="space-y-4 lg:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 h-auto lg:h-10 gap-1 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto lg:h-10 gap-1 p-1">
             <TabsTrigger value="analytics" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Statistik</TabsTrigger>
             <TabsTrigger value="content" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Hemsida</TabsTrigger>
             <TabsTrigger value="gallery" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Galleri</TabsTrigger>
             <TabsTrigger value="menu" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Meny</TabsTrigger>
+            <TabsTrigger value="prices" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Priser</TabsTrigger>
             <TabsTrigger value="hours" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Öppet</TabsTrigger>
             <TabsTrigger value="events" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Event</TabsTrigger>
             <TabsTrigger value="livestreams" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Stream</TabsTrigger>
@@ -361,6 +363,17 @@ const AdminSimple = () => {
 
           <TabsContent value="menu" className="mt-4 lg:mt-6">
             <MenuManager />
+          </TabsContent>
+
+          <TabsContent value="prices" className="mt-4 lg:mt-6">
+            <Card>
+              <CardHeader className="px-4 lg:px-6">
+                <CardTitle className="text-lg lg:text-xl">Hantera Prislista</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 lg:px-6">
+                <PriceManager />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="hours" className="mt-4 lg:mt-6">
