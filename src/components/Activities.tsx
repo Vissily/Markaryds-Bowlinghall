@@ -103,22 +103,27 @@ const Activities = () => {
         {/* Other Activities */}
         <div>
           <h3 className="text-2xl font-bold text-foreground text-center mb-8">Övriga Aktiviteter</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {otherActivities.map((activity) => (
-              <Card key={activity.title} className="p-6 text-center hover:shadow-card transition-shadow overflow-hidden">
+              <Card key={activity.title} className="overflow-hidden hover:shadow-card transition-all duration-300 hover:-translate-y-1">
                 {activity.image ? (
-                  <div className="relative mb-4">
+                  <div className="relative">
                     <img 
                       src={activity.image} 
                       alt={activity.title}
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-40 object-cover"
                     />
+                    <div className="absolute inset-0 bg-black/20"></div>
                   </div>
                 ) : (
-                  <div className="text-4xl mb-4">{activity.icon}</div>
+                  <div className="bg-gradient-card h-20 flex items-center justify-center">
+                    <div className="text-4xl">{activity.icon}</div>
+                  </div>
                 )}
-                <h4 className="text-xl font-semibold text-foreground mb-2">{activity.title}</h4>
-                <p className="text-muted-foreground">{activity.description}</p>
+                <div className="p-6 text-center">
+                  <h4 className="text-xl font-semibold text-foreground mb-3">{activity.title}</h4>
+                  <p className="text-muted-foreground">{activity.description}</p>
+                </div>
               </Card>
             ))}
           </div>
