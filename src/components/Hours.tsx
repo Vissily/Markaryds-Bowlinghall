@@ -1,15 +1,61 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Calendar, ExternalLink, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface OpeningHour {
+  day_of_week: number;
+  open_time: string;
+  close_time: string;
+  is_closed: boolean;
+}
 
 const Hours = () => {
-  const schedule = [
-    { day: "Måndag - Tisdag", hours: "10:00 - 20:00" },
-    { day: "Onsdag - Torsdag", hours: "10:00 - 21:00" },
-    { day: "Fredag", hours: "10:00 - 00:00", note: "Bowlingbanorna stänger 22:00" },
-    { day: "Lördag", hours: "15:00 - 23:00", note: "Bowlingbanorna stänger 22:00" },
-    { day: "Söndag", hours: "11:00 - 16:00" }
-  ];
+  const [openingHours, setOpeningHours] = useState<OpeningHour[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadOpeningHours = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('opening_hours')
+          .select('*')
+          .order('day_of_week');
+
+        if (error) throw error;
+        setOpeningHours(data || []);
+      } catch (error) {
+        console.error('Error loading opening hours:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOpeningHours();
+  }, []);
+
+  const getDayName = (dayOfWeek: number) => {
+    const days = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'];
+    return days[dayOfWeek];
+  };
+
+  const formatTime = (time: string) => {
+    if (time === '24:00') return '00:00';
+    return time;
+  };
+
+  if (loading) {
+    return (
+      <section id="oppettider" className="py-20 bg-gradient-card">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p>Laddar öppettider...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="oppettider" className="py-20 bg-gradient-card">
@@ -41,19 +87,21 @@ const Hours = () => {
               </div>
 
               <div className="space-y-4">
-                {schedule.map((item, index) => (
-                  <div key={index} className="flex justify-between items-start py-3 border-b border-border last:border-b-0">
+                {openingHours.map((hour) => (
+                  <div key={hour.day_of_week} className="flex justify-between items-start py-3 border-b border-border last:border-b-0">
                     <div>
-                      <div className="font-semibold text-foreground">{item.day}</div>
-                      {item.note && (
+                      <div className="font-semibold text-foreground">{getDayName(hour.day_of_week)}</div>
+                      {(hour.day_of_week === 5 || hour.day_of_week === 6) && (
                         <div className="text-sm text-muted-foreground flex items-center mt-1">
                           <AlertCircle className="w-3 h-3 mr-1" />
-                          {item.note}
+                          Bowlingbanorna stänger 22:00
                         </div>
                       )}
                     </div>
                     <div className="text-right">
-                      <div className="font-mono text-foreground">{item.hours}</div>
+                      <div className="font-mono text-foreground">
+                        {hour.is_closed ? 'Stängt' : `${hour.open_time} - ${formatTime(hour.close_time)}`}
+                      </div>
                     </div>
                   </div>
                 ))}
