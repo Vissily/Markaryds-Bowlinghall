@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Settings, Shield, LogOut, UserPlus, Mail } from 'lucide-react';
+import { Users, Settings, Shield, LogOut, UserPlus, Mail, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -171,8 +171,12 @@ const Admin = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-6">
+        <Tabs defaultValue="chat" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="chat" className="flex items-center gap-2">
+              <MessageCircle className="h-4 w-4" />
+              Redigera Hemsida
+            </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Användare
@@ -182,6 +186,39 @@ const Admin = () => {
               Inställningar
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="chat" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  Redigera Hemsidan
+                </CardTitle>
+                <CardDescription>
+                  Använd denna chat för att redigera innehåll, layout och funktionalitet på hemsidan
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 rounded-lg p-6 text-center">
+                  <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">Lovable Chat</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Chatten för att redigera hemsidan kommer att visas här när Lovable är aktivt.
+                    Som admin kan du göra ändringar i text, bilder, layout och funktionalitet.
+                  </p>
+                  <div className="text-sm text-muted-foreground bg-background p-4 rounded border">
+                    <strong>Exempel på vad du kan fråga:</strong>
+                    <ul className="list-disc list-inside mt-2 text-left max-w-md mx-auto">
+                      <li>"Ändra färgen på knapparna till blå"</li>
+                      <li>"Lägg till en ny sektion för priser"</li>
+                      <li>"Uppdatera texten på startsidan"</li>
+                      <li>"Lägg till fler bilder i galleriet"</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
             <Card>
