@@ -105,20 +105,14 @@ const PriceList = () => {
     });
   });
 
-  // Sort categories with specific order: bowling first, then övriga ej medlemmar, then timdebitering, then rest
+  // Sort categories with specific order: bowling members first, then övriga ej medlemmar, then timdebitering, then rest
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
-    const aBowling = a.toLowerCase().includes('bowling');
-    const bBowling = b.toLowerCase().includes('bowling');
-    const aOvrigaEjMedlem = a.toLowerCase().includes('övriga ej medlemmar');
-    const bOvrigaEjMedlem = b.toLowerCase().includes('övriga ej medlemmar');
-    const aTimdebitering = a.toLowerCase().includes('timdebitering');
-    const bTimdebitering = b.toLowerCase().includes('timdebitering');
-    
-    // Priority order: 1. Bowling, 2. Övriga ej medlemmar, 3. Timdebitering, 4. Rest
+    // Priority order: 1. Bowling members, 2. Övriga ej medlemmar, 3. Timdebitering, 4. Rest
     const getPriority = (category: string) => {
-      if (category.toLowerCase().includes('bowling')) return 1;
-      if (category.toLowerCase().includes('övriga ej medlemmar')) return 2;
-      if (category.toLowerCase().includes('timdebitering')) return 3;
+      const categoryLower = category.toLowerCase();
+      if (categoryLower.includes('medlem') && categoryLower.includes('bowling')) return 1;
+      if (categoryLower.includes('övriga') && categoryLower.includes('ej medlem')) return 2;
+      if (categoryLower.includes('timdebitering')) return 3;
       return 4;
     };
     
