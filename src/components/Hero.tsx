@@ -1,8 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, Calendar } from "lucide-react";
 import heroImage from "@/assets/hero-bowling.jpg";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Hero = () => {
+  const { content } = useSiteContent('hero');
+
+  // Default values if content is not loaded yet
+  const title = content?.title || 'Markaryds Bowlinghall';
+  const subtitle = content?.subtitle || 'Sedan 2013';
+  const description = content?.description || 'Mer än bara bowling – upplev padel, minigolf, dart och shuffleboard i Smålands modernaste aktivitetshall';
+  const buttonText = content?.button_text || 'Boka Din Aktivitet';
+  const buttonLink = content?.button_link || '#activities';
+  const stats = content?.metadata?.stats || [
+    { icon: "Users", value: "450", label: "Spelare per vecka" },
+    { icon: "Calendar", value: "70", label: "Öppettimmar per vecka" },
+    { icon: "Star", value: "5", label: "Olika aktiviteter" }
+  ];
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video */}
@@ -31,26 +46,25 @@ const Hero = () => {
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-background/20 backdrop-blur-sm rounded-full px-6 py-2 mb-8 border border-white/20">
             <Star className="w-4 h-4 text-secondary" />
-            <span className="text-white font-medium">Sedan 2013</span>
+            <span className="text-white font-medium">{subtitle}</span>
           </div>
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Markaryds
-            <span className="block text-secondary">Bowlinghall</span>
+            {title.split(' ')[0]}
+            <span className="block text-secondary">{title.split(' ').slice(1).join(' ')}</span>
           </h1>
 
           {/* Description */}
           <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Mer än bara bowling – upplev padel, minigolf, dart och shuffleboard 
-            i Smålands modernaste aktivitetshall
+            {description}
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Button variant="hero" size="xl" className="group" asChild>
-              <a href="#activities">
-                Boka Din Aktivitet
+              <a href={buttonLink}>
+                {buttonText}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </a>
             </Button>
@@ -63,27 +77,18 @@ const Hero = () => {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-3">
-                <Users className="w-6 h-6 text-secondary mr-2" />
-                <span className="text-3xl font-bold text-white">450</span>
-              </div>
-              <p className="text-white/80">Spelare per vecka</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-3">
-                <Calendar className="w-6 h-6 text-secondary mr-2" />
-                <span className="text-3xl font-bold text-white">70</span>
-              </div>
-              <p className="text-white/80">Öppettimmar per vecka</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-3">
-                <Star className="w-6 h-6 text-secondary mr-2" />
-                <span className="text-3xl font-bold text-white">5</span>
-              </div>
-              <p className="text-white/80">Olika aktiviteter</p>
-            </div>
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon === 'Users' ? Users : stat.icon === 'Calendar' ? Calendar : Star;
+              return (
+                <div key={index} className="text-center">
+                  <div className="flex items-center justify-center mb-3">
+                    <IconComponent className="w-6 h-6 text-secondary mr-2" />
+                    <span className="text-3xl font-bold text-white">{stat.value}</span>
+                  </div>
+                  <p className="text-white/80">{stat.label}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

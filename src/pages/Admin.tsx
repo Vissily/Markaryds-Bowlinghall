@@ -4,12 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Settings, Shield, LogOut, UserPlus, Mail, MessageCircle } from 'lucide-react';
+import { Users, Settings, Shield, LogOut, UserPlus, Mail, MessageCircle, Edit3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import ContentEditor from '@/components/admin/ContentEditor';
 
 interface Profile {
   id: string;
@@ -171,10 +172,10 @@ const Admin = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="chat" className="space-y-6">
+        <Tabs defaultValue="website" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="chat" className="flex items-center gap-2">
-              <MessageCircle className="h-4 w-4" />
+            <TabsTrigger value="website" className="flex items-center gap-2">
+              <Edit3 className="h-4 w-4" />
               Redigera Hemsida
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -187,62 +188,38 @@ const Admin = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="chat" className="space-y-6">
+          <TabsContent value="website" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Redigera Hemsidan
+                  <Edit3 className="h-5 w-5" />
+                  Redigera Hemsidans Innehåll
                 </CardTitle>
                 <CardDescription>
-                  Använd denna chat för att redigera innehåll, layout och funktionalitet på hemsidan
+                  Här kan du redigera alla texter, bilder och länkar på hemsidan. Ändringarna sparas direkt och syns på hemsidan.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-6 border border-primary/20">
-                  <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
-                    <MessageCircle className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3 text-center">✅ Du använder redan Lovable Chat!</h3>
-                  <p className="text-muted-foreground mb-6 text-center">
-                    Chatten till vänster är din admin-verktyg. Som inloggad admin kan du redigera hemsidan direkt genom att skriva meddelanden där.
-                  </p>
-                  
-                  <div className="bg-background/50 backdrop-blur rounded-lg p-5 border">
-                    <h4 className="font-semibold mb-3 text-center">🎯 Så här fungerar det:</h4>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-semibold">1</span>
-                        </div>
-                        <p>Skriv dina önskemål i chatten till vänster</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-semibold">2</span>
-                        </div>
-                        <p>Jag (AI:n) gör ändringarna åt dig direkt</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-semibold">3</span>
-                        </div>
-                        <p>Du ser förändringarna live på hemsidan</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 bg-secondary/10 rounded-lg p-4 border border-secondary/20">
-                    <h4 className="font-semibold mb-2 text-secondary">💡 Exempel på vad du kan be om:</h4>
-                    <ul className="text-sm space-y-1 text-muted-foreground">
-                      <li>• "Ändra färgen på knapparna till blå"</li>
-                      <li>• "Lägg till en ny sektion för priser"</li>
-                      <li>• "Uppdatera texten på startsidan"</li>
-                      <li>• "Lägg till fler bilder i galleriet"</li>
-                      <li>• "Gör menyn mer responsiv"</li>
-                    </ul>
-                  </div>
-                </div>
+              <CardContent className="space-y-6">
+                <ContentEditor 
+                  sectionKey="hero"
+                  sectionTitle="Startsida Hero-sektion"
+                />
+                <ContentEditor 
+                  sectionKey="about"
+                  sectionTitle="Om Oss-sektion"
+                />
+                <ContentEditor 
+                  sectionKey="activities"
+                  sectionTitle="Aktiviteter-sektion"
+                />
+                <ContentEditor 
+                  sectionKey="hours"
+                  sectionTitle="Öppettider-sektion"
+                />
+                <ContentEditor 
+                  sectionKey="contact"
+                  sectionTitle="Kontakt-sektion"
+                />
               </CardContent>
             </Card>
           </TabsContent>
