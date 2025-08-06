@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { sanitizeText, isValidUrl, isValidContentLength } from '@/utils/security';
+import { auditLog } from '@/utils/authSecurity';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -76,18 +78,46 @@ const AdminSimple = () => {
   const saveContent = async () => {
     setSaving(true);
     try {
+      // Validate inputs
+      if (!isValidContentLength(content.description || '', 2000)) {
+        toast({
+          title: "Fel",
+          description: "Beskrivningen är för lång (max 2000 tecken)",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (content.button_link && !isValidUrl(content.button_link) && !content.button_link.startsWith('#')) {
+        toast({
+          title: "Fel",
+          description: "Ogiltig knapplänk",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Sanitize inputs
+      const sanitizedContent = {
+        section_key: 'hero',
+        title: sanitizeText(content.title || ''),
+        subtitle: sanitizeText(content.subtitle || ''),
+        description: sanitizeText(content.description || ''),
+        button_text: sanitizeText(content.button_text || ''),
+        button_link: content.button_link || '',
+      };
+
       const { error } = await supabase
         .from('site_content')
-        .upsert({
-          section_key: 'hero',
-          title: content.title,
-          subtitle: content.subtitle,
-          description: content.description,
-          button_text: content.button_text,
-          button_link: content.button_link,
-        });
+        .upsert(sanitizedContent);
 
       if (error) throw error;
+
+      auditLog({
+        action: 'SITE_CONTENT_UPDATED',
+        userId: user?.id,
+        details: { section: 'hero' }
+      });
 
       toast({
         title: "Sparat!",
@@ -95,6 +125,11 @@ const AdminSimple = () => {
       });
     } catch (error) {
       console.error('Error saving:', error);
+      auditLog({
+        action: 'SITE_CONTENT_UPDATE_FAILED',
+        userId: user?.id,
+        details: { section: 'hero', error: error instanceof Error ? error.message : 'Unknown error' }
+      });
       toast({
         title: "Fel",
         description: "Kunde inte spara ändringar",
@@ -116,7 +151,7 @@ const AdminSimple = () => {
         return;
       }
 
-      const { data, error } = await supabase.rpc('secure_promote_to_admin', { 
+      const { data, error } = await supabase.rpc('secure_promote_to_admin_v2', { 
         _target_user_id: user.id 
       });
       

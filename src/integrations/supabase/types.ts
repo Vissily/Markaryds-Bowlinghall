@@ -295,6 +295,33 @@ export type Database = {
         }
         Relationships: []
       }
+      role_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          granted_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           button_link: string | null
@@ -367,6 +394,10 @@ export type Database = {
         Args: { _email: string; _password: string; _display_name: string }
         Returns: string
       }
+      cleanup_duplicate_roles: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       create_admin_user_with_password: {
         Args: { _email: string; _password: string; _display_name?: string }
         Returns: Json
@@ -387,6 +418,10 @@ export type Database = {
         Returns: undefined
       }
       secure_promote_to_admin: {
+        Args: { _target_user_id: string }
+        Returns: Json
+      }
+      secure_promote_to_admin_v2: {
         Args: { _target_user_id: string }
         Returns: Json
       }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { isValidEmail, validatePasswordStrength } from '@/utils/security';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,18 +31,25 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔍 Login attempt started with:', username);
     setIsSubmitting(true);
     
     try {
+      // Client-side validation
+      if (!isValidEmail(username)) {
+        alert('Ange en giltig e-postadress');
+        return;
+      }
+      
+      if (password.length < 6) {
+        alert('Lösenordet måste vara minst 6 tecken');
+        return;
+      }
+      
       const result = await signIn(username, password);
-      console.log('🔍 Login result:', result);
       if (result.error) {
-        console.error('🚨 Login error:', result.error);
         alert('Inloggning misslyckades: ' + result.error.message);
       }
     } catch (error) {
-      console.error('🚨 Login exception:', error);
       alert('Ett fel uppstod vid inloggning');
     } finally {
       setIsSubmitting(false);
@@ -51,8 +59,31 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await signUp(username, password, displayName);
-    setIsSubmitting(false);
+    
+    try {
+      // Client-side validation
+      if (!isValidEmail(username)) {
+        alert('Ange en giltig e-postadress');
+        return;
+      }
+      
+      const passwordValidation = validatePasswordStrength(password);
+      if (!passwordValidation.isValid) {
+        alert(`Lösenordet uppfyller inte kraven:\n${passwordValidation.errors.join('\n')}`);
+        return;
+      }
+      
+      const { error } = await signUp(username, password, displayName);
+      if (error) {
+        alert(`Fel: ${error.message}`);
+      } else {
+        alert('Registrering lyckades! Kontrollera din e-post för att bekräfta kontot.');
+      }
+    } catch (err) {
+      alert('Ett oväntat fel uppstod');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {

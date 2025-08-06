@@ -1,6 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  cleanupAuthState, 
+  auditLog, 
+  trackFailedLogin, 
+  isAccountLocked, 
+  clearFailedAttempts,
+  updateLastActivity,
+  getLastActivity,
+  isSessionExpired
+} from '@/utils/authSecurity';
+import { isValidEmail, validatePasswordStrength } from '@/utils/security';
 
 interface AuthContextType {
   user: User | null;
@@ -58,6 +69,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async (email: string, password: string, displayName?: string) => {
     try {
+      // Validate inputs
+      if (!isValidEmail(email)) {
+        return { error: { message: 'Ogiltig e-postadress' } };
+      }
+      
+      const passwordValidation = validatePasswordStrength(password);
+      if (!passwordValidation.isValid) {
+        return { error: { message: passwordValidation.errors.join(', ') } };
+      }
+      
+      // Clean up any existing auth state
+      cleanupAuthState();
+      
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
@@ -72,50 +96,121 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
-        console.error('Sign up error:', error.message);
+        auditLog({
+          action: 'SIGNUP_FAILED',
+          details: { email, error: error.message }
+        });
         return { error };
       }
       
-      console.log('Sign up successful - check email for confirmation');
+      auditLog({
+        action: 'SIGNUP_SUCCESS',
+        details: { email }
+      });
+      
       return { error: null };
     } catch (error) {
+      auditLog({
+        action: 'SIGNUP_ERROR',
+        details: { email, error: error instanceof Error ? error.message : 'Unknown error' }
+      });
       return { error };
     }
   };
 
   const signIn = async (username: string, password: string) => {
-    console.log('🔍 useAuth signIn called with:', username);
     try {
+      // Validate inputs
+      if (!isValidEmail(username)) {
+        return { error: { message: 'Ogiltig e-postadress' } };
+      }
+      
+      // Check if account is locked due to failed attempts
+      if (isAccountLocked(username)) {
+        auditLog({
+          action: 'LOGIN_BLOCKED_LOCKED_ACCOUNT',
+          details: { email: username }
+        });
+        return { error: { message: 'Kontot är tillfälligt låst på grund av för många misslyckade inloggningsförsök. Försök igen om 15 minuter.' } };
+      }
+      
+      // Clean up existing state before signing in
+      cleanupAuthState();
+      
+      // Attempt global sign out first
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: username,
         password,
       });
       
-      console.log('🔍 Supabase auth response:', { data, error });
-      
       if (error) {
-        console.error('🚨 Sign in error:', error.message);
+        trackFailedLogin(username);
+        auditLog({
+          action: 'LOGIN_FAILED',
+          details: { email: username, error: error.message }
+        });
         return { error };
       }
       
       if (data.user) {
-        console.log('✅ User signed in successfully:', data.user.email);
+        clearFailedAttempts(username);
+        updateLastActivity();
+        
+        auditLog({
+          action: 'LOGIN_SUCCESS',
+          userId: data.user.id,
+          details: { email: username }
+        });
+        
+        // Force page reload for clean state
         window.location.href = '/';
       }
       
       return { error: null };
     } catch (error) {
-      console.error('🚨 Sign in exception:', error);
+      trackFailedLogin(username);
+      auditLog({
+        action: 'LOGIN_ERROR',
+        details: { email: username, error: error instanceof Error ? error.message : 'Unknown error' }
+      });
       return { error };
     }
   };
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut({ scope: 'global' });
+      const currentUser = user;
+      
+      // Clean up auth state first
+      cleanupAuthState();
+      
+      // Attempt global sign out
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
+      auditLog({
+        action: 'LOGOUT',
+        userId: currentUser?.id,
+        details: { email: currentUser?.email }
+      });
+      
+      // Force page reload for clean state
       window.location.href = '/';
     } catch (error) {
-      console.error('Error signing out:', error);
+      auditLog({
+        action: 'LOGOUT_ERROR',
+        userId: user?.id,
+        details: { error: error instanceof Error ? error.message : 'Unknown error' }
+      });
     }
   };
 
