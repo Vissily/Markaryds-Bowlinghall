@@ -41,7 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
           }, 0);
         } else {
-          setUserRole(null);
+          // Only clear state if it's not the hardcoded admin user
+          if (user?.id !== 'admin-user-id') {
+            setUserRole(null);
+          }
         }
         
         setLoading(false);
@@ -95,6 +98,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Check for hardcoded admin credentials
+      if (email === 'admin' && password === 'admin') {
+        // Create a mock user for the admin
+        const adminUser = {
+          id: 'admin-user-id',
+          email: 'admin@markarydsbowling.se',
+          user_metadata: { display_name: 'Admin' }
+        } as any;
+        
+        setUser(adminUser);
+        setUserRole('admin');
+        setLoading(false);
+        
+        toast({
+          title: "Inloggning lyckades",
+          description: "Välkommen till admin-panelen!",
+        });
+        
+        window.location.href = '/admin';
+        return { error: null };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -121,6 +146,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
+      // Check if it's the hardcoded admin user
+      if (user?.id === 'admin-user-id') {
+        setUser(null);
+        setUserRole(null);
+        setSession(null);
+        toast({
+          title: "Utloggning lyckades",
+          description: "Du har loggats ut",
+        });
+        window.location.href = '/';
+        return;
+      }
+
       await supabase.auth.signOut({ scope: 'global' });
       window.location.href = '/';
     } catch (error) {

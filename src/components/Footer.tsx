@@ -107,6 +107,7 @@ const Footer = () => {
             <a href="#" className="hover:opacity-100 transition-opacity">GDPR</a>
             <a href="#" className="hover:opacity-100 transition-opacity">Prislista</a>
             <a href="#" className="hover:opacity-100 transition-opacity">Markarydsligan</a>
+            <a href="/auth" className="hover:opacity-100 transition-opacity">Admin</a>
           </div>
         </div>
       </div>
