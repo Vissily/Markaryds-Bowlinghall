@@ -21,12 +21,6 @@ const GallerySection = () => {
       description: "8 professionella Brunswick banor med senaste tekniken"
     },
     {
-      src: "https://drive.google.com/uc?export=view&id=16cOvd5APENmjmXMwnklX6R_CpakiiEV-",
-      alt: "Markaryds Bowling interiör och atmosfär",
-      title: "Vår Miljö",
-      description: "En inbjudande atmosfär där familjer och vänner trivs"
-    },
-    {
       src: "/lovable-uploads/e77cef8a-0f4b-44ec-855c-068f714bd840.png",
       alt: "Mysig restaurangdel med moderna möbler",
       title: "Restaurang & Bar",
