@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener
@@ -77,19 +75,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
-        toast({
-          title: "Registrering misslyckades",
-          description: error.message,
-          variant: "destructive",
-        });
+        console.error('Sign up error:', error.message);
         return { error };
       }
       
-      toast({
-        title: "Kontrollera din e-post",
-        description: "Vi har skickat en bekräftelselänk till din e-post.",
-      });
-      
+      console.log('Sign up successful - check email for confirmation');
       return { error: null };
     } catch (error) {
       return { error };
@@ -111,11 +101,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUserRole('admin');
         setLoading(false);
         
-        toast({
-          title: "Inloggning lyckades",
-          description: "Välkommen till admin-panelen!",
-        });
-        
+        console.log('Admin login successful');
         window.location.href = '/admin';
         return { error: null };
       }
@@ -126,11 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
-        toast({
-          title: "Inloggning misslyckades",
-          description: error.message,
-          variant: "destructive",
-        });
+        console.error('Sign in error:', error.message);
         return { error };
       }
       
@@ -151,10 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         setUserRole(null);
         setSession(null);
-        toast({
-          title: "Utloggning lyckades",
-          description: "Du har loggats ut",
-        });
+        console.log('Admin logout successful');
         window.location.href = '/';
         return;
       }
