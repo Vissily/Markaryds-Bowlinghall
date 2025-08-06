@@ -105,7 +105,7 @@ const PriceList = () => {
     });
   });
 
-  // Sort categories with specific order: bowling first, then övriga ej medlemmar, then timdebitering
+  // Sort categories with specific order: bowling first, then övriga ej medlemmar, then timdebitering, then rest
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
     const aBowling = a.toLowerCase().includes('bowling');
     const bBowling = b.toLowerCase().includes('bowling');
@@ -114,17 +114,20 @@ const PriceList = () => {
     const aTimdebitering = a.toLowerCase().includes('timdebitering');
     const bTimdebitering = b.toLowerCase().includes('timdebitering');
     
-    // Bowling categories first
-    if (aBowling && !bBowling) return -1;
-    if (!aBowling && bBowling) return 1;
+    // Priority order: 1. Bowling, 2. Övriga ej medlemmar, 3. Timdebitering, 4. Rest
+    const getPriority = (category: string) => {
+      if (category.toLowerCase().includes('bowling')) return 1;
+      if (category.toLowerCase().includes('övriga ej medlemmar')) return 2;
+      if (category.toLowerCase().includes('timdebitering')) return 3;
+      return 4;
+    };
     
-    // Then övriga ej medlemmar
-    if (aOvrigaEjMedlem && !bOvrigaEjMedlem && !bBowling) return -1;
-    if (!aOvrigaEjMedlem && bOvrigaEjMedlem && !aBowling) return 1;
+    const aPriority = getPriority(a);
+    const bPriority = getPriority(b);
     
-    // Then timdebitering
-    if (aTimdebitering && !bTimdebitering && !bBowling && !bOvrigaEjMedlem) return -1;
-    if (!aTimdebitering && bTimdebitering && !aBowling && !aOvrigaEjMedlem) return 1;
+    if (aPriority !== bPriority) {
+      return aPriority - bPriority;
+    }
     
     return a.localeCompare(b);
   });
