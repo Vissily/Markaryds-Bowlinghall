@@ -18,14 +18,14 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <div className="flex items-center">
             <img 
               src="/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png" 
               alt="Markaryds Bowling" 
-              className="h-12 w-auto"
+              className="h-8 sm:h-10 lg:h-12 w-auto"
             />
           </div>
 
@@ -43,23 +43,23 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden lg:flex items-center space-x-6 text-sm text-muted-foreground">
+          <div className="hidden xl:flex items-center space-x-6 text-sm text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Phone className="w-4 h-4" />
               <span>0433-123 45</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
-              <span>Mån-Tis 10-20, Ons-Tors 10-21</span>
+              <span className="truncate">Mån-Tis 10-20, Ons-Tors 10-21</span>
             </div>
           </div>
 
           {/* Book Button & Mobile Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <Button 
               variant="hero" 
-              size="lg" 
-              className="hidden md:flex"
+              size="sm" 
+              className="hidden sm:flex lg:size-lg"
               asChild
             >
               <a 
