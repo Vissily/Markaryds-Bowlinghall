@@ -66,8 +66,9 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin">
-              <TabsList className="grid w-full grid-cols-1">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Logga in</TabsTrigger>
+                <TabsTrigger value="signup">Registrera</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4">
@@ -114,6 +115,67 @@ const Auth = () => {
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Loggar in...' : 'Logga in'}
+                  </Button>
+                </form>
+              </TabsContent>
+              
+              <TabsContent value="signup" className="space-y-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm font-medium text-green-800">
+                    📝 Skapa nytt admin-konto
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    Använd email: info@markarydsbowling.se för admin-rättigheter
+                  </p>
+                </div>
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-displayname" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Namn (valfritt)
+                    </Label>
+                    <Input
+                      id="signup-displayname"
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Ditt namn"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-username" className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
+                    </Label>
+                    <Input
+                      id="signup-username"
+                      type="email"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="info@markarydsbowling.se"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password" className="flex items-center gap-2">
+                      <Lock className="h-4 w-4" />
+                      Lösenord
+                    </Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="egTXzsi0pz51E6S"
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Skapar konto...' : 'Skapa konto'}
                   </Button>
                 </form>
               </TabsContent>
