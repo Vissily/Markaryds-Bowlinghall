@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import ImageUpload from "./ImageUpload";
+import MediaUpload from "./ImageUpload";
 
 interface GalleryImage {
   id: string;
@@ -83,14 +83,14 @@ const GalleryManager = () => {
 
       setImages(images.filter(img => img.id !== id));
       toast({
-        title: "Bild borttagen",
-        description: "Bilden har tagits bort från galleriet"
+        title: "Media borttagen",
+        description: "Filen har tagits bort från galleriet"
       });
     } catch (error) {
       console.error('Error deleting image:', error);
       toast({
         title: "Fel vid borttagning",
-        description: "Kunde inte ta bort bilden",
+        description: "Kunde inte ta bort filen",
         variant: "destructive"
       });
     }
@@ -110,8 +110,8 @@ const GalleryManager = () => {
       ));
 
       toast({
-        title: currentSlideshow ? "Bild borttagen från slideshow" : "Bild tillagd i slideshow",
-        description: currentSlideshow ? "Bilden visas inte längre i bildspelet" : "Bilden visas nu i bildspelet"
+        title: currentSlideshow ? "Media borttagen från slideshow" : "Media tillagd i slideshow",
+        description: currentSlideshow ? "Filen visas inte längre i bildspelet" : "Filen visas nu i bildspelet"
       });
     } catch (error) {
       console.error('Error toggling slideshow:', error);
@@ -136,8 +136,8 @@ const GalleryManager = () => {
       ));
 
       toast({
-        title: currentFeatured ? "Bild avmarkerad" : "Bild markerad",
-        description: currentFeatured ? "Bilden är inte längre utvald" : "Bilden är nu utvald"
+        title: currentFeatured ? "Media avmarkerad" : "Media markerad",
+        description: currentFeatured ? "Filen är inte längre utvald" : "Filen är nu utvald"
       });
     } catch (error) {
       console.error('Error toggling featured:', error);
@@ -180,8 +180,8 @@ const GalleryManager = () => {
       setEditDescription("");
 
       toast({
-        title: "Bild uppdaterad",
-        description: "Bilduppgifterna har sparats"
+        title: "Media uppdaterad",
+        description: "Filuppgifterna har sparats"
       });
     } catch (error) {
       console.error('Error updating image:', error);
@@ -207,30 +207,49 @@ const GalleryManager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Ladda upp ny bild</CardTitle>
+          <CardTitle>Ladda upp ny media</CardTitle>
         </CardHeader>
         <CardContent>
-          <ImageUpload onUploadComplete={fetchImages} />
+          <MediaUpload onUploadComplete={fetchImages} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Hantera galleribilder ({images.length})</CardTitle>
+          <CardTitle>Hantera gallerimedia ({images.length})</CardTitle>
         </CardHeader>
         <CardContent>
           {images.length === 0 ? (
-            <p className="text-muted-foreground">Inga bilder uppladdade än.</p>
+            <p className="text-muted-foreground">Inga mediafiler uppladdade än.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {images.map((image) => (
                 <Card key={image.id} className="overflow-hidden">
                   <div className="aspect-video relative">
-                    <img
-                      src={getImageUrl(image.file_path)}
-                      alt={image.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {image.mime_type?.startsWith('image/') && (
+                      <img
+                        src={getImageUrl(image.file_path)}
+                        alt={image.title}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {image.mime_type?.startsWith('video/') && (
+                      <video
+                        src={getImageUrl(image.file_path)}
+                        className="w-full h-full object-cover"
+                        controls
+                      />
+                    )}
+                    {image.mime_type === 'application/pdf' && (
+                      <div className="w-full h-full bg-red-50 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-red-100 rounded mx-auto mb-2 flex items-center justify-center">
+                            <span className="text-red-600 font-bold">PDF</span>
+                          </div>
+                          <p className="text-sm text-gray-600">{image.title}</p>
+                        </div>
+                      </div>
+                    )}
                     {image.is_featured && (
                       <Badge className="absolute top-2 left-2" variant="secondary">
                         <Star className="w-3 h-3 mr-1" />

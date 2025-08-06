@@ -8,11 +8,11 @@ import { Upload, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-interface ImageUploadProps {
+interface MediaUploadProps {
   onUploadComplete?: () => void;
 }
 
-const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
+const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -24,21 +24,27 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    // Validate file type - allow images, videos, and PDFs
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+      'video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/webm',
+      'application/pdf'
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
       toast({
         title: "Fel filtyp",
-        description: "Endast bildfiler är tillåtna",
+        description: "Endast bilder, videor (MP4, MOV, AVI, WebM) och PDF-filer är tillåtna",
         variant: "destructive"
       });
       return;
     }
 
-    // Validate file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
+    // Validate file size (max 100MB)
+    if (file.size > 100 * 1024 * 1024) {
       toast({
         title: "Filen är för stor",
-        description: "Max filstorlek är 50MB",
+        description: "Max filstorlek är 100MB",
         variant: "destructive"
       });
       return;
@@ -47,9 +53,13 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
     setSelectedFile(file);
     setTitle(file.name.replace(/\.[^/.]+$/, "")); // Remove extension
 
-    // Create preview URL
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
+    // Create preview URL for images and videos
+    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null); // No preview for PDFs
+    }
   };
 
   const handleUpload = async () => {
@@ -70,7 +80,7 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
       if (!user) {
         toast({
           title: "Du måste vara inloggad",
-          description: "Logga in för att ladda upp bilder",
+          description: "Logga in för att ladda upp filer",
           variant: "destructive"
         });
         return;
@@ -103,7 +113,7 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
 
       toast({
         title: "Uppladdning lyckades!",
-        description: "Bilden har lagts till i galleriet"
+        description: "Filen har lagts till i galleriet"
       });
 
       // Reset form
@@ -145,28 +155,57 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Upload className="w-5 h-5" />
-          Ladda upp bild
+          Ladda upp media
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="file-upload">Välj bildfil (max 50MB)</Label>
+          <Label htmlFor="file-upload">Välj fil (bilder, videor, PDF - max 100MB)</Label>
           <Input
             id="file-upload"
             type="file"
-            accept="image/*"
+            accept="image/*,video/*,.pdf"
             onChange={handleFileSelect}
             disabled={isUploading}
           />
         </div>
 
-        {previewUrl && (
+        {previewUrl && selectedFile && (
           <div className="relative">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-full h-32 object-cover rounded border"
-            />
+            {selectedFile.type.startsWith('image/') && (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-32 object-cover rounded border"
+              />
+            )}
+            {selectedFile.type.startsWith('video/') && (
+              <video
+                src={previewUrl}
+                className="w-full h-32 object-cover rounded border"
+                controls
+              />
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearSelection}
+              className="absolute top-2 right-2"
+              disabled={isUploading}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+
+        {selectedFile && selectedFile.type === 'application/pdf' && (
+          <div className="relative p-4 border rounded">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-red-100 rounded flex items-center justify-center">
+                <span className="text-red-600 text-xs font-bold">PDF</span>
+              </div>
+              <span className="text-sm">{selectedFile.name}</span>
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -185,7 +224,7 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Bildtitel..."
+            placeholder="Titel för filen..."
             disabled={isUploading}
           />
         </div>
@@ -196,7 +235,7 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Beskriv bilden..."
+            placeholder="Beskriv filen..."
             disabled={isUploading}
             rows={3}
           />
@@ -224,4 +263,4 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
   );
 };
 
-export default ImageUpload;
+export default MediaUpload;
