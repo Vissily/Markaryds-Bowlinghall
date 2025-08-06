@@ -85,8 +85,8 @@ const PriceList = () => {
 
   // Sort categories to put bowling-related items first
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
-    const aBowling = a.toLowerCase().includes('bowling');
-    const bBowling = b.toLowerCase().includes('bowling');
+    const aBowling = a.toLowerCase().includes('bowling') || a.toLowerCase().includes('timdebitering');
+    const bBowling = b.toLowerCase().includes('bowling') || b.toLowerCase().includes('timdebitering');
     
     if (aBowling && !bBowling) return -1;
     if (!aBowling && bBowling) return 1;
