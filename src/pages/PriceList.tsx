@@ -24,9 +24,10 @@ const PriceList = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useSEO({
-    title: "Prislista - Markaryds Bowlinghall",
-    description: "Se våra aktuella priser för bowling, padel, minigolf och övriga aktiviteter på Markaryds Bowlinghall.",
-    keywords: "prislista, priser, bowling, padel, minigolf, Markaryd"
+    title: "Prislista - Markaryds Bowlinghall | Priser Bowling, Padel & Minigolf",
+    description: "Se våra aktuella priser för bowling, padel, minigolf och övriga aktiviteter på Markaryds Bowlinghall. Transparent prissättning för familjer och grupper i Markaryd.",
+    keywords: "prislista, priser, bowling, padel, minigolf, dart, shuffleboard, markaryd, bowlinghall, timdebitering, aktiviteter",
+    canonical: "https://markarydsbowling.se/prislista"
   });
 
   useEffect(() => {

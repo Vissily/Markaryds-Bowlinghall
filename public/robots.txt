@@ -13,6 +13,7 @@ Allow: /
 Allow: /menu
 Allow: /events
 Allow: /livestream
+Allow: /prislista
 
 # Crawl delay
 Crawl-delay: 1

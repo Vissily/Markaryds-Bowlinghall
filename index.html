@@ -43,9 +43,12 @@
       "description": "Bowlinghall, padel, minigolf, dart och shuffleboard i Markaryd",
       "url": "https://markarydsbowling.se",
       "telephone": "0433-123 45",
+      "email": "info@markarydsbowling.se",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Markaryd",
+        "addressRegion": "Kronoberg",
+        "postalCode": "285 32",
         "addressCountry": "SE"
       },
       "geo": {
@@ -69,6 +72,48 @@
       ],
       "sameAs": [
         "https://secure.meriq.com/markaryd/"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Aktiviteter",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Bowling",
+              "description": "10 moderna bowlingbanor"
+            }
+          },
+          {
+            "@type": "Offer", 
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Padel",
+              "description": "Padelcourt för spel året runt"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service", 
+              "name": "Minigolf",
+              "description": "18-håls minigolfbana"
+            }
+          }
+        ]
+      },
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Restaurang",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification", 
+          "name": "Parkering",
+          "value": true
+        }
       ]
     }
     </script>
