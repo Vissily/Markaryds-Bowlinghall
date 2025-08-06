@@ -13,6 +13,7 @@ import MenuManager from '@/components/admin/MenuManager';
 import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
 import EventsManager from '@/components/admin/EventsManager';
 import LivestreamsManager from '@/components/admin/LivestreamsManager';
+import GalleryManager from '@/components/admin/GalleryManager';
 
 interface SiteContent {
   title?: string;
@@ -202,8 +203,9 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="content">Hemsida</TabsTrigger>
+            <TabsTrigger value="gallery">Galleri</TabsTrigger>
             <TabsTrigger value="menu">Meny</TabsTrigger>
             <TabsTrigger value="hours">Öppettider</TabsTrigger>
             <TabsTrigger value="events">Evenemang</TabsTrigger>
@@ -275,6 +277,17 @@ const AdminSimple = () => {
                     {saving ? 'Sparar...' : 'Spara ändringar'}
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="gallery">
+            <Card>
+              <CardHeader>
+                <CardTitle>Hantera Galleri</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GalleryManager />
               </CardContent>
             </Card>
           </TabsContent>
