@@ -30,9 +30,22 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔍 Login attempt started with:', username);
     setIsSubmitting(true);
-    await signIn(username, password);
-    setIsSubmitting(false);
+    
+    try {
+      const result = await signIn(username, password);
+      console.log('🔍 Login result:', result);
+      if (result.error) {
+        console.error('🚨 Login error:', result.error);
+        alert('Inloggning misslyckades: ' + result.error.message);
+      }
+    } catch (error) {
+      console.error('🚨 Login exception:', error);
+      alert('Ett fel uppstod vid inloggning');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
