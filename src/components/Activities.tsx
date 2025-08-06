@@ -40,7 +40,8 @@ const Activities = () => {
     {
       title: "Shuffleboard",
       description: "Klassiskt shuffleboard-spel för alla åldrar",
-      icon: "🏒"
+      icon: "🏒",
+      image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png"
     },
     {
       title: "Barnkalas",
