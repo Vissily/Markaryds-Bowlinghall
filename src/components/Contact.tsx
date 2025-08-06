@@ -52,8 +52,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground mb-1">Adress</h4>
-                      <p className="text-muted-foreground">Bowlinggatan 1</p>
-                      <p className="text-muted-foreground">285 33 Markaryd</p>
+                      <p className="text-muted-foreground">Hannabadsvägen 2F</p>
+                      <p className="text-muted-foreground">285 32 Markaryd</p>
                       <p className="text-sm text-muted-foreground">Lätt att hitta mitt i Markaryd</p>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ const Contact = () => {
                   <div className="text-center text-muted-foreground">
                     <MapPin className="w-12 h-12 mx-auto mb-4" />
                     <p className="text-lg font-semibold">Markaryds Bowlinghall</p>
-                    <p>Bowlinggatan 1, 285 33 Markaryd</p>
+                    <p>Hannabadsvägen 2F, 285 32 Markaryd</p>
                     <p className="mt-4 text-sm">
                       Beläget centralt i Markaryd med<br />
                       goda parkeringsmöjligheter
