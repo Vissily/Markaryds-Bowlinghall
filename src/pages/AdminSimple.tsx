@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Save, LogOut } from 'lucide-react';
 import MenuManager from '@/components/admin/MenuManager';
 import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
+import EventsManager from '@/components/admin/EventsManager';
 
 interface SiteContent {
   title?: string;
@@ -200,10 +201,11 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="content">Hemsida</TabsTrigger>
             <TabsTrigger value="menu">Meny</TabsTrigger>
             <TabsTrigger value="hours">Öppettider</TabsTrigger>
+            <TabsTrigger value="events">Evenemang</TabsTrigger>
           </TabsList>
 
           <TabsContent value="content">
@@ -281,6 +283,10 @@ const AdminSimple = () => {
 
           <TabsContent value="hours">
             <OpeningHoursManager />
+          </TabsContent>
+
+          <TabsContent value="events">
+            <EventsManager />
           </TabsContent>
         </Tabs>
       </div>
