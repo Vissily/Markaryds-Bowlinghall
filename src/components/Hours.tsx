@@ -51,7 +51,7 @@ const Hours = () => {
 
   const formatTime = (time: string | null) => {
     if (!time) return '';
-    if (time === '24:00') return '00:00';
+    if (time === '24:00' || time === '00:00:00') return '00:00';
     // Remove seconds from time format (e.g., "10:00:00" -> "10:00")
     return time.substring(0, 5);
   };
@@ -80,24 +80,32 @@ const Hours = () => {
             </div>
             
           {/* Today's Hours Highlight */}
-          <div className="text-center mb-12">
-            {(() => {
-              const todaysHours = getTodaysHours();
-              if (todaysHours) {
-                return (
-                  <div className="inline-flex items-center space-x-4 bg-primary/10 rounded-lg px-6 py-3 border border-primary/20">
+          {(() => {
+            const todaysHours = getTodaysHours();
+            if (todaysHours) {
+              return (
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center space-x-4 bg-primary/10 rounded-lg px-6 py-4 border border-primary/20">
                     <div className="text-sm text-muted-foreground">
                       <strong>Idag ({getDayName(todaysHours.day_of_week)})</strong>
                     </div>
-                    <div className="font-mono text-lg font-semibold text-primary">
+                    <div className="font-mono text-xl font-bold text-primary">
                       {todaysHours.is_closed ? 'Stängt' : `${formatTime(todaysHours.open_time)} - ${formatTime(todaysHours.close_time)}`}
                     </div>
                   </div>
-                );
-              }
-              return null;
-            })()}
-          </div>
+                </div>
+              );
+            }
+            return (
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center space-x-4 bg-muted rounded-lg px-6 py-4">
+                  <div className="text-sm text-muted-foreground">
+                    <strong>Öppetider laddas...</strong>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
           
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               Öppet 7 Dagar i Veckan
