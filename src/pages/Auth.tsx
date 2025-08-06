@@ -61,80 +61,24 @@ const Auth = () => {
             </div>
             <CardTitle>Välkommen</CardTitle>
             <CardDescription>
-              Skapa först ett admin-konto, sedan kan du redigera hemsidan
+              Admin-inloggning för Markaryds Bowlinghall
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signup">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signup">Skapa konto</TabsTrigger>
+            <Tabs defaultValue="signin">
+              <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="signin">Logga in</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signup" className="space-y-4">
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-4">
-                  <p className="text-sm font-medium text-primary">
-                    🎯 Första steget: Skapa ett admin-konto
+              <TabsContent value="signin" className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm font-medium text-blue-800">
+                    🔒 Endast befintliga admin-användare kan logga in
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Använd din email-adress som användarnamn
+                  <p className="text-xs text-blue-600 mt-1">
+                    Kontakta administratören för nya konton
                   </p>
                 </div>
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      Email (blir ditt användarnamn)
-                    </Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="admin@markaryds.se"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="flex items-center gap-2">
-                      <Lock className="h-4 w-4" />
-                      Lösenord
-                    </Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Välj ett lösenord"
-                      required
-                      minLength={6}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Ditt namn
-                    </Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="Admin Användare"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Skapar konto...' : 'Skapa admin-konto'}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signin" className="space-y-4">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-username" className="flex items-center gap-2">
