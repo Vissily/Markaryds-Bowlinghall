@@ -128,6 +128,15 @@ export const clearFailedAttempts = (email: string): void => {
   failedAttempts.delete(email);
 };
 
+// Manual clear function for admin use
+export const clearAllFailedAttempts = (): void => {
+  failedAttempts.clear();
+  auditLog({
+    action: 'CLEAR_ALL_FAILED_ATTEMPTS',
+    details: { clearedBy: 'admin' }
+  });
+};
+
 // Password validation for security
 export const isSecurePassword = (password: string): boolean => {
   return password.length >= 8 &&
