@@ -22,9 +22,9 @@ const Activities = () => {
     },
     {
       title: "Minigolf",
-      description: "Rolig minigolfbana inomhus med kreativa hinder och utmaningar för hela familjen.",
+      description: "Rolig minigolfbana utomhus med kreativa hinder och utmaningar för hela familjen.",
       image: "/lovable-uploads/79c2dec9-9425-477a-8ec7-066148a87897.png",
-      features: ["Inomhus", "Familjevänligt", "Kreativa hinder", "Utrustning ingår"],
+      features: ["Utomhus", "Familjevänligt", "Kreativa hinder", "Utrustning ingår"],
       bookingUrl: "#kontakt",
       gradient: "from-green-500 to-emerald-400"
     }
