@@ -46,7 +46,7 @@ const Header = () => {
           <div className="hidden xl:flex items-center space-x-6 text-sm text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Phone className="w-4 h-4" />
-              <span>0433-123 45</span>
+              <span>0730-740 600</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
@@ -99,7 +99,7 @@ const Header = () => {
             <div className="pt-4 space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span>0433-123 45</span>
+                <span>0730-740 600</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />

@@ -75,8 +75,8 @@ const BookingSection = () => {
           
           <p className="mt-6 text-primary-foreground/70">
             Har du frågor om bokningen? 
-            <a href="tel:+46433135177" className="text-secondary hover:text-secondary/80 underline ml-1">
-              Ring oss på 0433-135 177
+            <a href="tel:+46730740600" className="text-secondary hover:text-secondary/80 underline ml-1">
+              Ring oss på 0730-740 600
             </a>
           </p>
         </div>
