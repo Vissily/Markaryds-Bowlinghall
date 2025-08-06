@@ -6,8 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Save, LogOut } from 'lucide-react';
+import MenuManager from '@/components/admin/MenuManager';
+import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
 
 interface SiteContent {
   title?: string;
@@ -179,86 +182,107 @@ const AdminSimple = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold">Admin Panel</h1>
-            <p className="text-muted-foreground">Redigera startsidan</p>
+            <p className="text-muted-foreground">Hantera hemsida, meny och öppettider</p>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          <Button variant="outline" asChild>
+            <a href="/">Se startsidan</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/menu">Se menyn</a>
+          </Button>
           <Button variant="outline" onClick={signOut}>
             <LogOut className="w-4 h-4 mr-2" />
             Logga ut
           </Button>
         </div>
 
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Startsida - Hero-sektion</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Huvudtitel</Label>
-              <Input
-                id="title"
-                value={content.title}
-                onChange={(e) => setContent({...content, title: e.target.value})}
-                placeholder="t.ex. Markaryds Bowlinghall"
-              />
-            </div>
+        <Tabs defaultValue="content" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="content">Hemsida</TabsTrigger>
+            <TabsTrigger value="menu">Meny</TabsTrigger>
+            <TabsTrigger value="hours">Öppettider</TabsTrigger>
+          </TabsList>
 
-            <div className="space-y-2">
-              <Label htmlFor="subtitle">Underrubrik</Label>
-              <Input
-                id="subtitle"
-                value={content.subtitle}
-                onChange={(e) => setContent({...content, subtitle: e.target.value})}
-                placeholder="t.ex. Sedan 2013"
-              />
-            </div>
+          <TabsContent value="content">
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <CardTitle>Startsida - Hero-sektion</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Huvudtitel</Label>
+                  <Input
+                    id="title"
+                    value={content.title}
+                    onChange={(e) => setContent({...content, title: e.target.value})}
+                    placeholder="t.ex. Markaryds Bowlinghall"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Beskrivning</Label>
-              <Textarea
-                id="description"
-                value={content.description}
-                onChange={(e) => setContent({...content, description: e.target.value})}
-                placeholder="Beskriv er verksamhet..."
-                rows={4}
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="subtitle">Underrubrik</Label>
+                  <Input
+                    id="subtitle"
+                    value={content.subtitle}
+                    onChange={(e) => setContent({...content, subtitle: e.target.value})}
+                    placeholder="t.ex. Sedan 2013"
+                  />
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="button_text">Knapptext</Label>
-                <Input
-                  id="button_text"
-                  value={content.button_text}
-                  onChange={(e) => setContent({...content, button_text: e.target.value})}
-                  placeholder="t.ex. Boka Nu"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Beskrivning</Label>
+                  <Textarea
+                    id="description"
+                    value={content.description}
+                    onChange={(e) => setContent({...content, description: e.target.value})}
+                    placeholder="Beskriv er verksamhet..."
+                    rows={4}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="button_link">Knapplänk</Label>
-                <Input
-                  id="button_link"
-                  value={content.button_link}
-                  onChange={(e) => setContent({...content, button_link: e.target.value})}
-                  placeholder="t.ex. #booking"
-                />
-              </div>
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="button_text">Knapptext</Label>
+                    <Input
+                      id="button_text"
+                      value={content.button_text}
+                      onChange={(e) => setContent({...content, button_text: e.target.value})}
+                      placeholder="t.ex. Boka Nu"
+                    />
+                  </div>
 
-            <div className="flex justify-end pt-4">
-              <Button onClick={saveContent} disabled={saving}>
-                <Save className="w-4 h-4 mr-2" />
-                {saving ? 'Sparar...' : 'Spara ändringar'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="button_link">Knapplänk</Label>
+                    <Input
+                      id="button_link"
+                      value={content.button_link}
+                      onChange={(e) => setContent({...content, button_link: e.target.value})}
+                      placeholder="t.ex. #booking"
+                    />
+                  </div>
+                </div>
 
-        <div className="text-center mt-8">
-          <Button variant="outline" asChild>
-            <a href="/">Se resultat på startsidan</a>
-          </Button>
-        </div>
+                <div className="flex justify-end pt-4">
+                  <Button onClick={saveContent} disabled={saving}>
+                    <Save className="w-4 h-4 mr-2" />
+                    {saving ? 'Sparar...' : 'Spara ändringar'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="menu">
+            <MenuManager />
+          </TabsContent>
+
+          <TabsContent value="hours">
+            <OpeningHoursManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

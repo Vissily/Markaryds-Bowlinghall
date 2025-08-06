@@ -14,6 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
+      menu_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      menu_items: {
+        Row: {
+          available: boolean | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          price: number
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          price: number
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          price?: number
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opening_hours: {
+        Row: {
+          close_time: string | null
+          created_at: string
+          day_of_week: number
+          id: string
+          is_closed: boolean | null
+          open_time: string | null
+          updated_at: string
+        }
+        Insert: {
+          close_time?: string | null
+          created_at?: string
+          day_of_week: number
+          id?: string
+          is_closed?: boolean | null
+          open_time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          close_time?: string | null
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          is_closed?: boolean | null
+          open_time?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
