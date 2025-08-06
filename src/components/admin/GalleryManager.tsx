@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff } from "lucide-react";
+import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import MediaUpload from "./ImageUpload";
@@ -199,6 +199,35 @@ const GalleryManager = () => {
     setEditDescription("");
   };
 
+  const handleDownload = async (image: GalleryImage) => {
+    try {
+      const imageUrl = getImageUrl(image.file_path);
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${image.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${image.file_path.split('.').pop()}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Nedladdning påbörjad",
+        description: `${image.title} laddas ner`
+      });
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      toast({
+        title: "Fel vid nedladdning",
+        description: "Kunde inte ladda ner bilden",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return <div className="p-4">Laddar bilder...</div>;
   }
@@ -301,13 +330,23 @@ const GalleryManager = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => startEdit(image)}
+                            title="Redigera"
                           >
                             <Edit className="w-3 h-3" />
                           </Button>
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handleDownload(image)}
+                            title="Ladda ner"
+                          >
+                            <Download className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => handleToggleSlideshow(image.id, image.show_in_slideshow)}
+                            title={image.show_in_slideshow ? "Ta bort från slideshow" : "Lägg till i slideshow"}
                           >
                             {image.show_in_slideshow ? <MonitorOff className="w-3 h-3" /> : <Monitor className="w-3 h-3" />}
                           </Button>
@@ -315,6 +354,7 @@ const GalleryManager = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleToggleFeatured(image.id, image.is_featured)}
+                            title={image.is_featured ? "Ta bort utvald" : "Markera som utvald"}
                           >
                             {image.is_featured ? <StarOff className="w-3 h-3" /> : <Star className="w-3 h-3" />}
                           </Button>
@@ -322,6 +362,7 @@ const GalleryManager = () => {
                             size="sm"
                             variant="destructive"
                             onClick={() => handleDelete(image.id, image.file_path)}
+                            title="Ta bort"
                           >
                             <Trash2 className="w-3 h-3" />
                           </Button>
