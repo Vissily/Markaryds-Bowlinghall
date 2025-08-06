@@ -42,7 +42,8 @@ const Hours = () => {
 
   const formatTime = (time: string) => {
     if (time === '24:00') return '00:00';
-    return time;
+    // Remove seconds from time format (e.g., "10:00:00" -> "10:00")
+    return time.substring(0, 5);
   };
 
   if (loading) {
@@ -100,7 +101,7 @@ const Hours = () => {
                     </div>
                     <div className="text-right">
                       <div className="font-mono text-foreground">
-                        {hour.is_closed ? 'Stängt' : `${hour.open_time} - ${formatTime(hour.close_time)}`}
+                        {hour.is_closed ? 'Stängt' : `${formatTime(hour.open_time)} - ${formatTime(hour.close_time)}`}
                       </div>
                     </div>
                   </div>
