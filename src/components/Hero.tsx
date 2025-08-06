@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, Calendar } from "lucide-react";
 import heroImage from "@/assets/hero-bowling.jpg";
