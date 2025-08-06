@@ -87,15 +87,14 @@ const BookingSection = () => {
                 </DialogDescription>
               </DialogHeader>
               <div className="flex-1 relative">
-                {isBookingOpen && (
-                  <iframe
-                    src="https://secure.meriq.com/markaryd/"
-                    className="w-full h-[calc(85vh-120px)] border-0"
-                    title="Markaryds Bowling Booking System"
-                    allow="payment; camera; microphone"
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-                  />
-                )}
+                <iframe
+                  src="https://secure.meriq.com/markaryd/"
+                  className="w-full h-[calc(85vh-120px)] border-0"
+                  title="Markaryds Bowling Booking System"
+                  allow="payment; camera; microphone; geolocation"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
+                  loading="eager"
+                />
               </div>
             </DialogContent>
           </Dialog>

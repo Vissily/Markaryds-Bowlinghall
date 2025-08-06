@@ -56,7 +56,17 @@ const Header = () => {
 
           {/* Book Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button variant="hero" size="lg" className="hidden md:flex">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="hidden md:flex"
+              onClick={() => {
+                const bookingSection = document.getElementById('booking');
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
               Boka Nu
             </Button>
             
@@ -99,7 +109,18 @@ const Header = () => {
                 <span>Markaryd</span>
               </div>
             </div>
-            <Button variant="hero" size="lg" className="mt-4">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="mt-4"
+              onClick={() => {
+                setIsMenuOpen(false);
+                const bookingSection = document.getElementById('booking');
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
               Boka Nu
             </Button>
           </nav>
