@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,18 +58,18 @@ const BookingSection = () => {
         <div className="text-center">
           <Button 
             size="xl" 
-            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
+            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto max-w-md mx-auto"
             asChild
           >
             <a 
               href="https://secure.meriq.com/markaryd/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center"
+              className="flex items-center justify-center gap-3"
             >
-              <Calendar className="w-6 h-6 mr-3" />
-              Boka Nu - Markaryds Bowling
-              <ExternalLink className="w-5 h-5 ml-3" />
+              <Calendar className="w-5 h-5" />
+              <span>Boka Nu - Markaryds Bowling</span>
+              <ExternalLink className="w-4 h-4" />
             </a>
           </Button>
           
