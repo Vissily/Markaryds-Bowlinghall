@@ -90,14 +90,35 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
+      console.log('Starting file upload:', {
+        fileName,
+        fileSize: selectedFile.size,
+        fileType: selectedFile.type,
+        bucketId: 'gallery-images'
+      });
+
       // Upload file to storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('gallery-images')
         .upload(fileName, selectedFile);
 
-      if (uploadError) throw uploadError;
+      console.log('Upload result:', { uploadData, uploadError });
+
+      if (uploadError) {
+        console.error('Upload error details:', uploadError);
+        throw uploadError;
+      }
 
       // Save metadata to database
+      console.log('Saving metadata to database:', {
+        title: title.trim(),
+        description: description.trim() || null,
+        file_path: uploadData.path,
+        file_size: selectedFile.size,
+        mime_type: selectedFile.type,
+        uploaded_by: user.id
+      });
+
       const { error: dbError } = await supabase
         .from('gallery_images')
         .insert({
@@ -109,7 +130,10 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
           uploaded_by: user.id
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database error details:', dbError);
+        throw dbError;
+      }
 
       toast({
         title: "Uppladdning lyckades!",
@@ -128,11 +152,22 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
 
       onUploadComplete?.();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
+      
+      let errorMessage = "Något gick fel. Försök igen.";
+      
+      if (error?.message?.includes('Payload too large')) {
+        errorMessage = "Filen är för stor. Max 100MB tillåten.";
+      } else if (error?.message?.includes('Invalid file type')) {
+        errorMessage = "Filtypen stöds inte.";
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Uppladdning misslyckades",
-        description: "Något gick fel. Försök igen.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
