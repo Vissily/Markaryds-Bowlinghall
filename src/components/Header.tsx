@@ -8,12 +8,12 @@ const Header = () => {
 
   const navigation = [
     { name: "Hem", href: "/" },
-    { name: "Aktiviteter", href: "#activities" },
+    { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
     { name: "Livestream", href: "/livestream" },
     { name: "Evenemang", href: "/events" },
-    { name: "Öppettider", href: "#oppettider" },
-    { name: "Kontakt", href: "#kontakt" },
+    { name: "Öppettider", href: "/#oppettider" },
+    { name: "Kontakt", href: "/#kontakt" },
   ];
 
   return (

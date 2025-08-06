@@ -30,16 +30,16 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Snabblänkar</h4>
             <div className="space-y-2 text-sm">
-              <a href="#aktiviteter" className="block opacity-80 hover:opacity-100 transition-opacity">
+              <a href="/#aktiviteter" className="block opacity-80 hover:opacity-100 transition-opacity">
                 Aktiviteter
               </a>
-              <a href="#oppettider" className="block opacity-80 hover:opacity-100 transition-opacity">
+              <a href="/#oppettider" className="block opacity-80 hover:opacity-100 transition-opacity">
                 Öppettider
               </a>
-              <a href="#kontakt" className="block opacity-80 hover:opacity-100 transition-opacity">
+              <a href="/#kontakt" className="block opacity-80 hover:opacity-100 transition-opacity">
                 Kontakt
               </a>
-              <a href="#meny" className="block opacity-80 hover:opacity-100 transition-opacity">
+              <a href="/menu" className="block opacity-80 hover:opacity-100 transition-opacity">
                 Meny
               </a>
             </div>
