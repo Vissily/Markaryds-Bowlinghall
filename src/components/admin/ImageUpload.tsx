@@ -34,11 +34,11 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
       toast({
         title: "Filen är för stor",
-        description: "Max filstorlek är 10MB",
+        description: "Max filstorlek är 50MB",
         variant: "destructive"
       });
       return;
@@ -150,7 +150,7 @@ const ImageUpload = ({ onUploadComplete }: ImageUploadProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="file-upload">Välj bildfil</Label>
+          <Label htmlFor="file-upload">Välj bildfil (max 50MB)</Label>
           <Input
             id="file-upload"
             type="file"
