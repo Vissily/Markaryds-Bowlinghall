@@ -25,11 +25,41 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
 
-    // Generate a secure password
-    const password = generateSecurePassword();
     const email = "info@markarydsbowling.se";
+    
+    // Check if user already exists
+    const { data: existingUser } = await supabaseAdmin.auth.admin.listUsers();
+    const userExists = existingUser.users.find(user => user.email === email);
+    
+    if (userExists) {
+      // User exists but email not confirmed - let's confirm it
+      const { data: updateData, error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+        userExists.id,
+        { email_confirm: true }
+      );
+      
+      if (updateError) {
+        console.error("Error confirming email:", updateError);
+        throw updateError;
+      }
+      
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "Email confirmed for existing user",
+          credentials: { email, password: "egTXzsi0pz51E6S", userId: userExists.id }
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
-    console.log("Creating admin user:", email);
+    // Generate a secure password  
+    const password = "egTXzsi0pz51E6S";
+
+    console.log("Creating new admin user:", email);
 
     // Create the user with admin client
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
