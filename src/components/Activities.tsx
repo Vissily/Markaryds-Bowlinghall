@@ -111,7 +111,8 @@ const Activities = () => {
                     <img 
                       src={activity.image} 
                       alt={activity.title}
-                      className="w-full h-40 object-cover"
+                      className={`w-full h-40 object-cover ${activity.title === 'Dart' ? 'object-center' : ''}`}
+                      style={activity.title === 'Dart' ? { objectPosition: 'center 30%' } : {}}
                     />
                     <div className="absolute inset-0 bg-black/20"></div>
                   </div>
