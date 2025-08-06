@@ -34,7 +34,8 @@ const Activities = () => {
     {
       title: "Dart",
       description: "Elektroniska darttavlor för tävlingar och roligt spel",
-      icon: "🎯"
+      icon: "🎯",
+      image: "/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png"
     },
     {
       title: "Shuffleboard",
@@ -103,8 +104,18 @@ const Activities = () => {
           <h3 className="text-2xl font-bold text-foreground text-center mb-8">Övriga Aktiviteter</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {otherActivities.map((activity) => (
-              <Card key={activity.title} className="p-6 text-center hover:shadow-card transition-shadow">
-                <div className="text-4xl mb-4">{activity.icon}</div>
+              <Card key={activity.title} className="p-6 text-center hover:shadow-card transition-shadow overflow-hidden">
+                {activity.image ? (
+                  <div className="relative mb-4">
+                    <img 
+                      src={activity.image} 
+                      alt={activity.title}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <div className="text-4xl mb-4">{activity.icon}</div>
+                )}
                 <h4 className="text-xl font-semibold text-foreground mb-2">{activity.title}</h4>
                 <p className="text-muted-foreground">{activity.description}</p>
               </Card>
