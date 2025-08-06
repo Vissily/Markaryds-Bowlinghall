@@ -21,6 +21,12 @@ const GallerySection = () => {
       description: "8 professionella Brunswick banor med senaste tekniken"
     },
     {
+      src: "https://drive.google.com/uc?export=view&id=16cOvd5APENmjmXMwnklX6R_CpakiiEV-",
+      alt: "Markaryds Bowling interiör och atmosfär",
+      title: "Vår Miljö",
+      description: "En inbjudande atmosfär där familjer och vänner trivs"
+    },
+    {
       src: "/lovable-uploads/e77cef8a-0f4b-44ec-855c-068f714bd840.png",
       alt: "Mysig restaurangdel med moderna möbler",
       title: "Restaurang & Bar",
@@ -90,7 +96,11 @@ const GallerySection = () => {
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
+                    style={{ 
+                      imageRendering: 'crisp-edges',
+                      filter: 'contrast(1.05) brightness(1.02)'
+                    }}
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -149,7 +159,11 @@ const GallerySection = () => {
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
+                    style={{ 
+                      imageRendering: 'crisp-edges',
+                      filter: 'contrast(1.05) brightness(1.02)'
+                    }}
                   />
                 </button>
               ))}
