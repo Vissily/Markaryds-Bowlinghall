@@ -172,31 +172,25 @@ const Admin = () => {
           </div>
         </div>
 
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">Admin-panel</h1>
+          <p className="text-muted-foreground">
+            Välkommen, <strong>{user.email}</strong> 
+          </p>
+        </div>
+
         <Tabs defaultValue="website" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="website" className="flex items-center gap-2">
-              <Edit3 className="h-4 w-4" />
-              Redigera Hemsida
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Användare
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Inställningar
-            </TabsTrigger>
+            <TabsTrigger value="website">Redigera Hemsida</TabsTrigger>
+            <TabsTrigger value="users">Användare</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="website" className="space-y-6">
+          <TabsContent value="website">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Edit3 className="h-5 w-5" />
-                  Redigera Hemsidans Innehåll
-                </CardTitle>
+                <CardTitle>Redigera Hemsidans Innehåll</CardTitle>
                 <CardDescription>
-                  Här kan du redigera alla texter, bilder och länkar på hemsidan. Ändringarna sparas direkt och syns på hemsidan.
+                  Här kan du redigera alla texter och länkar på hemsidan. Ändringarna sparas direkt.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -211,14 +205,6 @@ const Admin = () => {
                 <ContentEditor 
                   sectionKey="activities"
                   sectionTitle="Aktiviteter-sektion"
-                />
-                <ContentEditor 
-                  sectionKey="hours"
-                  sectionTitle="Öppettider-sektion"
-                />
-                <ContentEditor 
-                  sectionKey="contact"
-                  sectionTitle="Kontakt-sektion"
                 />
               </CardContent>
             </Card>
