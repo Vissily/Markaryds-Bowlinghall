@@ -65,8 +65,8 @@ const Contact = () => {
                     <div>
                       <h4 className="font-semibold text-foreground mb-1">Öppettider</h4>
                       <p className="text-muted-foreground">Mån-Tis: 10-20</p>
-                      <p className="text-muted-foreground">Ons-Tors: 10-21</p>
-                      <p className="text-muted-foreground">Fredag: 10-00 (bowling stänger 22)</p>
+                      <p className="text-muted-foreground">Ons-Tor: 10-21</p>
+                      <p className="text-muted-foreground">Fre: 10-00, Lör: 15-23, Sön: 11-16</p>
                       <p className="text-muted-foreground">Lördag: 15-23 (bowling stänger 22)</p>
                       <p className="text-muted-foreground">Söndag: 11-16</p>
                     </div>
