@@ -16,6 +16,7 @@ import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
 import EventsManager from '@/components/admin/EventsManager';
 import LivestreamsManager from '@/components/admin/LivestreamsManager';
 import GalleryManager from '@/components/admin/GalleryManager';
+import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 interface SiteContent {
   title?: string;
@@ -263,8 +264,9 @@ const AdminSimple = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+        <Tabs defaultValue="analytics" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="analytics">Statistik</TabsTrigger>
             <TabsTrigger value="content">Hemsida</TabsTrigger>
             <TabsTrigger value="gallery">Galleri</TabsTrigger>
             <TabsTrigger value="menu">Meny</TabsTrigger>
@@ -272,6 +274,10 @@ const AdminSimple = () => {
             <TabsTrigger value="events">Evenemang</TabsTrigger>
             <TabsTrigger value="livestreams">Livestream</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics">
+            <AnalyticsDashboard />
+          </TabsContent>
 
           <TabsContent value="content">
             <Card className="max-w-2xl mx-auto">
