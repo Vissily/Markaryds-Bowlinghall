@@ -6,52 +6,49 @@ import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
 const BookingSection = () => {
 
   return (
-    <section id="booking" className="py-24 px-4 bg-gradient-to-br from-primary via-primary/90 to-primary/80 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
-      
-      <div className="container mx-auto max-w-4xl relative z-10">
+    <section id="booking" className="py-24 px-4 bg-card">
+      <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Boka Din Upplevelse
           </h2>
-          <p className="text-xl text-white/95 max-w-2xl mx-auto drop-shadow-sm">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Reservera din tid enkelt och smidigt. Välj mellan våra olika aktiviteter och boka direkt online.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
+          <Card className="shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 border-2">
             <CardHeader className="text-center">
-              <Calendar className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
-              <CardTitle className="text-lg font-semibold">Flexibla Tider</CardTitle>
+              <Calendar className="w-10 h-10 mx-auto mb-3 text-primary" />
+              <CardTitle className="text-lg font-semibold text-card-foreground">Flexibla Tider</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-white/90 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Boka upp till 30 dagar i förväg och välj den tid som passar dig bäst
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
+          <Card className="shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 border-2">
             <CardHeader className="text-center">
-              <Users className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
-              <CardTitle className="text-lg font-semibold">Grupper & Events</CardTitle>
+              <Users className="w-10 h-10 mx-auto mb-3 text-primary" />
+              <CardTitle className="text-lg font-semibold text-card-foreground">Grupper & Events</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-white/90 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Perfekt för kalas, företagsevent och gruppreservationer
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
+          <Card className="shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 border-2">
             <CardHeader className="text-center">
-              <Clock className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
-              <CardTitle className="text-lg font-semibold">Snabb & Enkel</CardTitle>
+              <Clock className="w-10 h-10 mx-auto mb-3 text-primary" />
+              <CardTitle className="text-lg font-semibold text-card-foreground">Snabb & Enkel</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-white/90 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Konfirmera din bokning direkt och få bekräftelse via e-post
               </p>
             </CardContent>
