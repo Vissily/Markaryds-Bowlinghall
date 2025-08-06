@@ -16,10 +16,15 @@ const Auth = () => {
   const [displayName, setDisplayName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Add debug logging
+  console.log('Auth component - user:', user);
+  console.log('Auth component - loading:', loading);
+
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      window.location.href = '/';
+      console.log('User is logged in, redirecting to admin...');
+      window.location.href = '/admin';
     }
   }, [user]);
 
