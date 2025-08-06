@@ -71,6 +71,48 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_images: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          file_path: string
+          file_size: number | null
+          id: string
+          is_featured: boolean | null
+          mime_type: string | null
+          sort_order: number | null
+          title: string
+          updated_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          file_path: string
+          file_size?: number | null
+          id?: string
+          is_featured?: boolean | null
+          mime_type?: string | null
+          sort_order?: number | null
+          title: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          is_featured?: boolean | null
+          mime_type?: string | null
+          sort_order?: number | null
+          title?: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       livestreams: {
         Row: {
           created_at: string

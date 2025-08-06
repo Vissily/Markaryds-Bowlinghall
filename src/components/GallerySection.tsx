@@ -2,47 +2,92 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface GalleryImage {
+  id: string;
+  title: string;
+  description: string | null;
+  file_path: string;
+}
 
 const GallerySection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const galleryImages = [
+  // Default images as fallback
+  const defaultImages: GalleryImage[] = [
     {
-      src: "/lovable-uploads/1f098528-a474-45a4-9856-cd939d92199f.png",
-      alt: "Bowlingskor och kula med banor i bakgrunden",
+      id: "default-1",
       title: "Redo för Spel",
-      description: "Professionell utrustning för den perfekta bowlingupplevelsen"
+      description: "Professionell utrustning för den perfekta bowlingupplevelsen",
+      file_path: "/lovable-uploads/1f098528-a474-45a4-9856-cd939d92199f.png"
     },
     {
-      src: "/lovable-uploads/372f4e62-8d8c-421e-9e00-cdc227bb22f2.png",
-      alt: "Professionella bowlingbanor med modern design",
+      id: "default-2", 
       title: "Moderna Banor",
-      description: "8 professionella Brunswick banor med senaste tekniken"
+      description: "8 professionella Brunswick banor med senaste tekniken",
+      file_path: "/lovable-uploads/372f4e62-8d8c-421e-9e00-cdc227bb22f2.png"
     },
     {
-      src: "/lovable-uploads/e77cef8a-0f4b-44ec-855c-068f714bd840.png",
-      alt: "Mysig restaurangdel med moderna möbler",
-      title: "Restaurang & Bar",
-      description: "Njut av god mat och dryck i vår mysiga restaurangmiljö"
+      id: "default-3",
+      title: "Restaurang & Bar", 
+      description: "Njut av god mat och dryck i vår mysiga restaurangmiljö",
+      file_path: "/lovable-uploads/e77cef8a-0f4b-44ec-855c-068f714bd840.png"
     },
     {
-      src: "/lovable-uploads/3f91a31b-f9e8-4409-a19b-9e0fb0f3d765.png",
-      alt: "Dart och shuffleboard område",
+      id: "default-4",
       title: "Fler Aktiviteter",
-      description: "Dart, shuffleboard och andra roliga spel för hela familjen"
+      description: "Dart, shuffleboard och andra roliga spel för hela familjen", 
+      file_path: "/lovable-uploads/3f91a31b-f9e8-4409-a19b-9e0fb0f3d765.png"
     },
     {
-      src: "/lovable-uploads/bfd75706-4f9b-415d-a95c-2948af2e63a0.png",
-      alt: "Vänlig personal vid receptionen",
+      id: "default-5",
       title: "Välkommen Hit",
-      description: "Vår vänliga personal tar emot dig med ett leende"
+      description: "Vår vänliga personal tar emot dig med ett leende",
+      file_path: "/lovable-uploads/bfd75706-4f9b-415d-a95c-2948af2e63a0.png"
     }
   ];
 
+  // Fetch images from database
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('gallery_images')
+          .select('id, title, description, file_path')
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Convert database images to correct format
+          const formattedImages = data.map(img => ({
+            ...img,
+            file_path: supabase.storage.from('gallery-images').getPublicUrl(img.file_path).data.publicUrl
+          }));
+          setGalleryImages(formattedImages);
+        } else {
+          // Use default images if no database images
+          setGalleryImages(defaultImages);
+        }
+      } catch (error) {
+        console.error('Error fetching gallery images:', error);
+        // Use default images on error
+        setGalleryImages(defaultImages);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
   // Auto-play functionality
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || galleryImages.length === 0) return;
     
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % galleryImages.length);
@@ -63,6 +108,19 @@ const GallerySection = () => {
     setCurrentSlide(index);
   };
 
+  if (loading) {
+    return (
+      <section id="gallery" className="py-24 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Laddar galleri...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="gallery" className="py-24 px-4 bg-muted/30">
       <div className="container mx-auto max-w-5xl">
@@ -81,15 +139,15 @@ const GallerySection = () => {
             <div className="relative aspect-[16/9] overflow-hidden">
               {galleryImages.map((image, index) => (
                 <div
-                  key={index}
+                  key={image.id}
                   className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
                     index === currentSlide ? 'translate-x-0' : 
                     index < currentSlide ? '-translate-x-full' : 'translate-x-full'
                   }`}
                 >
                   <img
-                    src={image.src}
-                    alt={image.alt}
+                    src={image.file_path}
+                    alt={image.title}
                     className="w-full h-full object-cover object-center"
                     style={{ 
                       imageRendering: 'crisp-edges',
@@ -142,7 +200,7 @@ const GallerySection = () => {
             <div className="flex justify-center gap-2 p-6 bg-card">
               {galleryImages.map((image, index) => (
                 <button
-                  key={index}
+                  key={image.id}
                   onClick={() => goToSlide(index)}
                   className={`w-16 h-12 rounded overflow-hidden border-2 transition-all duration-300 ${
                     index === currentSlide 
@@ -151,8 +209,8 @@ const GallerySection = () => {
                   }`}
                 >
                   <img
-                    src={image.src}
-                    alt={image.alt}
+                    src={image.file_path}
+                    alt={image.title}
                     className="w-full h-full object-cover object-center"
                     style={{ 
                       imageRendering: 'crisp-edges',

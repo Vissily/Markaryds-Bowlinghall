@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ContentEditor from '@/components/admin/ContentEditor';
+import GalleryManager from '@/components/admin/GalleryManager';
 
 interface Profile {
   id: string;
@@ -182,6 +183,7 @@ const Admin = () => {
         <Tabs defaultValue="website" className="space-y-6">
           <TabsList>
             <TabsTrigger value="website">Redigera Hemsida</TabsTrigger>
+            <TabsTrigger value="gallery">Galleri</TabsTrigger>
             <TabsTrigger value="users">Användare</TabsTrigger>
           </TabsList>
 
@@ -206,6 +208,20 @@ const Admin = () => {
                   sectionKey="activities"
                   sectionTitle="Aktiviteter-sektion"
                 />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="gallery">
+            <Card>
+              <CardHeader>
+                <CardTitle>Hantera Galleri</CardTitle>
+                <CardDescription>
+                  Ladda upp och hantera bilder som visas i galleriet på hemsidan.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GalleryManager />
               </CardContent>
             </Card>
           </TabsContent>
