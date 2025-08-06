@@ -83,6 +83,16 @@ const PriceList = () => {
     return acc;
   }, {} as Record<string, PriceItem[]>);
 
+  // Sort categories to put bowling-related items first
+  const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
+    const aBowling = a.toLowerCase().includes('bowling');
+    const bBowling = b.toLowerCase().includes('bowling');
+    
+    if (aBowling && !bBowling) return -1;
+    if (!aBowling && bBowling) return 1;
+    return a.localeCompare(b);
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -128,14 +138,14 @@ const PriceList = () => {
               </div>
             ) : (
               <div className="space-y-8">
-                {Object.entries(groupedItems).map(([category, items]) => (
+                {sortedCategories.map((category) => (
                   <Card key={category} className="shadow-card">
                     <CardHeader>
                       <CardTitle className="text-2xl text-center">{category}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {items.map((item) => (
+                        {groupedItems[category].map((item) => (
                           <div key={item.id} className="flex justify-between items-start p-4 border-b last:border-b-0">
                             <div className="flex-1">
                               <h3 className="font-semibold text-lg">{item.name}</h3>
