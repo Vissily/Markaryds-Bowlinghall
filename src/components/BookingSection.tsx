@@ -6,49 +6,52 @@ import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
 const BookingSection = () => {
 
   return (
-    <section id="booking" className="py-24 px-4 bg-gradient-primary">
-      <div className="container mx-auto max-w-4xl">
+    <section id="booking" className="py-24 px-4 bg-gradient-to-br from-primary via-primary/90 to-primary/80 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+      
+      <div className="container mx-auto max-w-4xl relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
             Boka Din Upplevelse
           </h2>
-          <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto">
+          <p className="text-xl text-white/95 max-w-2xl mx-auto drop-shadow-sm">
             Reservera din tid enkelt och smidigt. Välj mellan våra olika aktiviteter och boka direkt online.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-primary-foreground">
+          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
             <CardHeader className="text-center">
-              <Calendar className="w-8 h-8 mx-auto mb-2 text-secondary" />
-              <CardTitle className="text-lg">Flexibla Tider</CardTitle>
+              <Calendar className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
+              <CardTitle className="text-lg font-semibold">Flexibla Tider</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-primary-foreground/80">
+              <p className="text-white/90 leading-relaxed">
                 Boka upp till 30 dagar i förväg och välj den tid som passar dig bäst
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-primary-foreground">
+          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
             <CardHeader className="text-center">
-              <Users className="w-8 h-8 mx-auto mb-2 text-secondary" />
-              <CardTitle className="text-lg">Grupper & Events</CardTitle>
+              <Users className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
+              <CardTitle className="text-lg font-semibold">Grupper & Events</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-primary-foreground/80">
+              <p className="text-white/90 leading-relaxed">
                 Perfekt för kalas, företagsevent och gruppreservationer
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-primary-foreground">
+          <Card className="bg-white/15 backdrop-blur-md border-white/30 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/20">
             <CardHeader className="text-center">
-              <Clock className="w-8 h-8 mx-auto mb-2 text-secondary" />
-              <CardTitle className="text-lg">Snabb & Enkel</CardTitle>
+              <Clock className="w-10 h-10 mx-auto mb-3 text-secondary drop-shadow-md" />
+              <CardTitle className="text-lg font-semibold">Snabb & Enkel</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-primary-foreground/80">
+              <p className="text-white/90 leading-relaxed">
                 Konfirmera din bokning direkt och få bekräftelse via e-post
               </p>
             </CardContent>
