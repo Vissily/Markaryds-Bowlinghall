@@ -35,7 +35,7 @@ const Activities = () => {
       title: "Dart",
       description: "Elektroniska darttavlor för tävlingar och roligt spel",
       icon: "🎯",
-      image: "/lovable-uploads/acb6fd9c-bfb2-4286-9043-98c4bb3ad6a2.png"
+      image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png"
     },
     {
       title: "Shuffleboard",
