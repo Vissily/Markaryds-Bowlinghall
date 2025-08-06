@@ -36,7 +36,7 @@ const PriceManager = () => {
   });
   const { toast } = useToast();
 
-  const categories = ['Bowling', 'Padel', 'Minigolf', 'Dart', 'Shuffleboard', 'Mat & Dryck', 'Övrigt'];
+  const categories = ['Bowling', 'Padel', 'Minigolf', 'Dart', 'Shuffleboard', 'Alkohol', 'Mat & Dryck', 'Övrigt'];
 
   useEffect(() => {
     fetchPriceItems();
