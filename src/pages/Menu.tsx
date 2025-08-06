@@ -4,8 +4,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MenuSection from "@/components/MenuSection";
 import { ChefHat, Clock, Users, Star } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const Menu = () => {
+  // SEO optimization for menu page
+  useSEO({
+    title: "Meny & Priser - Markaryds Bowlinghall | Mat & Dryck",
+    description: "Se vår meny med pizza, hamburgare, tilltugg och dryck. Specialpris på fajitasbuffé för grupper. Beställ mat till din bowling- eller padelupplevelse i Markaryd.",
+    keywords: "meny, mat, pizza, hamburgare, fajitas, buffé, dryck, markaryd bowlinghall, restaurang",
+    canonical: "https://markarydsbowling.se/menu"
+  });
   const specialOffer = {
     title: "FAJITASBUFFÉ",
     price: "145 / 95",

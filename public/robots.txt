@@ -1,14 +1,18 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://markarydsbowling.se/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin
+Disallow: /auth
+
+# Allow important pages  
+Allow: /
+Allow: /menu
+Allow: /events
+Allow: /livestream
+
+# Crawl delay
+Crawl-delay: 1
