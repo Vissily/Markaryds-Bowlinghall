@@ -40,7 +40,8 @@ const Hours = () => {
     return days[dayOfWeek];
   };
 
-  const formatTime = (time: string) => {
+  const formatTime = (time: string | null) => {
+    if (!time) return '';
     if (time === '24:00') return '00:00';
     // Remove seconds from time format (e.g., "10:00:00" -> "10:00")
     return time.substring(0, 5);
