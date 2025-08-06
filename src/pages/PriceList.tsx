@@ -87,18 +87,20 @@ const PriceList = () => {
   // Sort items within each category - members first, then non-members
   Object.keys(groupedItems).forEach(category => {
     groupedItems[category].sort((a, b) => {
-      const aIsMember = a.name.toLowerCase().includes('medlem');
-      const bIsMember = b.name.toLowerCase().includes('medlem');
+      const aIsMember = a.name.toLowerCase().includes('medlem') && !a.name.toLowerCase().includes('ej medlem');
+      const bIsMember = b.name.toLowerCase().includes('medlem') && !b.name.toLowerCase().includes('ej medlem');
       const aIsNonMember = a.name.toLowerCase().includes('ej medlem');
       const bIsNonMember = b.name.toLowerCase().includes('ej medlem');
       
-      // Members first, then non-members, then others
+      // Members first
       if (aIsMember && !bIsMember) return -1;
       if (!aIsMember && bIsMember) return 1;
-      if (aIsNonMember && !bIsNonMember && !bIsMember) return 1;
-      if (!aIsNonMember && bIsNonMember && !aIsMember) return -1;
       
-      // If both are members or both are non-members, sort by sort_order
+      // Then non-members
+      if (aIsNonMember && !bIsNonMember && !bIsMember) return -1;
+      if (!aIsNonMember && bIsNonMember && !aIsMember) return 1;
+      
+      // If same type, sort by sort_order
       return a.sort_order - b.sort_order;
     });
   });
