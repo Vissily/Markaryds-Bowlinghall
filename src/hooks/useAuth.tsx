@@ -9,7 +9,7 @@ interface AuthContextType {
   userRole: string | null;
   loading: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signIn: (username: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -96,10 +96,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (username: string, password: string) => {
     try {
       // Check for hardcoded admin credentials
-      if (email === 'admin' && password === 'admin') {
+      if (username === 'admin' && password === 'admin') {
         // Create a mock user for the admin
         const adminUser = {
           id: 'admin-user-id',
@@ -121,7 +121,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: username,
         password,
       });
       

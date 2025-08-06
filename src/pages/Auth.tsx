@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,14 +26,14 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await signIn(email, password);
+    await signIn(username, password);
     setIsSubmitting(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await signUp(email, password, displayName);
+    await signUp(username, password, displayName);
     setIsSubmitting(false);
   };
 
@@ -68,16 +68,16 @@ const Auth = () => {
               <TabsContent value="signin" className="space-y-4">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      E-post
+                    <Label htmlFor="signin-username" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Användarnamn
                     </Label>
                     <Input
-                      id="signin-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="din@email.se"
+                      id="signin-username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="admin"
                       required
                     />
                   </div>
