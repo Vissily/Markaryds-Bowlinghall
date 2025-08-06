@@ -12,8 +12,8 @@ const Header = () => {
     { name: "Meny", href: "/menu" },
     { name: "Livestream", href: "/livestream" },
     { name: "Evenemang", href: "/events" },
-    { name: "Öppettider", href: "#hours" },
-    { name: "Kontakt", href: "#contact" },
+    { name: "Öppettider", href: "#oppettider" },
+    { name: "Kontakt", href: "#kontakt" },
   ];
 
   return (
@@ -50,7 +50,7 @@ const Header = () => {
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
-              <span>Mån-Fre 10-21</span>
+              <span>Mån-Tis 10-20, Ons-Tors 10-21</span>
             </div>
           </div>
 
@@ -92,7 +92,7 @@ const Header = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />
-                <span>Mån-Fre 10-21</span>
+                <span>Mån-Tis 10-20, Ons-Tors 10-21</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
