@@ -243,48 +243,48 @@ const AdminSimple = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="container mx-auto px-4 py-4 lg:py-8">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6 lg:mb-8 space-y-4 lg:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold">Admin Panel</h1>
-            <p className="text-muted-foreground">Hantera hemsida, meny och öppettider</p>
+            <h1 className="text-2xl lg:text-3xl font-bold">Admin Panel</h1>
+            <p className="text-sm lg:text-base text-muted-foreground">Hantera hemsida, meny och öppettider</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-          <Button variant="outline" asChild>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mb-6 lg:mb-8">
+          <Button variant="outline" asChild size="sm" className="w-full">
             <a href="/">Se startsidan</a>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild size="sm" className="w-full">
             <a href="/menu">Se menyn</a>
           </Button>
-          <Button variant="outline" onClick={signOut}>
+          <Button variant="outline" onClick={signOut} size="sm" className="w-full sm:col-span-2 lg:col-span-1">
             <LogOut className="w-4 h-4 mr-2" />
             Logga ut
           </Button>
         </div>
 
-        <Tabs defaultValue="analytics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="analytics">Statistik</TabsTrigger>
-            <TabsTrigger value="content">Hemsida</TabsTrigger>
-            <TabsTrigger value="gallery">Galleri</TabsTrigger>
-            <TabsTrigger value="menu">Meny</TabsTrigger>
-            <TabsTrigger value="hours">Öppettider</TabsTrigger>
-            <TabsTrigger value="events">Evenemang</TabsTrigger>
-            <TabsTrigger value="livestreams">Livestream</TabsTrigger>
+        <Tabs defaultValue="analytics" className="space-y-4 lg:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 h-auto lg:h-10 gap-1 p-1">
+            <TabsTrigger value="analytics" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Statistik</TabsTrigger>
+            <TabsTrigger value="content" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Hemsida</TabsTrigger>
+            <TabsTrigger value="gallery" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Galleri</TabsTrigger>
+            <TabsTrigger value="menu" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Meny</TabsTrigger>
+            <TabsTrigger value="hours" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Öppet</TabsTrigger>
+            <TabsTrigger value="events" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Event</TabsTrigger>
+            <TabsTrigger value="livestreams" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Stream</TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics">
             <AnalyticsDashboard />
           </TabsContent>
 
-          <TabsContent value="content">
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle>Startsida - Hero-sektion</CardTitle>
+          <TabsContent value="content" className="mt-4 lg:mt-6">
+            <Card className="max-w-none lg:max-w-2xl lg:mx-auto">
+              <CardHeader className="px-4 lg:px-6">
+                <CardTitle className="text-lg lg:text-xl">Startsida - Hero-sektion</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 lg:space-y-6 px-4 lg:px-6">
                 <div className="space-y-2">
                   <Label htmlFor="title">Huvudtitel</Label>
                   <Input
@@ -316,7 +316,7 @@ const AdminSimple = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="button_text">Knapptext</Label>
                     <Input
@@ -339,7 +339,7 @@ const AdminSimple = () => {
                 </div>
 
                 <div className="flex justify-end pt-4">
-                  <Button onClick={saveContent} disabled={saving}>
+                  <Button onClick={saveContent} disabled={saving} className="w-full sm:w-auto">
                     <Save className="w-4 h-4 mr-2" />
                     {saving ? 'Sparar...' : 'Spara ändringar'}
                   </Button>
@@ -348,30 +348,30 @@ const AdminSimple = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="gallery">
+          <TabsContent value="gallery" className="mt-4 lg:mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Hantera Galleri</CardTitle>
+              <CardHeader className="px-4 lg:px-6">
+                <CardTitle className="text-lg lg:text-xl">Hantera Galleri</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 lg:px-6">
                 <GalleryManager />
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="menu">
+          <TabsContent value="menu" className="mt-4 lg:mt-6">
             <MenuManager />
           </TabsContent>
 
-          <TabsContent value="hours">
+          <TabsContent value="hours" className="mt-4 lg:mt-6">
             <OpeningHoursManager />
           </TabsContent>
 
-          <TabsContent value="events">
+          <TabsContent value="events" className="mt-4 lg:mt-6">
             <EventsManager />
           </TabsContent>
 
-          <TabsContent value="livestreams">
+          <TabsContent value="livestreams" className="mt-4 lg:mt-6">
             <LivestreamsManager />
           </TabsContent>
         </Tabs>
