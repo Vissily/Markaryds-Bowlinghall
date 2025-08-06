@@ -130,12 +130,6 @@ const Hours = () => {
                   <div key={hour.day_of_week} className="flex justify-between items-start py-3 border-b border-border last:border-b-0">
                     <div>
                       <div className="font-semibold text-foreground">{getDayName(hour.day_of_week)}</div>
-                      {(hour.day_of_week === 5 || hour.day_of_week === 6) && (
-                        <div className="text-sm text-muted-foreground flex items-center mt-1">
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                          Bowlingbanorna stänger 22:00
-                        </div>
-                      )}
                     </div>
                     <div className="text-right">
                       <div className="font-mono text-foreground">
