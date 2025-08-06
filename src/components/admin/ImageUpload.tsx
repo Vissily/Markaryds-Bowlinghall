@@ -63,21 +63,29 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
   };
 
   const handleUpload = async () => {
+    console.log('Upload button clicked', { selectedFile, title });
+    
     if (!selectedFile || !title.trim()) {
+      console.log('Validation failed:', { hasFile: !!selectedFile, hasTitle: !!title.trim() });
       toast({
         title: "Fyll i alla fält",
-        description: "Titel och bild krävs",
+        description: "Titel och fil krävs",
         variant: "destructive"
       });
       return;
     }
 
+    console.log('Starting upload process...');
     setIsUploading(true);
 
     try {
       // Get current user
+      console.log('Getting current user...');
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('Current user:', user?.id);
+      
       if (!user) {
+        console.log('No user found');
         toast({
           title: "Du måste vara inloggad",
           description: "Logga in för att ladda upp filer",
