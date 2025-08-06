@@ -12,6 +12,7 @@ import { Save, LogOut } from 'lucide-react';
 import MenuManager from '@/components/admin/MenuManager';
 import OpeningHoursManager from '@/components/admin/OpeningHoursManager';
 import EventsManager from '@/components/admin/EventsManager';
+import LivestreamsManager from '@/components/admin/LivestreamsManager';
 
 interface SiteContent {
   title?: string;
@@ -201,11 +202,12 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="content">Hemsida</TabsTrigger>
             <TabsTrigger value="menu">Meny</TabsTrigger>
             <TabsTrigger value="hours">Öppettider</TabsTrigger>
             <TabsTrigger value="events">Evenemang</TabsTrigger>
+            <TabsTrigger value="livestreams">Livestream</TabsTrigger>
           </TabsList>
 
           <TabsContent value="content">
@@ -287,6 +289,10 @@ const AdminSimple = () => {
 
           <TabsContent value="events">
             <EventsManager />
+          </TabsContent>
+
+          <TabsContent value="livestreams">
+            <LivestreamsManager />
           </TabsContent>
         </Tabs>
       </div>

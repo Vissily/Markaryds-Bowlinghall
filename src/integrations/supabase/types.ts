@@ -71,6 +71,57 @@ export type Database = {
         }
         Relationships: []
       }
+      livestreams: {
+        Row: {
+          created_at: string
+          description: string | null
+          featured: boolean | null
+          id: string
+          is_main_stream: boolean | null
+          scheduled_end: string | null
+          scheduled_start: string | null
+          status: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          viewer_count: number | null
+          youtube_channel_id: string | null
+          youtube_video_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          is_main_stream?: boolean | null
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          viewer_count?: number | null
+          youtube_channel_id?: string | null
+          youtube_video_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          is_main_stream?: boolean | null
+          scheduled_end?: string | null
+          scheduled_start?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          viewer_count?: number | null
+          youtube_channel_id?: string | null
+          youtube_video_id?: string | null
+        }
+        Relationships: []
+      }
       menu_categories: {
         Row: {
           created_at: string
