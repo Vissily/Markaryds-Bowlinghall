@@ -317,12 +317,30 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="title">Titel *</Label>
-          <Input
-            id="title"
-            value={formData.title}
-            onChange={(e) => updateField('title', e.target.value)}
-            required
-          />
+          <div className="flex gap-2">
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => updateField('title', e.target.value)}
+              required
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => updateField('title', 'Bowling Bana 1-4')}
+            >
+              Bana 1-4
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => updateField('title', 'Bowling Bana 4-8')}
+            >
+              Bana 4-8
+            </Button>
+          </div>
         </div>
         <div>
           <Label htmlFor="status">Status</Label>
