@@ -382,6 +382,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      secure_promote_to_admin: {
+        Args: { _target_user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "user"

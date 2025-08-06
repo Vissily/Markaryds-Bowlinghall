@@ -107,18 +107,44 @@ const AdminSimple = () => {
 
   const promoteToAdmin = async () => {
     try {
-      const { error } = await supabase.rpc('promote_first_user_to_admin');
-      if (error) throw error;
-      
-      toast({
-        title: "Admin-rättigheter",
-        description: "Första användaren fick admin-rättigheter",
+      if (!user?.id) {
+        toast({
+          title: "Fel",
+          description: "Användare inte inloggad",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.rpc('secure_promote_to_admin', { 
+        _target_user_id: user.id 
       });
       
-      // Reload page to check new role
-      window.location.reload();
+      if (error) throw error;
+      
+      const result = data as { success: boolean; message: string } | null;
+      
+      if (result?.success) {
+        toast({
+          title: "Admin-rättigheter",
+          description: result.message,
+        });
+        // Reload page to check new role
+        window.location.reload();
+      } else {
+        toast({
+          title: "Fel",
+          description: result?.message || "Kunde inte bevilja admin-rättigheter",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error('Error promoting user:', error);
+      toast({
+        title: "Fel",
+        description: "Ett fel uppstod vid befordran",
+        variant: "destructive",
+      });
     }
   };
 

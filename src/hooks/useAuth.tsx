@@ -39,10 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
           }, 0);
         } else {
-          // Only clear state if it's not the hardcoded admin user
-          if (user?.id !== 'admin-user-id') {
-            setUserRole(null);
-          }
+          setUserRole(null);
         }
         
         setLoading(false);
@@ -88,24 +85,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (username: string, password: string) => {
     try {
-      // Check for hardcoded admin credentials
-      if (username === 'admin' && password === 'admin') {
-        // Create a mock user for the admin
-        const adminUser = {
-          id: 'admin-user-id',
-          email: 'admin@markarydsbowling.se',
-          user_metadata: { display_name: 'Admin' }
-        } as any;
-        
-        setUser(adminUser);
-        setUserRole('admin');
-        setLoading(false);
-        
-        console.log('Admin login successful');
-        window.location.href = '/admin';
-        return { error: null };
-      }
-
       const { data, error } = await supabase.auth.signInWithPassword({
         email: username,
         password,
@@ -128,16 +107,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
-      // Check if it's the hardcoded admin user
-      if (user?.id === 'admin-user-id') {
-        setUser(null);
-        setUserRole(null);
-        setSession(null);
-        console.log('Admin logout successful');
-        window.location.href = '/';
-        return;
-      }
-
       await supabase.auth.signOut({ scope: 'global' });
       window.location.href = '/';
     } catch (error) {
