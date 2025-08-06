@@ -63,11 +63,19 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Button variant="hero" size="xl" className="group" asChild>
-              <a href="#booking">
-                Boka Nu
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
+            <Button 
+              variant="hero" 
+              size="xl" 
+              className="group" 
+              onClick={() => {
+                const bookingSection = document.getElementById('booking');
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              Boka Nu
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="outline" size="xl" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white hover:text-primary" asChild>
               <a href="#activities">

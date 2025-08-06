@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, ExternalLink, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 
 const BookingSection = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -69,7 +69,7 @@ const BookingSection = () => {
                 <ExternalLink className="w-5 h-5 ml-3" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl w-full h-[80vh] p-0">
+            <DialogContent className="max-w-5xl w-[95vw] h-[85vh] p-0">
               <DialogHeader className="p-6 border-b">
                 <div className="flex items-center justify-between">
                   <DialogTitle className="text-2xl font-bold">Boka Din Aktivitet</DialogTitle>
@@ -82,14 +82,20 @@ const BookingSection = () => {
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
+                <DialogDescription className="sr-only">
+                  Bokningssystem för Markaryds Bowlinghall aktiviteter
+                </DialogDescription>
               </DialogHeader>
-              <div className="flex-1 p-0">
-                <iframe
-                  src="https://secure.meriq.com/markaryd/"
-                  className="w-full h-full border-0"
-                  title="Markaryds Bowling Booking System"
-                  loading="lazy"
-                />
+              <div className="flex-1 relative">
+                {isBookingOpen && (
+                  <iframe
+                    src="https://secure.meriq.com/markaryd/"
+                    className="w-full h-[calc(85vh-120px)] border-0"
+                    title="Markaryds Bowling Booking System"
+                    allow="payment; camera; microphone"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+                  />
+                )}
               </div>
             </DialogContent>
           </Dialog>
