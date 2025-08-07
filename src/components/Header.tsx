@@ -11,7 +11,7 @@ const Header = () => {
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
     { name: "Livestream", href: "/livestream" },
-    { name: "Livescore", href: "/livescore", target: "_blank" },
+    { name: "Livescore", href: "https://livescoring.lanetalk.com/viking/index.html?uuid=74a4d364-b1cc-11e4-ab94-0050569337ac", target: "_blank" },
     { name: "Evenemang", href: "/events" },
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Kontakt", href: "/#kontakt" },

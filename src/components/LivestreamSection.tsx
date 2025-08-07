@@ -222,7 +222,7 @@ const LivestreamSection = () => {
           </p>
           <div className="mt-6">
             <a 
-              href="/livescore" 
+              href="https://livescoring.lanetalk.com/viking/index.html?uuid=74a4d364-b1cc-11e4-ab94-0050569337ac"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-6 py-3 text-lg font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
