@@ -19,24 +19,24 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0">
             <img 
               src="/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png" 
               alt="Markaryds Bowling" 
-              className="h-8 sm:h-10 lg:h-12 w-auto"
+              className="h-8 sm:h-10 lg:h-12 xl:h-14 w-auto"
             />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8 xl:space-x-10 2xl:space-x-12">
             {navigation.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium"
+                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
               >
                 {item.name}
               </a>
@@ -44,23 +44,23 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-sm text-muted-foreground">
-            <div className="flex items-center space-x-1">
-              <Phone className="w-4 h-4" />
-              <span>0730-740 600</span>
+          <div className="hidden xl:flex items-center space-x-6 2xl:space-x-8 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-2">
+              <Phone className="w-4 h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">0730-740 600</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <Clock className="w-4 h-4" />
-              <span className="truncate max-w-[200px] 2xl:max-w-none">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+            <div className="flex items-center space-x-2">
+              <Clock className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate max-w-[180px] 2xl:max-w-[250px]">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
             </div>
           </div>
 
           {/* Book Button & Mobile Menu */}
-          <div className="flex items-center space-x-1 sm:space-x-4">
+          <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-6">
             <Button 
               variant="hero" 
               size="sm" 
-              className="hidden sm:flex lg:size-lg"
+              className="hidden sm:flex lg:text-sm xl:text-base lg:px-4 xl:px-6"
               asChild
             >
               <a 
