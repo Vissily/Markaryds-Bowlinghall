@@ -11,7 +11,7 @@ const Header = () => {
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
     { name: "Livestream", href: "/livestream" },
-    { name: "Livescore", href: "https://livescoring.lanetalk.com/viking/index.html?uuid=74a4d364-b1cc-11e4-ab94-0050569337ac", target: "_blank" },
+    { name: "Livescore", href: "/livescore" },
     { name: "Evenemang", href: "/events" },
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Kontakt", href: "/#kontakt" },
@@ -36,8 +36,6 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.target}
-                rel={item.target ? "noopener noreferrer" : undefined}
                 className="text-foreground hover:text-primary transition-colors font-medium"
               >
                 {item.name}
@@ -93,8 +91,6 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.target}
-                rel={item.target ? "noopener noreferrer" : undefined}
                 className="text-foreground hover:text-primary transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
