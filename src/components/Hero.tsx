@@ -1,12 +1,65 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, Calendar } from "lucide-react";
 import heroImage from "@/assets/hero-bowling.jpg";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/integrations/supabase/client";
+
+interface HeroVideo {
+  id: string;
+  title: string;
+  file_path: string;
+  mime_type: string;
+}
 
 const Hero = () => {
   const { content } = useSiteContent('hero');
+  const [heroVideos, setHeroVideos] = useState<HeroVideo[]>([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch hero videos from database
+  useEffect(() => {
+    const fetchHeroVideos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('gallery_images')
+          .select('id, title, file_path, mime_type')
+          .eq('show_in_hero', true)
+          .like('mime_type', 'video/%')
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Convert database videos to correct format with public URLs
+          const formattedVideos = data.map(video => ({
+            ...video,
+            file_path: supabase.storage.from('gallery-images').getPublicUrl(video.file_path).data.publicUrl
+          }));
+          setHeroVideos(formattedVideos);
+        }
+      } catch (error) {
+        console.error('Error fetching hero videos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroVideos();
+  }, []);
+
+  // Auto-rotate videos every 10 seconds if there are multiple videos
+  useEffect(() => {
+    if (heroVideos.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentVideoIndex((prev) => (prev + 1) % heroVideos.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [heroVideos.length]);
 
   // Default values if content is not loaded yet
   const title = content?.title || 'Markaryds Bowlinghall';
@@ -24,26 +77,51 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video with Fallback */}
       <div className="absolute inset-0 z-0">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.log('Video failed to load, showing fallback image');
-            const target = e.target as HTMLVideoElement;
-            if (target.parentElement) {
-              target.parentElement.style.backgroundImage = `url(${heroImage})`;
-              target.parentElement.style.backgroundSize = 'cover';
-              target.parentElement.style.backgroundPosition = 'center';
-              target.style.display = 'none';
-            }
-          }}
-        >
-          <source src="https://www.markarydsbowling.se/wp-content/uploads/2022/10/markarydsbowling.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {!loading && heroVideos.length > 0 ? (
+          // Show videos from gallery
+          heroVideos.map((video, index) => (
+            <video 
+              key={video.id}
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+              className={`w-full h-full object-cover transition-opacity duration-1000 ${
+                index === currentVideoIndex ? 'opacity-100' : 'opacity-0 absolute inset-0'
+              }`}
+              onError={(e) => {
+                console.log('Hero video failed to load:', video.title);
+                const target = e.target as HTMLVideoElement;
+                target.style.display = 'none';
+              }}
+            >
+              <source src={video.file_path} type={video.mime_type} />
+              Your browser does not support the video tag.
+            </video>
+          ))
+        ) : (
+          // Fallback to default video or image
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              console.log('Default video failed to load, showing fallback image');
+              const target = e.target as HTMLVideoElement;
+              if (target.parentElement) {
+                target.parentElement.style.backgroundImage = `url(${heroImage})`;
+                target.parentElement.style.backgroundSize = 'cover';
+                target.parentElement.style.backgroundPosition = 'center';
+                target.style.display = 'none';
+              }
+            }}
+          >
+            <source src="https://www.markarydsbowling.se/wp-content/uploads/2022/10/markarydsbowling.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 

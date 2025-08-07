@@ -80,6 +80,7 @@ export type Database = {
           id: string
           is_featured: boolean | null
           mime_type: string | null
+          show_in_hero: boolean | null
           show_in_slideshow: boolean | null
           sort_order: number | null
           title: string
@@ -94,6 +95,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           mime_type?: string | null
+          show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
           sort_order?: number | null
           title: string
@@ -108,6 +110,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           mime_type?: string | null
+          show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
           sort_order?: number | null
           title?: string

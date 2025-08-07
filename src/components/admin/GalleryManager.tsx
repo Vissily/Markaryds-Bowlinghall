@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff, Download } from "lucide-react";
+import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff, Download, Play, PlayCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import MediaUpload from "./ImageUpload";
@@ -18,6 +18,7 @@ interface GalleryImage {
   mime_type: string | null;
   is_featured: boolean;
   show_in_slideshow: boolean;
+  show_in_hero: boolean;
   sort_order: number;
   created_at: string;
 }
@@ -118,6 +119,33 @@ const GalleryManager = () => {
       toast({
         title: "Fel vid uppdatering",
         description: "Kunde inte uppdatera slideshow-status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleHero = async (id: string, currentHero: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('gallery_images')
+        .update({ show_in_hero: !currentHero })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setImages(images.map(img => 
+        img.id === id ? { ...img, show_in_hero: !currentHero } : img
+      ));
+
+      toast({
+        title: currentHero ? "Media borttagen från hero" : "Media tillagd i hero",
+        description: currentHero ? "Filen visas inte längre på framsidan" : "Filen visas nu på framsidan"
+      });
+    } catch (error) {
+      console.error('Error toggling hero:', error);
+      toast({
+        title: "Fel vid uppdatering",
+        description: "Kunde inte uppdatera hero-status",
         variant: "destructive"
       });
     }
@@ -291,6 +319,12 @@ const GalleryManager = () => {
                         Slideshow
                       </Badge>
                     )}
+                    {image.show_in_hero && (
+                      <Badge className="absolute bottom-2 left-2" variant="default">
+                        <PlayCircle className="w-3 h-3 mr-1" />
+                        Hero
+                      </Badge>
+                    )}
                   </div>
                   <CardContent className="p-3">
                     {editingId === image.id ? (
@@ -350,6 +384,16 @@ const GalleryManager = () => {
                           >
                             {image.show_in_slideshow ? <MonitorOff className="w-3 h-3" /> : <Monitor className="w-3 h-3" />}
                           </Button>
+                          {image.mime_type?.startsWith('video/') && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleToggleHero(image.id, image.show_in_hero)}
+                              title={image.show_in_hero ? "Ta bort från hero" : "Lägg till i hero"}
+                            >
+                              {image.show_in_hero ? <Play className="w-3 h-3" /> : <PlayCircle className="w-3 h-3" />}
+                            </Button>
+                          )}
                           <Button
                             size="sm"
                             variant="outline"
