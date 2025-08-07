@@ -31,7 +31,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navigation.map((item) => (
               <a
                 key={item.name}
@@ -44,14 +44,14 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden xl:flex items-center space-x-6 text-sm text-muted-foreground">
+          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-sm text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Phone className="w-4 h-4" />
               <span>0730-740 600</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
-              <span className="truncate">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+              <span className="truncate max-w-[200px] 2xl:max-w-none">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
             </div>
           </div>
 
