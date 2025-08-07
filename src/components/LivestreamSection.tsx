@@ -223,6 +223,8 @@ const LivestreamSection = () => {
           <div className="mt-6">
             <a 
               href="/livescore" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center px-6 py-3 text-lg font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
             >
               Se Live Resultat
