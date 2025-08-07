@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
+import Livescore from "./pages/Livescore";
 import Events from "./pages/Events";
 import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/livestream" element={<Livestream />} />
+            <Route path="/livescore" element={<Livescore />} />
             <Route path="/events" element={<Events />} />
             <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />

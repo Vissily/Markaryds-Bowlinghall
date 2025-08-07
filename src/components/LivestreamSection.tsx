@@ -218,6 +218,32 @@ const LivestreamSection = () => {
             Livestream
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Följ med våra bowlingmatcher och turneringar live. Vi streamar regelbundet från våra banor.
+          </p>
+          <div className="mt-6">
+            <a 
+              href="/livescore" 
+              className="inline-flex items-center px-6 py-3 text-lg font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+            >
+              Se Live Resultat
+            </a>
+          </div>
+        </div>
+        
+        <div className="mb-16">
+          <h2 className="text-2xl font-bold text-center mb-8">Live Resultat</h2>
+          <div className="w-full h-[600px] border border-border rounded-lg overflow-hidden">
+            <iframe
+              src="https://livescoring.lanetalk.com/viking/index.html?uuid=74a4d364-b1cc-11e4-ab94-0050569337ac"
+              className="w-full h-full"
+              title="Live Bowling Resultat"
+              allowFullScreen
+            />
+          </div>
+        </div>
+
+        <div className="text-center mb-16">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Följ våra turneringar och matcher live från Markaryds Bowlinghall
           </p>
         </div>
