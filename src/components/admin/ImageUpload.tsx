@@ -14,62 +14,83 @@ interface MediaUploadProps {
 
 const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [fileMetadata, setFileMetadata] = useState<{ title: string; description: string; previewUrl?: string }[]>([]);
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
 
-    // Validate file type - allow images, videos, and PDFs
+    // Validate file types - allow images, videos, and PDFs
     const allowedTypes = [
       'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
       'video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/webm',
       'application/pdf'
     ];
     
-    if (!allowedTypes.includes(file.type)) {
+    const validFiles: File[] = [];
+    const invalidFiles: string[] = [];
+
+    files.forEach(file => {
+      if (!allowedTypes.includes(file.type)) {
+        invalidFiles.push(file.name);
+        return;
+      }
+
+      // Validate file size (max 50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        toast({
+          title: "Filen är för stor",
+          description: `${file.name} - Max filstorlek är 50MB`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    if (invalidFiles.length > 0) {
       toast({
-        title: "Fel filtyp",
-        description: "Endast bilder, videor (MP4, MOV, AVI, WebM) och PDF-filer är tillåtna",
+        title: "Ogiltiga filtyper",
+        description: `Dessa filer stöds inte: ${invalidFiles.join(', ')}`,
         variant: "destructive"
       });
-      return;
     }
 
-    // Validate file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      toast({
-        title: "Filen är för stor",
-        description: "Max filstorlek är 50MB",
-        variant: "destructive"
-      });
-      return;
-    }
+    if (validFiles.length === 0) return;
 
-    setSelectedFile(file);
-    setTitle(file.name.replace(/\.[^/.]+$/, "")); // Remove extension
+    setSelectedFiles(validFiles);
 
-    // Create preview URL for images and videos
-    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null); // No preview for PDFs
-    }
+    // Create metadata for each file
+    const metadata = validFiles.map(file => {
+      const baseMetadata = {
+        title: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
+        description: ""
+      };
+
+      // Create preview URL for images and videos
+      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+        const url = URL.createObjectURL(file);
+        return { ...baseMetadata, previewUrl: url };
+      }
+
+      return baseMetadata;
+    });
+
+    setFileMetadata(metadata);
   };
 
   const handleUpload = async () => {
-    console.log('Upload button clicked', { selectedFile, title });
+    console.log('Upload button clicked', { selectedFiles: selectedFiles.length, fileMetadata });
     
-    if (!selectedFile || !title.trim()) {
-      console.log('Validation failed:', { hasFile: !!selectedFile, hasTitle: !!title.trim() });
+    // Validate that all files have titles
+    const hasEmptyTitles = fileMetadata.some(meta => !meta.title.trim());
+    if (selectedFiles.length === 0 || hasEmptyTitles) {
       toast({
         title: "Fyll i alla fält",
-        description: "Titel och fil krävs",
+        description: "Alla filer måste ha en titel",
         variant: "destructive"
       });
       return;
@@ -94,88 +115,88 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
         return;
       }
 
-      // Create unique filename
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const uploadPromises = selectedFiles.map(async (file, index) => {
+        const metadata = fileMetadata[index];
+        
+        // Create unique filename
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}_${index}.${fileExt}`;
 
-      console.log('Starting file upload:', {
-        fileName,
-        fileSize: selectedFile.size,
-        fileType: selectedFile.type,
-        bucketId: 'gallery-images'
-      });
-
-      // Upload file to storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('gallery-images')
-        .upload(fileName, selectedFile);
-
-      console.log('Upload result:', { uploadData, uploadError });
-
-      if (uploadError) {
-        console.error('Upload error details:', uploadError);
-        throw uploadError;
-      }
-
-      // Save metadata to database
-      console.log('Saving metadata to database:', {
-        title: title.trim(),
-        description: description.trim() || null,
-        file_path: uploadData.path,
-        file_size: selectedFile.size,
-        mime_type: selectedFile.type,
-        uploaded_by: user.id
-      });
-
-      const { error: dbError } = await supabase
-        .from('gallery_images')
-        .insert({
-          title: title.trim(),
-          description: description.trim() || null,
-          file_path: uploadData.path,
-          file_size: selectedFile.size,
-          mime_type: selectedFile.type,
-          uploaded_by: user.id
+        console.log('Starting file upload:', {
+          fileName,
+          fileSize: file.size,
+          fileType: file.type,
+          bucketId: 'gallery-images'
         });
 
-      if (dbError) {
-        console.error('Database error details:', dbError);
-        throw dbError;
-      }
+        // Upload file to storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('gallery-images')
+          .upload(fileName, file);
 
-      toast({
-        title: "Uppladdning lyckades!",
-        description: "Filen har lagts till i galleriet"
+        if (uploadError) {
+          console.error('Upload error details:', uploadError);
+          throw new Error(`Upload failed for ${file.name}: ${uploadError.message}`);
+        }
+
+        // Save metadata to database
+        const { error: dbError } = await supabase
+          .from('gallery_images')
+          .insert({
+            title: metadata.title.trim(),
+            description: metadata.description.trim() || null,
+            file_path: uploadData.path,
+            file_size: file.size,
+            mime_type: file.type,
+            uploaded_by: user.id
+          });
+
+        if (dbError) {
+          console.error('Database error details:', dbError);
+          throw new Error(`Database save failed for ${file.name}: ${dbError.message}`);
+        }
+
+        return { success: true, fileName: file.name };
       });
 
-      // Reset form
-      setSelectedFile(null);
-      setTitle("");
-      setDescription("");
-      setPreviewUrl(null);
+      const results = await Promise.allSettled(uploadPromises);
       
-      // Reset file input
-      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+      const successful = results.filter(result => result.status === 'fulfilled').length;
+      const failed = results.filter(result => result.status === 'rejected').length;
 
-      onUploadComplete?.();
+      if (successful > 0) {
+        toast({
+          title: "Uppladdning lyckades!",
+          description: `${successful} ${successful === 1 ? 'fil' : 'filer'} har lagts till i galleriet${failed > 0 ? `, ${failed} misslyckades` : ''}`
+        });
+      }
+
+      if (failed > 0 && successful === 0) {
+        toast({
+          title: "Uppladdning misslyckades",
+          description: "Alla filer misslyckades att laddas upp",
+          variant: "destructive"
+        });
+      }
+
+      // Reset form if at least one file succeeded
+      if (successful > 0) {
+        setSelectedFiles([]);
+        setFileMetadata([]);
+        
+        // Reset file input
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+
+        onUploadComplete?.();
+      }
 
     } catch (error: any) {
       console.error('Upload error:', error);
       
-      let errorMessage = "Något gick fel. Försök igen.";
-      
-      if (error?.message?.includes('Payload too large')) {
-        errorMessage = "Filen är för stor. Max 50MB tillåten.";
-      } else if (error?.message?.includes('Invalid file type')) {
-        errorMessage = "Filtypen stöds inte.";
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-      
       toast({
         title: "Uppladdning misslyckades",
-        description: errorMessage,
+        description: error.message || "Något gick fel. Försök igen.",
         variant: "destructive"
       });
     } finally {
@@ -184,13 +205,34 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
   };
 
   const clearSelection = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setTitle("");
-    setDescription("");
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
+    // Clean up preview URLs
+    fileMetadata.forEach(meta => {
+      if (meta.previewUrl) {
+        URL.revokeObjectURL(meta.previewUrl);
+      }
+    });
+    
+    setSelectedFiles([]);
+    setFileMetadata([]);
+  };
+
+  const removeFile = (index: number) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    const newMetadata = fileMetadata.filter((_, i) => i !== index);
+    
+    // Clean up preview URL for removed file
+    if (fileMetadata[index]?.previewUrl) {
+      URL.revokeObjectURL(fileMetadata[index].previewUrl!);
     }
+    
+    setSelectedFiles(newFiles);
+    setFileMetadata(newMetadata);
+  };
+
+  const updateFileMetadata = (index: number, field: 'title' | 'description', value: string) => {
+    const newMetadata = [...fileMetadata];
+    newMetadata[index] = { ...newMetadata[index], [field]: value };
+    setFileMetadata(newMetadata);
   };
 
   return (
@@ -203,101 +245,114 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="file-upload">Välj fil (bilder, videor, PDF - max 50MB)</Label>
+          <Label htmlFor="file-upload">Välj filer (bilder, videor, PDF - max 50MB per fil)</Label>
           <Input
             id="file-upload"
             type="file"
             accept="image/*,video/*,.pdf"
             onChange={handleFileSelect}
             disabled={isUploading}
+            multiple
           />
         </div>
 
-        {previewUrl && selectedFile && (
-          <div className="relative">
-            {selectedFile.type.startsWith('image/') && (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-32 object-cover rounded border"
-              />
-            )}
-            {selectedFile.type.startsWith('video/') && (
-              <video
-                src={previewUrl}
-                className="w-full h-32 object-cover rounded border"
-                controls
-              />
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearSelection}
-              className="absolute top-2 right-2"
-              disabled={isUploading}
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-
-        {selectedFile && selectedFile.type === 'application/pdf' && (
-          <div className="relative p-4 border rounded">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-red-100 rounded flex items-center justify-center">
-                <span className="text-red-600 text-xs font-bold">PDF</span>
-              </div>
-              <span className="text-sm">{selectedFile.name}</span>
+        {selectedFiles.length > 0 && (
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">{selectedFiles.length} {selectedFiles.length === 1 ? 'fil' : 'filer'} valda</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearSelection}
+                disabled={isUploading}
+              >
+                Rensa alla
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearSelection}
-              className="absolute top-2 right-2"
-              disabled={isUploading}
-            >
-              <X className="w-4 h-4" />
-            </Button>
+            
+            {selectedFiles.map((file, index) => (
+              <div key={index} className="border rounded p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    {/* Preview */}
+                    {fileMetadata[index]?.previewUrl && file.type.startsWith('image/') && (
+                      <img
+                        src={fileMetadata[index].previewUrl}
+                        alt="Preview"
+                        className="w-full h-24 object-cover rounded border mb-2"
+                      />
+                    )}
+                    {fileMetadata[index]?.previewUrl && file.type.startsWith('video/') && (
+                      <video
+                        src={fileMetadata[index].previewUrl}
+                        className="w-full h-24 object-cover rounded border mb-2"
+                        controls
+                      />
+                    )}
+                    {file.type === 'application/pdf' && (
+                      <div className="flex items-center gap-2 p-2 bg-red-50 rounded mb-2">
+                        <div className="w-6 h-6 bg-red-100 rounded flex items-center justify-center">
+                          <span className="text-red-600 text-xs font-bold">PDF</span>
+                        </div>
+                        <span className="text-sm">{file.name}</span>
+                      </div>
+                    )}
+                    
+                    {/* Metadata inputs */}
+                    <div className="space-y-2">
+                      <div>
+                        <Label htmlFor={`title-${index}`}>Titel</Label>
+                        <Input
+                          id={`title-${index}`}
+                          value={fileMetadata[index]?.title || ''}
+                          onChange={(e) => updateFileMetadata(index, 'title', e.target.value)}
+                          placeholder="Titel för filen..."
+                          disabled={isUploading}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`description-${index}`}>Beskrivning (valfri)</Label>
+                        <Textarea
+                          id={`description-${index}`}
+                          value={fileMetadata[index]?.description || ''}
+                          onChange={(e) => updateFileMetadata(index, 'description', e.target.value)}
+                          placeholder="Beskriv filen..."
+                          disabled={isUploading}
+                          rows={2}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeFile(index)}
+                    disabled={isUploading}
+                    className="ml-2"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
-
-        <div>
-          <Label htmlFor="title">Titel</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Titel för filen..."
-            disabled={isUploading}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="description">Beskrivning (valfri)</Label>
-          <Textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Beskriv filen..."
-            disabled={isUploading}
-            rows={3}
-          />
-        </div>
 
         <Button
           onClick={handleUpload}
-          disabled={!selectedFile || !title.trim() || isUploading}
+          disabled={selectedFiles.length === 0 || fileMetadata.some(meta => !meta.title.trim()) || isUploading}
           className="w-full"
         >
           {isUploading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Laddar upp...
+              Laddar upp {selectedFiles.length} {selectedFiles.length === 1 ? 'fil' : 'filer'}...
             </>
           ) : (
             <>
               <Upload className="w-4 h-4 mr-2" />
-              Ladda upp
+              Ladda upp {selectedFiles.length > 0 ? `${selectedFiles.length} ${selectedFiles.length === 1 ? 'fil' : 'filer'}` : 'filer'}
             </>
           )}
         </Button>
