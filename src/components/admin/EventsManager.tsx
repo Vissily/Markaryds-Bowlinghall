@@ -64,22 +64,29 @@ const emptyEvent: Omit<Event, 'id'> = {
 
   const loadEvents = async () => {
     try {
-      const [eventsRes, countsRes] = await Promise.all([
-        supabase.from('events').select('*').order('event_date', { ascending: true }),
-        supabase.from('event_interest_counts' as any).select('*')
-      ]);
+      const { data: eventsRes, error: eventsErr } = await supabase
+        .from('events')
+        .select('*')
+        .order('event_date', { ascending: true });
 
-      if (eventsRes.error) throw eventsRes.error;
-      const evts = eventsRes.data || [];
+      if (eventsErr) throw eventsErr;
+      const evts = eventsRes || [];
       setEvents(evts);
 
-      if (!countsRes.error && countsRes.data) {
-        const map: Record<string, number> = {};
-        (countsRes.data as any[]).forEach((row: any) => {
-          map[row.event_id] = Number(row.interest_count) || 0;
-        });
-        setInterestCounts(map);
-      }
+      // Fetch interest counts via secure RPC in parallel (admin-only)
+      const entries = await Promise.all(
+        evts.map(async (e) => {
+          try {
+            const { data, error } = await supabase.rpc('get_event_interest_count', { _event_id: e.id });
+            if (error) throw error;
+            return [e.id, Number(data) || 0] as const;
+          } catch (err) {
+            console.warn('Count fetch failed for event', e.id, err);
+            return [e.id, 0] as const;
+          }
+        })
+      );
+      setInterestCounts(Object.fromEntries(entries));
     } catch (error) {
       console.error('Error loading events:', error);
       toast.error('Kunde inte ladda evenemang');
