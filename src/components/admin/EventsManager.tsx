@@ -28,6 +28,7 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  has_big_screen: boolean;
   image_url: string | null;
 }
 
@@ -53,6 +54,7 @@ const emptyEvent: Omit<Event, 'id'> = {
   event_type: 'tournament',
   status: 'upcoming',
   featured: false,
+  has_big_screen: false,
   image_url: null
 };
 
@@ -108,6 +110,7 @@ const emptyEvent: Omit<Event, 'id'> = {
         event_type: (eventData as any).event_type || 'tournament',
         status: (eventData as any).status || 'upcoming',
         featured: !!(eventData as any).featured,
+        has_big_screen: !!(eventData as any).has_big_screen,
         image_url: (eventData as any).image_url || null,
       };
 
@@ -497,14 +500,24 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center space-x-2 pt-6">
-          <Switch
-            id="featured"
-            checked={formData.featured}
-            onCheckedChange={(checked) => updateField('featured', checked)}
-          />
-          <Label htmlFor="featured">Utvalt evenemang</Label>
-        </div>
+<div className="flex flex-col justify-start space-y-3 pt-6">
+  <div className="flex items-center space-x-2">
+    <Switch
+      id="featured"
+      checked={!!formData.featured}
+      onCheckedChange={(checked) => updateField('featured', checked)}
+    />
+    <Label htmlFor="featured">Utvalt evenemang</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <Switch
+      id="has_big_screen"
+      checked={!!(formData as any).has_big_screen}
+      onCheckedChange={(checked) => updateField('has_big_screen', checked)}
+    />
+    <Label htmlFor="has_big_screen">Storbildsskärm</Label>
+  </div>
+</div>
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">
