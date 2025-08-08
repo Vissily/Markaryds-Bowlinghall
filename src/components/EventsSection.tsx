@@ -39,6 +39,42 @@ const EventsSection = () => {
 
   useEffect(() => {
     loadEvents();
+
+    // Realtime sync: update event list when participants or other fields change
+    const channel = supabase
+      .channel('events_public_sync')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'events' },
+        (payload: any) => {
+          setEvents((prev) => {
+            // Update existing
+            const updated = prev.map((e) => (payload.new && e.id === payload.new.id ? { ...e, ...payload.new } : e));
+
+            // Handle INSERTs that match our status filter
+            if (payload.eventType === 'INSERT' && payload.new && ['upcoming', 'ongoing'].includes(payload.new.status)) {
+              const exists = updated.some((e) => e.id === payload.new.id);
+              if (!exists) {
+                return [...updated, payload.new].sort(
+                  (a: any, b: any) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
+                );
+              }
+            }
+
+            // Handle DELETEs
+            if (payload.eventType === 'DELETE' && payload.old) {
+              return updated.filter((e) => e.id !== payload.old.id);
+            }
+
+            return updated;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
   }, []);
 
   const loadEvents = async () => {
@@ -145,6 +181,7 @@ const EventsSection = () => {
       if (error) throw error;
       toast.success('Tack! Din anmälan är skickad.');
       setRegForms(prev => ({ ...prev, [eventId]: { company: '', contact: '', phone: '', team: '', loading: false } }));
+      await loadEvents();
     } catch (e) {
       console.error(e);
       toast.error('Kunde inte skicka anmälan. Försök igen.');
