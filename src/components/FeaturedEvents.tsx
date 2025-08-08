@@ -35,10 +35,10 @@ const FeaturedEvents = () => {
       const { data, error } = await supabase
         .from('events')
         .select('id,title,event_date,image_url,featured,status')
-        .eq('featured', true)
         .in('status', ['upcoming','ongoing'])
-        .order('event_date', { ascending: true })
-        .limit(3);
+        .gte('event_date', new Date().toISOString())
+        .lte('event_date', (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })())
+        .order('event_date', { ascending: true });
       if (!error && data) setEvents(data);
     };
     load();
