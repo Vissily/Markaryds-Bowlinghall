@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink, PlayCircle } from "lucide-react";
+import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink, PlayCircle, Monitor } from "lucide-react";
 import { toast } from "sonner";
 
 interface Event {
@@ -22,6 +22,7 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  has_big_screen: boolean;
   image_url: string | null;
 }
 
@@ -190,6 +191,14 @@ const EventsSection = () => {
                             {event.price && (
                               <p className="text-lg font-semibold text-primary">{event.price} kr</p>
                             )}
+                            {event.has_big_screen && (
+                              <div className="pt-2">
+                                <Badge variant="outline" className="flex items-center gap-1">
+                                  <Monitor className="w-3.5 h-3.5" />
+                                  Storbildsskärm
+                                </Badge>
+                              </div>
+                            )}
                             <div className="flex justify-between items-center pt-4">
                               {getStatusBadge(event.status)}
                               <div className="flex gap-2">
@@ -272,6 +281,12 @@ const EventsSection = () => {
                                   )}
                                   {event.price && (
                                     <span className="font-semibold text-primary">{event.price} kr</span>
+                                  )}
+                                  {event.has_big_screen && (
+                                    <Badge variant="outline" className="flex items-center gap-1">
+                                      <Monitor className="w-3.5 h-3.5" />
+                                      Storbildsskärm
+                                    </Badge>
                                   )}
                                 </div>
                                 {event.description && (

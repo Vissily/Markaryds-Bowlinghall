@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24 gap-4 lg:gap-6 xl:gap-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0 min-w-0">
             <img 
@@ -31,7 +31,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2">
             {navigation.map((item) => (
               <a
                 key={item.name}
@@ -44,7 +44,7 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0">
+          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6 border-l border-border">
             <div className="flex items-center space-x-1.5">
               <Phone className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 flex-shrink-0" />
               <span className="whitespace-nowrap">0730-740 600</span>
@@ -56,7 +56,7 @@ const Header = () => {
           </div>
 
           {/* Book Button & Mobile Menu */}
-          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0 ml-2 xl:ml-4">
             <Button 
               variant="hero" 
               size="sm" 

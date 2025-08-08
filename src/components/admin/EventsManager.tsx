@@ -245,14 +245,14 @@ const emptyEvent: Omit<Event, 'id'> = {
             <CardContent>
               {event.image_url && (
                 <div className="mb-4">
-                  <AspectRatio ratio={9/16}>
+                  <div className="w-24 h-32 rounded border bg-muted overflow-hidden">
                     <img
                       src={event.image_url}
                       alt={`Flyer för ${event.title}`}
-                      className="h-full w-full object-cover rounded"
+                      className="w-full h-full object-cover"
                       loading="lazy"
                     />
-                  </AspectRatio>
+                  </div>
                 </div>
               )}
               <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -382,13 +382,13 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
       {formData.image_url ? (
         <div className="space-y-2">
           <Label>Flyer-bild</Label>
-          <AspectRatio ratio={9/16}>
+          <div className="w-28 h-44 rounded border bg-muted overflow-hidden">
             <img
               src={formData.image_url}
               alt={`Flyer för ${formData.title || 'evenemang'}`}
-              className="h-full w-full object-cover rounded border"
+              className="w-full h-full object-cover"
             />
-          </AspectRatio>
+          </div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => updateField('image_url', null)}>
               Ta bort bild
