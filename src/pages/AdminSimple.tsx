@@ -18,7 +18,6 @@ import LivestreamsManager from '@/components/admin/LivestreamsManager';
 import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
-import AdvancedAnalyticsInfo from '@/components/admin/AdvancedAnalyticsInfo';
 import AdminFAQ from '@/components/admin/AdminFAQ';
 import AdvancedAnalyticsLive from '@/components/admin/AdvancedAnalyticsLive';
 
@@ -287,10 +286,7 @@ const AdminSimple = () => {
           </TabsContent>
 
           <TabsContent value="advanced-analytics">
-            <div className="space-y-6">
-              <AdvancedAnalyticsLive />
-              <AdvancedAnalyticsInfo />
-            </div>
+            <AdvancedAnalyticsLive />
           </TabsContent>
 
           <TabsContent value="faq">
