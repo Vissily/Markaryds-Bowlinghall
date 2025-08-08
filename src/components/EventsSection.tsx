@@ -107,13 +107,15 @@ const EventsSection = () => {
 
   const registerInterest = async (eventId: string) => {
     try {
-      const { error } = await supabase.from('event_interests').insert({ event_id: eventId });
+      const { error, data } = await supabase.functions.invoke('register-interest', {
+        body: { eventId },
+      });
       if (error) throw error;
       setInterested(prev => ({ ...prev, [eventId]: true }));
       toast.success('Tack! Vi har registrerat ditt intresse.');
     } catch (err) {
       console.error('Interest error', err);
-      toast.error('Kunde inte registrera intresse. Försök igen.');
+      toast.error('Kunde inte registrera intresse. Försök igen senare.');
     }
   };
 

@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
@@ -17,12 +18,18 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const SessionGuard: React.FC = () => {
+  useSessionTimeout();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SessionGuard />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />

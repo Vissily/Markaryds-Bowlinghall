@@ -1,1 +1,4 @@
 project_id = "suoffsrethbczunoanmn"
+
+[functions.register-interest]
+verify_jwt = false
