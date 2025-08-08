@@ -340,6 +340,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
     created_at: string;
   };
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     const id = (event as any).id as string | undefined;
@@ -353,6 +354,25 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
       setRegistrations(data || []);
     })();
   }, [event]);
+
+  const deleteRegistration = async (registrationId: string) => {
+    if (!confirm('Ta bort anmälan? Detta går inte att ångra.')) return;
+    try {
+      setDeletingId(registrationId);
+      const { error } = await supabase
+        .from('event_registrations')
+        .delete()
+        .eq('id', registrationId);
+      if (error) throw error;
+      setRegistrations(prev => prev.filter(r => r.id !== registrationId));
+      toast.success('Anmälan borttagen');
+    } catch (err) {
+      console.error('Error deleting registration:', err);
+      toast.error('Kunde inte ta bort anmälan');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -644,11 +664,21 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
               <p className="text-sm text-muted-foreground">Inga anmälningar ännu.</p>
             ) : (
               registrations.map((r) => (
-                <div key={r.id} className="p-3 rounded border">
-                  <div className="font-medium">{r.company_name}</div>
-                  <div className="text-sm text-muted-foreground">Kontakt: {r.contact_person} • {r.phone_number}</div>
-                  {r.team_members && <div className="text-sm mt-1 whitespace-pre-wrap">{r.team_members}</div>}
-                  <div className="text-xs text-muted-foreground mt-1">{new Date(r.created_at).toLocaleString('sv-SE')}</div>
+                <div key={r.id} className="p-3 rounded border flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-medium">{r.company_name}</div>
+                    <div className="text-sm text-muted-foreground">Kontakt: {r.contact_person} • {r.phone_number}</div>
+                    {r.team_members && <div className="text-sm mt-1 whitespace-pre-wrap">{r.team_members}</div>}
+                    <div className="text-xs text-muted-foreground mt-1">{new Date(r.created_at).toLocaleString('sv-SE')}</div>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => deleteRegistration(r.id)}
+                    disabled={deletingId === r.id}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" /> {deletingId === r.id ? 'Tar bort...' : 'Ta bort'}
+                  </Button>
                 </div>
               ))
             )}
