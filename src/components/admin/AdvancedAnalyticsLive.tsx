@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, MousePointerClick, Activity } from "lucide-react";
+import { BarChart3, MousePointerClick, Activity, Globe } from "lucide-react";
 
 interface EventCount { name: string; count: number }
 interface VitalAvg { name: string; avg: number }
@@ -12,6 +12,7 @@ const AdvancedAnalyticsLive: React.FC = () => {
   const [totalPV, setTotalPV] = useState(0);
   const [events, setEvents] = useState<EventCount[]>([]);
   const [vitals, setVitals] = useState<VitalAvg[]>([]);
+  const [topIPs, setTopIPs] = useState<{ ip: string; count: number }[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -27,6 +28,24 @@ const AdvancedAnalyticsLive: React.FC = () => {
           .select('*', { count: 'exact', head: true })
           .gte('created_at', sinceIso);
         setTotalPV(pvCount || 0);
+
+        // Top IPs by page views (last 7d)
+        const { data: pvRows } = await (supabase as any)
+          .from('analytics_page_views')
+          .select('ip_address, created_at')
+          .gte('created_at', sinceIso)
+          .limit(5000);
+        const ipMap: Record<string, number> = {};
+        (pvRows || []).forEach((r: any) => {
+          const ip = r.ip_address as string | null;
+          if (ip) ipMap[ip] = (ipMap[ip] || 0) + 1;
+        });
+        setTopIPs(
+          Object.entries(ipMap)
+            .map(([ip, count]) => ({ ip, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5)
+        );
 
         // Events (last 7d)
         const { data: evData } = await (supabase as any)
@@ -121,6 +140,25 @@ const AdvancedAnalyticsLive: React.FC = () => {
                 </div>
               ))}
               {vitals.length === 0 && <p className="text-muted-foreground text-sm">Inga mätvärden än</p>}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-primary" /> Topp IP‑adresser (7 dagar)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {topIPs.map((row) => (
+                <div key={row.ip} className="flex justify-between text-sm">
+                  <span className="font-mono">{row.ip}</span>
+                  <Badge variant="secondary">{row.count}</Badge>
+                </div>
+              ))}
+              {topIPs.length === 0 && <p className="text-muted-foreground text-sm">Ingen IP‑data än</p>}
             </div>
           </CardContent>
         </Card>
