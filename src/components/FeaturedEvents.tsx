@@ -38,7 +38,7 @@ const FeaturedEvents = () => {
         .from('events')
         .select('id,title,event_date,image_url,featured,status,featured_start_date,featured_end_date')
         .in('status', ['upcoming','ongoing'])
-        .or(`and(featured_start_date.lte.${nowIso},featured_end_date.gte.${nowIso}),and(event_date.gte.${nowIso},event_date.lte.${weekIso})`)
+        .or(`featured.is.true,and(featured_start_date.lte.${nowIso},featured_end_date.gte.${nowIso}),and(event_date.gte.${nowIso},event_date.lte.${weekIso})`)
         .order('event_date', { ascending: true });
       if (!error && data) setEvents(data);
     };
