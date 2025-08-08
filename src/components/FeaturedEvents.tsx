@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, Star } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Separator } from "@/components/ui/separator";
 
 interface Event {
   id: string;
@@ -36,20 +38,28 @@ const FeaturedEvents = () => {
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex items-center gap-2 mb-6">
-          <Star className="w-5 h-5 text-primary" />
-          <h3 className="text-2xl font-bold">Utvalda evenemang</h3>
+        <div className="mb-10">
+          <div className="flex items-center gap-4 justify-center">
+            <Separator className="flex-1 hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <Star className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl md:text-3xl font-bold text-center">Utvalda Evenemang</h3>
+            </div>
+            <Separator className="flex-1 hidden sm:block" />
+          </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((e) => (
             <Card key={e.id} className="overflow-hidden shadow-card">
               {e.image_url && (
-                <img
-                  src={e.image_url}
-                  alt={`Affisch för ${e.title}`}
-                  className="w-full h-40 object-cover"
-                  loading="lazy"
-                />
+                <AspectRatio ratio={9/16}>
+                  <img
+                    src={e.image_url}
+                    alt={`Affisch för ${e.title}`}
+                    className="h-full w-full object-contain bg-muted"
+                    loading="lazy"
+                  />
+                </AspectRatio>
               )}
               <CardContent className="p-4">
                 <CardTitle className="text-lg mb-2 flex items-center gap-2">

@@ -23,9 +23,9 @@ const Index = () => {
       <Header />
       <Hero />
       <BookingSection />
+      <FeaturedEvents />
       <About />
       <GallerySection />
-      <FeaturedEvents />
       <Activities />
       <Hours />
       <Contact />
