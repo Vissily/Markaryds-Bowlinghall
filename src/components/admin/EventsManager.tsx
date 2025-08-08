@@ -121,10 +121,33 @@ const emptyEvent: Omit<Event, 'id'> = {
     }
   };
 
+  const recalcSingleEvent = async (eventId: string) => {
+    const { count, error: countErr } = await supabase
+      .from('event_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('event_id', eventId);
+    if (countErr) throw countErr;
+    const { error: updErr } = await supabase
+      .from('events')
+      .update({ current_participants: count ?? 0 })
+      .eq('id', eventId);
+    if (updErr) throw updErr;
+  };
+
+  const recalcAllCounts = async () => {
+    const { data: evts, error: evErr } = await supabase.from('events').select('id');
+    if (evErr) throw evErr;
+    await Promise.all((evts || []).map((e: any) => recalcSingleEvent(e.id)));
+  };
+
   const manualSync = async () => {
     try {
       setLoading(true);
-      await supabase.rpc('sync_event_participant_counts');
+      const { error: rpcError } = await supabase.rpc('sync_event_participant_counts');
+      if (rpcError) {
+        console.warn('RPC failed, fallback to client recount', rpcError);
+        await recalcAllCounts();
+      }
       await loadEvents();
       toast.success('Synk klar!');
     } catch (err) {
@@ -134,7 +157,6 @@ const emptyEvent: Omit<Event, 'id'> = {
       setLoading(false);
     }
   };
-
   const saveEvent = async (eventData: Omit<Event, 'id'> | Event) => {
     setSaving(true);
     try {
@@ -401,7 +423,22 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
         .eq('id', registrationId);
       if (error) throw error;
       setRegistrations(prev => prev.filter(r => r.id !== registrationId));
-      await supabase.rpc('sync_event_participant_counts');
+      const { error: rpcErr } = await supabase.rpc('sync_event_participant_counts');
+      if (rpcErr) {
+        console.warn('RPC sync failed, falling back to single-event recount', rpcErr);
+        const evId = (event as any).id as string | undefined;
+        if (evId) {
+          try {
+            const { count, error: countErr } = await supabase
+              .from('event_registrations')
+              .select('id', { count: 'exact', head: true })
+              .eq('event_id', evId);
+            if (!countErr) {
+              await supabase.from('events').update({ current_participants: count ?? 0 }).eq('id', evId);
+            }
+          } catch {}
+        }
+      }
       toast.success('Anmälan borttagen');
     } catch (err) {
       console.error('Error deleting registration:', err);
