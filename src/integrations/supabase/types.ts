@@ -21,6 +21,7 @@ export type Database = {
           event_name: string
           event_value: number | null
           id: string
+          ip_address: string | null
           metadata: Json
           path: string
           session_id: string
@@ -32,6 +33,7 @@ export type Database = {
           event_name: string
           event_value?: number | null
           id?: string
+          ip_address?: string | null
           metadata?: Json
           path: string
           session_id: string
@@ -43,6 +45,7 @@ export type Database = {
           event_name?: string
           event_value?: number | null
           id?: string
+          ip_address?: string | null
           metadata?: Json
           path?: string
           session_id?: string
@@ -54,6 +57,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          ip_address: string | null
           path: string
           referrer: string | null
           session_id: string
@@ -65,6 +69,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          ip_address?: string | null
           path: string
           referrer?: string | null
           session_id: string
@@ -76,6 +81,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          ip_address?: string | null
           path?: string
           referrer?: string | null
           session_id?: string

@@ -18,16 +18,16 @@ export function useAnalytics() {
   // Track a page view
   const trackPageView = async (path: string) => {
     try {
-      const { data: userRes } = await (supabase as any).auth.getUser();
       const { width, height } = window.screen || ({} as any);
-      await (supabase as any).from('analytics_page_views').insert({
-        user_id: userRes?.user?.id ?? null,
-        session_id: sessionIdRef.current,
-        path,
-        referrer: document.referrer || null,
-        user_agent: navigator.userAgent,
-        viewport_width: width ?? null,
-        viewport_height: height ?? null,
+      await (supabase as any).functions.invoke('log-analytics', {
+        body: {
+          kind: 'page_view',
+          path,
+          session_id: sessionIdRef.current,
+          referrer: document.referrer || null,
+          ua: navigator.userAgent,
+          vp: { w: width ?? null, h: height ?? null },
+        },
       });
     } catch (e) {
       // silent
@@ -40,15 +40,16 @@ export function useAnalytics() {
     payload?: { label?: string; value?: number; metadata?: Record<string, any> }
   ) => {
     try {
-      const { data: userRes } = await (supabase as any).auth.getUser();
-      await (supabase as any).from('analytics_events').insert({
-        user_id: userRes?.user?.id ?? null,
-        session_id: sessionIdRef.current,
-        path: location.pathname,
-        event_name,
-        event_label: payload?.label ?? null,
-        event_value: payload?.value ?? null,
-        metadata: payload?.metadata ?? {},
+      await (supabase as any).functions.invoke('log-analytics', {
+        body: {
+          kind: 'event',
+          path: location.pathname,
+          session_id: sessionIdRef.current,
+          name: event_name,
+          label: payload?.label ?? null,
+          value: payload?.value ?? null,
+          meta: payload?.metadata ?? {},
+        },
       });
     } catch (e) {}
   };
