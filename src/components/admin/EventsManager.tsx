@@ -401,6 +401,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
         .eq('id', registrationId);
       if (error) throw error;
       setRegistrations(prev => prev.filter(r => r.id !== registrationId));
+      await supabase.rpc('sync_event_participant_counts');
       toast.success('Anmälan borttagen');
     } catch (err) {
       console.error('Error deleting registration:', err);
