@@ -58,6 +58,28 @@ Deno.serve(async (req) => {
     const salt = SERVICE_ROLE_KEY; // Use service key as salt (kept secret server-side)
     const ipHash = await sha256Hex(`${salt}:${ip}`);
 
+    // Pre-DB rate limiting: short-circuit before insert
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const identityField = userId ? 'user_id' : 'ip_hash';
+    const identityValue = userId ?? ipHash;
+
+    const { count: recentCount, error: countError } = await supabase
+      .from('event_interests')
+      .select('id', { count: 'exact', head: true })
+      .eq('event_id', eventId)
+      .eq(identityField, identityValue)
+      .gte('created_at', tenMinutesAgo);
+
+    if (countError) {
+      // If counting fails, rely on DB trigger but log the error
+      console.error('Pre-rate-limit count error:', countError.message);
+    } else if ((recentCount ?? 0) >= 3) {
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const payload: Record<string, any> = {
       event_id: eventId,
       user_id: userId,

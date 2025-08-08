@@ -496,6 +496,10 @@ export type Database = {
         Args: { _email: string; _password: string; _display_name?: string }
         Returns: Json
       }
+      get_event_interest_count: {
+        Args: { _event_id: string }
+        Returns: number
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]

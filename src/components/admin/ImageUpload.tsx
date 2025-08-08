@@ -22,9 +22,8 @@ const MediaUpload = ({ onUploadComplete }: MediaUploadProps) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    // Validate file types - allow images, videos, and PDFs
     const allowedTypes = [
-      'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp',
       'video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/webm',
       'application/pdf'
     ];
