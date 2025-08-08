@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_label: string | null
+          event_name: string
+          event_value: number | null
+          id: string
+          metadata: Json
+          path: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_label?: string | null
+          event_name: string
+          event_value?: number | null
+          id?: string
+          metadata?: Json
+          path: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_label?: string | null
+          event_name?: string
+          event_value?: number | null
+          id?: string
+          metadata?: Json
+          path?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      analytics_page_views: {
+        Row: {
+          created_at: string
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+          viewport_height: number | null
+          viewport_width: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          path: string
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
+        Relationships: []
+      }
+      analytics_web_vitals: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          path: string
+          rating: string | null
+          session_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          path: string
+          rating?: string | null
+          session_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          path?: string
+          rating?: string | null
+          session_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       event_interests: {
         Row: {
           created_at: string
