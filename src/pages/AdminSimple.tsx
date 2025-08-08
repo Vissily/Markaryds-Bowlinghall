@@ -18,6 +18,7 @@ import LivestreamsManager from '@/components/admin/LivestreamsManager';
 import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
+import AdvancedAnalyticsInfo from '@/components/admin/AdvancedAnalyticsInfo';
 
 interface SiteContent {
   title?: string;
@@ -266,8 +267,9 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="analytics" className="space-y-4 lg:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto lg:h-10 gap-1 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 h-auto lg:h-10 gap-1 p-1">
             <TabsTrigger value="analytics" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Statistik</TabsTrigger>
+            <TabsTrigger value="advanced-analytics" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Avancerad Statistik</TabsTrigger>
             <TabsTrigger value="content" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Hemsida</TabsTrigger>
             <TabsTrigger value="gallery" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Galleri</TabsTrigger>
             <TabsTrigger value="menu" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Meny</TabsTrigger>
@@ -279,6 +281,10 @@ const AdminSimple = () => {
 
           <TabsContent value="analytics">
             <AnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="advanced-analytics">
+            <AdvancedAnalyticsInfo />
           </TabsContent>
 
           <TabsContent value="content" className="mt-4 lg:mt-6">
