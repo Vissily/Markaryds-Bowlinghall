@@ -22,7 +22,7 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12">
           {/* Logo */}
-          <div className="flex items-center flex-shrink-0 min-w-0">
+          <div className="flex items-center flex-shrink-0 w-32 sm:w-40 lg:w-48 xl:w-56 pr-2 lg:pr-4">
             <img 
               src="/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png" 
               alt="Markaryds Bowling" 
@@ -31,7 +31,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
             {navigation.map((item) => (
               <a
                 key={item.name}
