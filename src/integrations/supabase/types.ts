@@ -678,6 +678,10 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: Json
       }
+      sync_event_participant_counts: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "user"
