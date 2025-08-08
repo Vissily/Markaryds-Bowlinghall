@@ -242,7 +242,7 @@ const emptyEvent: Omit<Event, 'id'> = {
             <CardContent>
               {event.image_url && (
                 <div className="mb-4">
-                  <AspectRatio ratio={16/9}>
+                  <AspectRatio ratio={9/16}>
                     <img
                       src={event.image_url}
                       alt={`Flyer för ${event.title}`}
@@ -379,7 +379,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
       {formData.image_url ? (
         <div className="space-y-2">
           <Label>Flyer-bild</Label>
-          <AspectRatio ratio={16/9}>
+          <AspectRatio ratio={9/16}>
             <img
               src={formData.image_url}
               alt={`Flyer för ${formData.title || 'evenemang'}`}

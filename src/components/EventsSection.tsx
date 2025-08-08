@@ -162,7 +162,7 @@ const EventsSection = () => {
                       <CardContent className="p-0">
                         {event.image_url && (
                           <div className="mb-0">
-                            <AspectRatio ratio={16/9}>
+                            <AspectRatio ratio={9/16}>
                               <img
                                 src={event.image_url}
                                 alt={`Affisch för ${event.title}`}
@@ -231,12 +231,16 @@ const EventsSection = () => {
                     <Card key={event.id} className="shadow-card overflow-hidden">
                       <CardContent className="p-0">
                         {event.image_url && (
-                          <img
-                            src={event.image_url}
-                            alt={`Affisch för ${event.title}`}
-                            className="w-full h-48 object-cover"
-                            loading="lazy"
-                          />
+                          <div className="mb-0">
+                            <AspectRatio ratio={9/16}>
+                              <img
+                                src={event.image_url}
+                                alt={`Affisch för ${event.title}`}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                            </AspectRatio>
+                          </div>
                         )}
                         <div className="p-6">
                           <div className="flex justify-between items-start">
