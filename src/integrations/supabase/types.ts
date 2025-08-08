@@ -14,6 +14,32 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_interests: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_interests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string
@@ -23,6 +49,7 @@ export type Database = {
           event_type: string | null
           featured: boolean | null
           id: string
+          image_url: string | null
           max_participants: number | null
           price: number | null
           registration_deadline: string | null
@@ -41,6 +68,7 @@ export type Database = {
           event_type?: string | null
           featured?: boolean | null
           id?: string
+          image_url?: string | null
           max_participants?: number | null
           price?: number | null
           registration_deadline?: string | null
@@ -59,6 +87,7 @@ export type Database = {
           event_type?: string | null
           featured?: boolean | null
           id?: string
+          image_url?: string | null
           max_participants?: number | null
           price?: number | null
           registration_deadline?: string | null
@@ -429,7 +458,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      event_interest_counts: {
+        Row: {
+          event_id: string | null
+          interest_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_interests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       add_admin_user: {

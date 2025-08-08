@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarPlus, Edit2, Trash2, Trophy, Users } from 'lucide-react';
+import { CalendarPlus, Edit2, Trash2, Trophy, Users, Heart, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Event {
@@ -27,6 +27,7 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  image_url: string | null;
 }
 
 const EventsManager = () => {
@@ -35,22 +36,24 @@ const EventsManager = () => {
   const [saving, setSaving] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [interestCounts, setInterestCounts] = useState<Record<string, number>>({});
 
-  const emptyEvent: Omit<Event, 'id'> = {
-    title: '',
-    description: '',
-    event_date: '',
-    registration_deadline: '',
-    registration_url: '',
-    registration_email: '',
-    registration_phone: '',
-    max_participants: null,
-    current_participants: 0,
-    price: null,
-    event_type: 'tournament',
-    status: 'upcoming',
-    featured: false
-  };
+const emptyEvent: Omit<Event, 'id'> = {
+  title: '',
+  description: '',
+  event_date: '',
+  registration_deadline: '',
+  registration_url: '',
+  registration_email: '',
+  registration_phone: '',
+  max_participants: null,
+  current_participants: 0,
+  price: null,
+  event_type: 'tournament',
+  status: 'upcoming',
+  featured: false,
+  image_url: null
+};
 
   useEffect(() => {
     loadEvents();
@@ -58,13 +61,22 @@ const EventsManager = () => {
 
   const loadEvents = async () => {
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .order('event_date', { ascending: true });
+      const [eventsRes, countsRes] = await Promise.all([
+        supabase.from('events').select('*').order('event_date', { ascending: true }),
+        supabase.from('event_interest_counts' as any).select('*')
+      ]);
 
-      if (error) throw error;
-      setEvents(data || []);
+      if (eventsRes.error) throw eventsRes.error;
+      const evts = eventsRes.data || [];
+      setEvents(evts);
+
+      if (!countsRes.error && countsRes.data) {
+        const map: Record<string, number> = {};
+        (countsRes.data as any[]).forEach((row: any) => {
+          map[row.event_id] = Number(row.interest_count) || 0;
+        });
+        setInterestCounts(map);
+      }
     } catch (error) {
       console.error('Error loading events:', error);
       toast.error('Kunde inte ladda evenemang');
@@ -210,6 +222,14 @@ const EventsManager = () => {
               </div>
             </CardHeader>
             <CardContent>
+              {event.image_url && (
+                <img
+                  src={event.image_url}
+                  alt={`Flyer för ${event.title}`}
+                  className="w-full max-h-64 object-cover rounded mb-4"
+                  loading="lazy"
+                />
+              )}
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p><strong>Datum:</strong> {formatDateTime(event.event_date)}</p>
@@ -231,6 +251,10 @@ const EventsManager = () => {
                   {event.registration_phone && (
                     <p><strong>Telefon:</strong> {event.registration_phone}</p>
                   )}
+                  <p className="flex items-center gap-1 mt-1">
+                    <Heart className="w-4 h-4" />
+                    Intresse: {interestCounts[event.id] ?? 0}
+                  </p>
                 </div>
               </div>
               {event.description && (
@@ -271,6 +295,25 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleImageUpload = async (file: File) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Du måste vara inloggad');
+        return;
+      }
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/events/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from('event-images').upload(path, file);
+      if (uploadError) throw uploadError;
+      const { data: publicData } = await supabase.storage.from('event-images').getPublicUrl(path);
+      updateField('image_url', publicData.publicUrl);
+      toast.success('Bild uppladdad!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Kunde inte ladda upp bild');
+    }
+  };
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
@@ -309,6 +352,38 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
           rows={3}
         />
       </div>
+
+      {formData.image_url ? (
+        <div className="space-y-2">
+          <Label>Flyer-bild</Label>
+          <img
+            src={formData.image_url}
+            alt={`Flyer för ${formData.title || 'evenemang'}`}
+            className="w-full max-h-72 object-cover rounded border"
+          />
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => updateField('image_url', null)}>
+              Ta bort bild
+            </Button>
+            <Button type="button" variant="outline" onClick={() => document.getElementById('flyer-upload')?.click()}>
+              <ImageIcon className="w-4 h-4 mr-2" />Byt bild
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Label htmlFor="flyer-upload">Flyer-bild</Label>
+          <Input
+            id="flyer-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleImageUpload(file);
+            }}
+          />
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>

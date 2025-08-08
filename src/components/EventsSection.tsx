@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 interface Event {
   id: string;
@@ -20,12 +21,14 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  image_url: string | null;
 }
 
 const EventsSection = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [interested, setInterested] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadEvents();
@@ -100,6 +103,18 @@ const EventsSection = () => {
     return new Date(event.registration_deadline) > new Date();
   };
 
+  const registerInterest = async (eventId: string) => {
+    try {
+      const { error } = await supabase.from('event_interests').insert({ event_id: eventId });
+      if (error) throw error;
+      setInterested(prev => ({ ...prev, [eventId]: true }));
+      toast.success('Tack! Vi har registrerat ditt intresse.');
+    } catch (err) {
+      console.error('Interest error', err);
+      toast.error('Kunde inte registrera intresse. Försök igen.');
+    }
+  };
+
   if (loading) {
     return (
       <section className="py-20 bg-background">
@@ -142,8 +157,16 @@ const EventsSection = () => {
                           <Badge variant="secondary" className="ml-auto">Utvald</Badge>
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
+                      <CardContent className="p-0">
+                        {event.image_url && (
+                          <img
+                            src={event.image_url}
+                            alt={`Affisch för ${event.title}`}
+                            className="w-full h-56 object-cover"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="p-6 space-y-4">
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Calendar className="w-4 h-4" />
                             <span>{formatDate(event.event_date)}</span>
@@ -169,6 +192,14 @@ const EventsSection = () => {
                                   </a>
                                 </Button>
                               )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={!!interested[event.id]}
+                                onClick={() => registerInterest(event.id)}
+                              >
+                                {interested[event.id] ? 'Intresse registrerat' : 'Jag är intresserad'}
+                              </Button>
                               <Button variant="outline" size="sm" asChild>
                                 <a href="/events">Läs mer</a>
                               </Button>
@@ -191,62 +222,80 @@ const EventsSection = () => {
                 {events.map((event) => {
                   const IconComponent = getEventTypeIcon(event.event_type);
                   return (
-                    <Card key={event.id} className="shadow-card">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <IconComponent className="w-5 h-5 text-primary" />
-                              <h4 className="text-xl font-semibold text-foreground">{event.title}</h4>
-                              {event.featured && <Badge variant="secondary">Utvald</Badge>}
-                            </div>
-                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                {formatDate(event.event_date)}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                {formatTime(event.event_date)}
-                              </span>
-                              {event.max_participants && (
+                    <Card key={event.id} className="shadow-card overflow-hidden">
+                      <CardContent className="p-0">
+                        {event.image_url && (
+                          <img
+                            src={event.image_url}
+                            alt={`Affisch för ${event.title}`}
+                            className="w-full h-48 object-cover"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="p-6">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <IconComponent className="w-5 h-5 text-primary" />
+                                <h4 className="text-xl font-semibold text-foreground">{event.title}</h4>
+                                {event.featured && <Badge variant="secondary">Utvald</Badge>}
+                              </div>
+                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
                                 <span className="flex items-center gap-1">
-                                  <Users className="w-4 h-4" />
-                                  {event.current_participants}/{event.max_participants}
+                                  <Calendar className="w-4 h-4" />
+                                  {formatDate(event.event_date)}
                                 </span>
-                              )}
-                              {event.price && (
-                                <span className="font-semibold text-primary">{event.price} kr</span>
-                              )}
-                            </div>
-                            {event.description && (
-                              <p className="text-foreground mb-3">{event.description}</p>
-                            )}
-                            <div className="flex gap-4 text-sm">
-                              {event.registration_email && (
                                 <span className="flex items-center gap-1">
-                                  <Mail className="w-4 h-4" />
-                                  {event.registration_email}
+                                  <Clock className="w-4 h-4" />
+                                  {formatTime(event.event_date)}
                                 </span>
+                                {event.max_participants && (
+                                  <span className="flex items-center gap-1">
+                                    <Users className="w-4 h-4" />
+                                    {event.current_participants}/{event.max_participants}
+                                  </span>
+                                )}
+                                {event.price && (
+                                  <span className="font-semibold text-primary">{event.price} kr</span>
+                                )}
+                              </div>
+                              {event.description && (
+                                <p className="text-foreground mb-3">{event.description}</p>
                               )}
-                              {event.registration_phone && (
-                                <span className="flex items-center gap-1">
-                                  <Phone className="w-4 h-4" />
-                                  {event.registration_phone}
-                                </span>
-                              )}
+                              <div className="flex gap-2 flex-wrap">
+                                {event.registration_email && (
+                                  <span className="flex items-center gap-1">
+                                    <Mail className="w-4 h-4" />
+                                    {event.registration_email}
+                                  </span>
+                                )}
+                                {event.registration_phone && (
+                                  <span className="flex items-center gap-1">
+                                    <Phone className="w-4 h-4" />
+                                    {event.registration_phone}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            {getStatusBadge(event.status)}
-                            {event.registration_url && isRegistrationOpen(event) && (
-                              <Button variant="outline" size="sm" asChild>
-                                <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                                  Anmäl dig
-                                  <ExternalLink className="w-4 h-4 ml-1" />
-                                </a>
+                            <div className="flex flex-col items-end gap-2 p-2">
+                              {getStatusBadge(event.status)}
+                              {event.registration_url && isRegistrationOpen(event) && (
+                                <Button variant="outline" size="sm" asChild>
+                                  <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
+                                    Anmäl dig
+                                    <ExternalLink className="w-4 h-4 ml-1" />
+                                  </a>
+                                </Button>
+                              )}
+                              <Button
+                                variant="default"
+                                size="sm"
+                                disabled={!!interested[event.id]}
+                                onClick={() => registerInterest(event.id)}
+                              >
+                                {interested[event.id] ? 'Intresse registrerat' : 'Jag är intresserad'}
                               </Button>
-                            )}
+                            </div>
                           </div>
                         </div>
                       </CardContent>
