@@ -59,10 +59,10 @@ const FeaturedEvents = () => {
             <Separator className="flex-1 hidden sm:block" />
           </div>
         </div>
-        <Carousel opts={{ align: 'start', loop: true }} setApi={setApi} className="relative">
+        <Carousel opts={{ align: 'center', loop: true }} setApi={setApi} className="relative mx-auto max-w-xl">
           <CarouselContent>
             {events.map((e) => (
-              <CarouselItem key={e.id} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={e.id} className="basis-full">
                 <Card className="overflow-hidden shadow-card">
                   {e.image_url && (
                     <AspectRatio ratio={9/16}>
