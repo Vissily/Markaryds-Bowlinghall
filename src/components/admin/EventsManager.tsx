@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { CalendarPlus, Edit2, Trash2, Trophy, Users, Heart, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -42,7 +43,7 @@ const emptyEvent: Omit<Event, 'id'> = {
   title: '',
   description: '',
   event_date: '',
-  registration_deadline: '',
+  registration_deadline: null,
   registration_url: '',
   registration_email: '',
   registration_phone: '',
@@ -88,26 +89,43 @@ const emptyEvent: Omit<Event, 'id'> = {
   const saveEvent = async (eventData: Omit<Event, 'id'> | Event) => {
     setSaving(true);
     try {
+      const toISO = (v: string | null | undefined) => {
+        if (!v) return null;
+        return v.endsWith('Z') ? v : new Date(v).toISOString();
+      };
+
+      const base = {
+        title: (eventData as any).title,
+        description: (eventData as any).description || null,
+        event_date: toISO((eventData as any).event_date) as string,
+        registration_deadline: toISO((eventData as any).registration_deadline),
+        registration_url: (eventData as any).registration_url || null,
+        registration_email: (eventData as any).registration_email || null,
+        registration_phone: (eventData as any).registration_phone || null,
+        max_participants: (eventData as any).max_participants ?? null,
+        current_participants: (eventData as any).current_participants ?? 0,
+        price: (eventData as any).price ?? null,
+        event_type: (eventData as any).event_type || 'tournament',
+        status: (eventData as any).status || 'upcoming',
+        featured: !!(eventData as any).featured,
+        image_url: (eventData as any).image_url || null,
+      };
+
+      if (!base.event_date) {
+        throw new Error('Datum & tid krävs.');
+      }
+
       if ('id' in eventData) {
-        // Update existing event
-        const { error } = await supabase
-          .from('events')
-          .update(eventData)
-          .eq('id', eventData.id);
-        
+        const { error } = await supabase.from('events').update(base).eq('id', (eventData as Event).id);
         if (error) throw error;
         toast.success('Evenemang uppdaterat!');
       } else {
-        // Create new event
-        const { error } = await supabase
-          .from('events')
-          .insert([eventData]);
-        
+        const { error } = await supabase.from('events').insert([base]);
         if (error) throw error;
         toast.success('Evenemang skapat!');
       }
-      
-      loadEvents();
+
+      await loadEvents();
       setIsDialogOpen(false);
       setEditingEvent(null);
     } catch (error) {
@@ -223,12 +241,16 @@ const emptyEvent: Omit<Event, 'id'> = {
             </CardHeader>
             <CardContent>
               {event.image_url && (
-                <img
-                  src={event.image_url}
-                  alt={`Flyer för ${event.title}`}
-                  className="w-full max-h-64 object-cover rounded mb-4"
-                  loading="lazy"
-                />
+                <div className="mb-4">
+                  <AspectRatio ratio={16/9}>
+                    <img
+                      src={event.image_url}
+                      alt={`Flyer för ${event.title}`}
+                      className="h-full w-full object-cover rounded"
+                      loading="lazy"
+                    />
+                  </AspectRatio>
+                </div>
               )}
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -337,6 +359,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
               <SelectItem value="competition">Tävling</SelectItem>
               <SelectItem value="social">Social</SelectItem>
               <SelectItem value="league">Liga</SelectItem>
+              <SelectItem value="livematch">Livematch</SelectItem>
               <SelectItem value="course">Kurs</SelectItem>
             </SelectContent>
           </Select>
@@ -356,11 +379,13 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
       {formData.image_url ? (
         <div className="space-y-2">
           <Label>Flyer-bild</Label>
-          <img
-            src={formData.image_url}
-            alt={`Flyer för ${formData.title || 'evenemang'}`}
-            className="w-full max-h-72 object-cover rounded border"
-          />
+          <AspectRatio ratio={16/9}>
+            <img
+              src={formData.image_url}
+              alt={`Flyer för ${formData.title || 'evenemang'}`}
+              className="h-full w-full object-cover rounded border"
+            />
+          </AspectRatio>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => updateField('image_url', null)}>
               Ta bort bild
@@ -391,7 +416,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
           <Input
             id="event_date"
             type="datetime-local"
-            value={formData.event_date.slice(0, 16)}
+            value={formData.event_date ? formData.event_date.slice(0, 16) : ''}
             onChange={(e) => updateField('event_date', e.target.value)}
             required
           />
@@ -401,7 +426,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
           <Input
             id="registration_deadline"
             type="datetime-local"
-            value={formData.registration_deadline?.slice(0, 16) || ''}
+            value={formData.registration_deadline ? formData.registration_deadline.slice(0, 16) : ''}
             onChange={(e) => updateField('registration_deadline', e.target.value || null)}
           />
         </div>

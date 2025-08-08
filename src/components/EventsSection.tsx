@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface Event {
@@ -93,11 +94,12 @@ const EventsSection = () => {
         return Trophy;
       case 'competition':
         return Star;
+      case 'livematch':
+        return PlayCircle;
       default:
         return Calendar;
     }
   };
-
   const isRegistrationOpen = (event: Event) => {
     if (!event.registration_deadline) return true;
     return new Date(event.registration_deadline) > new Date();
@@ -159,12 +161,16 @@ const EventsSection = () => {
                       </CardHeader>
                       <CardContent className="p-0">
                         {event.image_url && (
-                          <img
-                            src={event.image_url}
-                            alt={`Affisch för ${event.title}`}
-                            className="w-full h-56 object-cover"
-                            loading="lazy"
-                          />
+                          <div className="mb-0">
+                            <AspectRatio ratio={16/9}>
+                              <img
+                                src={event.image_url}
+                                alt={`Affisch för ${event.title}`}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                            </AspectRatio>
+                          </div>
                         )}
                         <div className="p-6 space-y-4">
                           <div className="flex items-center gap-2 text-muted-foreground">
