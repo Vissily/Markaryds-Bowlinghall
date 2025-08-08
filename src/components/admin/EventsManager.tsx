@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { CalendarPlus, Edit2, Trash2, Trophy, Users, Heart, Image as ImageIcon } from 'lucide-react';
+import { CalendarPlus, Edit2, Trash2, Trophy, Users, Heart, Image as ImageIcon, RefreshCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Calendar as DateCalendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -121,6 +121,20 @@ const emptyEvent: Omit<Event, 'id'> = {
     }
   };
 
+  const manualSync = async () => {
+    try {
+      setLoading(true);
+      await supabase.rpc('sync_event_participant_counts');
+      await loadEvents();
+      toast.success('Synk klar!');
+    } catch (err) {
+      console.error('Manual sync failed:', err);
+      toast.error('Synk misslyckades');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const saveEvent = async (eventData: Omit<Event, 'id'> | Event) => {
     setSaving(true);
     try {
@@ -215,30 +229,36 @@ const base = {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Hantera Evenemang</h2>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingEvent(null)}>
-              <CalendarPlus className="w-4 h-4 mr-2" />
-              Nytt Evenemang
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingEvent ? 'Redigera Evenemang' : 'Skapa Nytt Evenemang'}
-              </DialogTitle>
-            </DialogHeader>
-            <EventForm
-              event={editingEvent || emptyEvent}
-              onSave={saveEvent}
-              onCancel={() => {
-                setIsDialogOpen(false);
-                setEditingEvent(null);
-              }}
-              saving={saving}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={manualSync} disabled={loading}>
+            <RefreshCcw className="w-4 h-4 mr-2" />
+            Synka nu
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setEditingEvent(null)}>
+                <CalendarPlus className="w-4 h-4 mr-2" />
+                Nytt Evenemang
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingEvent ? 'Redigera Evenemang' : 'Skapa Nytt Evenemang'}
+                </DialogTitle>
+              </DialogHeader>
+              <EventForm
+                event={editingEvent || emptyEvent}
+                onSave={saveEvent}
+                onCancel={() => {
+                  setIsDialogOpen(false);
+                  setEditingEvent(null);
+                }}
+                saving={saving}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-4">
