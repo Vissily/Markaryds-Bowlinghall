@@ -16,7 +16,6 @@ import Auth from "./pages/Auth";
 import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
 import AnalyticsInit from "./components/AnalyticsInit";
-import ThankYou from "./pages/ThankYou";
 const queryClient = new QueryClient();
 
 const SessionGuard: React.FC = () => {
@@ -42,7 +41,6 @@ const App = () => (
             <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminSimple />} />
-            <Route path="/tack" element={<ThankYou />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
