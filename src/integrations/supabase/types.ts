@@ -54,6 +54,8 @@ export type Database = {
           event_date: string
           event_type: string | null
           featured: boolean | null
+          featured_end_date: string | null
+          featured_start_date: string | null
           has_big_screen: boolean
           id: string
           image_url: string | null
@@ -74,6 +76,8 @@ export type Database = {
           event_date: string
           event_type?: string | null
           featured?: boolean | null
+          featured_end_date?: string | null
+          featured_start_date?: string | null
           has_big_screen?: boolean
           id?: string
           image_url?: string | null
@@ -94,6 +98,8 @@ export type Database = {
           event_date?: string
           event_type?: string | null
           featured?: boolean | null
+          featured_end_date?: string | null
+          featured_start_date?: string | null
           has_big_screen?: boolean
           id?: string
           image_url?: string | null

@@ -32,12 +32,13 @@ const FeaturedEvents = () => {
 
   useEffect(() => {
     const load = async () => {
+      const nowIso = new Date().toISOString();
+      const weekIso = (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })();
       const { data, error } = await supabase
         .from('events')
-        .select('id,title,event_date,image_url,featured,status')
+        .select('id,title,event_date,image_url,featured,status,featured_start_date,featured_end_date')
         .in('status', ['upcoming','ongoing'])
-        .gte('event_date', new Date().toISOString())
-        .lte('event_date', (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })())
+        .or(`and(featured_start_date.lte.${nowIso},featured_end_date.gte.${nowIso}),and(event_date.gte.${nowIso},event_date.lte.${weekIso})`)
         .order('event_date', { ascending: true });
       if (!error && data) setEvents(data);
     };

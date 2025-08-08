@@ -12,6 +12,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { CalendarPlus, Edit2, Trash2, Trophy, Users, Heart, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { Calendar as DateCalendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 interface Event {
   id: string;
@@ -28,6 +32,8 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  featured_start_date: string | null;
+  featured_end_date: string | null;
   has_big_screen: boolean;
   image_url: string | null;
 }
@@ -54,6 +60,8 @@ const emptyEvent: Omit<Event, 'id'> = {
   event_type: 'tournament',
   status: 'upcoming',
   featured: false,
+  featured_start_date: null,
+  featured_end_date: null,
   has_big_screen: false,
   image_url: null
 };
@@ -117,6 +125,8 @@ const emptyEvent: Omit<Event, 'id'> = {
         event_type: (eventData as any).event_type || 'tournament',
         status: (eventData as any).status || 'upcoming',
         featured: !!(eventData as any).featured,
+        featured_start_date: toISO((eventData as any).featured_start_date),
+        featured_end_date: toISO((eventData as any).featured_end_date),
         has_big_screen: !!(eventData as any).has_big_screen,
         image_url: (eventData as any).image_url || null,
       };
@@ -492,6 +502,71 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
         </div>
       </div>
 
+      {/* Utvald period (valfri) */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <Label>Utvald period (start)</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn("w-full justify-start text-left font-normal", !(formData as any).featured_start_date && "text-muted-foreground")}
+              >
+                {(formData as any).featured_start_date ? (
+                  format(new Date((formData as any).featured_start_date), 'PPP')
+                ) : (
+                  <span>Välj startdatum</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <DateCalendar
+                mode="single"
+                selected={(formData as any).featured_start_date ? new Date((formData as any).featured_start_date) : undefined}
+                onSelect={(date) => {
+                  if (!date) { updateField('featured_start_date' as any, null); return; }
+                  const d = new Date(date); d.setHours(0,0,0,0);
+                  updateField('featured_start_date' as any, d.toISOString());
+                }}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <Label>Utvald period (slut)</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn("w-full justify-start text-left font-normal", !(formData as any).featured_end_date && "text-muted-foreground")}
+              >
+                {(formData as any).featured_end_date ? (
+                  format(new Date((formData as any).featured_end_date), 'PPP')
+                ) : (
+                  <span>Välj slutdatum</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <DateCalendar
+                mode="single"
+                selected={(formData as any).featured_end_date ? new Date((formData as any).featured_end_date) : undefined}
+                onSelect={(date) => {
+                  if (!date) { updateField('featured_end_date' as any, null); return; }
+                  const d = new Date(date); d.setHours(23,59,59,999);
+                  updateField('featured_end_date' as any, d.toISOString());
+                }}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      {/* Status och växlar */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="status">Status</Label>
@@ -507,24 +582,24 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
             </SelectContent>
           </Select>
         </div>
-<div className="flex flex-col justify-start space-y-3 pt-6">
-  <div className="flex items-center space-x-2">
-    <Switch
-      id="featured"
-      checked={!!formData.featured}
-      onCheckedChange={(checked) => updateField('featured', checked)}
-    />
-    <Label htmlFor="featured">Utvalt evenemang</Label>
-  </div>
-  <div className="flex items-center space-x-2">
-    <Switch
-      id="has_big_screen"
-      checked={!!(formData as any).has_big_screen}
-      onCheckedChange={(checked) => updateField('has_big_screen', checked)}
-    />
-    <Label htmlFor="has_big_screen">Storbildsskärm</Label>
-  </div>
-</div>
+        <div className="flex flex-col justify-start space-y-3 pt-6">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="featured"
+              checked={!!formData.featured}
+              onCheckedChange={(checked) => updateField('featured', checked)}
+            />
+            <Label htmlFor="featured">Utvalt evenemang</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="has_big_screen"
+              checked={!!(formData as any).has_big_screen}
+              onCheckedChange={(checked) => updateField('has_big_screen', checked)}
+            />
+            <Label htmlFor="has_big_screen">Storbildsskärm</Label>
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">
