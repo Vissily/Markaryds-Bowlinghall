@@ -336,9 +336,9 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => updateField('title', 'Bowling Bana 4-8')}
+              onClick={() => updateField('title', 'Bowling Bana 5-8')}
             >
-              Bana 4-8
+              Bana 5-8
             </Button>
           </div>
         </div>

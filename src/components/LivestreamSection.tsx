@@ -43,14 +43,14 @@ const LivestreamSection = () => {
       const allStreams = data || [];
       setLivestreams(allStreams);
       
-      // Find streams for lanes 1-4 and 4-8
+      // Find streams for lanes 1-4 and 5-8
       const lanes14 = allStreams.find(stream => 
         stream.title.toLowerCase().includes('bana 1-4') && 
         (stream.status === 'live' || stream.status === 'scheduled')
       );
       
       const lanes48 = allStreams.find(stream => 
-        stream.title.toLowerCase().includes('bana 4-8') && 
+        stream.title.toLowerCase().includes('bana 5-8') && 
         (stream.status === 'live' || stream.status === 'scheduled')
       );
       
@@ -226,7 +226,7 @@ const LivestreamSection = () => {
           {/* Dual Stream Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {renderStreamCard(lanes14Stream, "Bana 1-4")}
-            {renderStreamCard(lanes48Stream, "Bana 4-8")}
+            {renderStreamCard(lanes48Stream, "Bana 5-8")}
           </div>
 
           {/* Kommande Streams */}
@@ -277,7 +277,7 @@ const LivestreamSection = () => {
               <div className="space-y-3 text-muted-foreground">
                 <p>
                   Vi streamar live från Markaryds Bowlinghall under viktiga matcher och turneringar. 
-                  Vi har två kameror som täcker bana 1-4 och bana 4-8 för att ge er full överblick över tävlingarna.
+                  Vi har två kameror som täcker bana 1-4 och bana 5-8 för att ge er full överblick över tävlingarna.
                 </p>
                 <p>
                   Streamarna är gratis att titta på och ger dig möjlighet att följa spänningen 
