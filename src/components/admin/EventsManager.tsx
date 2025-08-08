@@ -35,6 +35,7 @@ interface Event {
   featured_start_date: string | null;
   featured_end_date: string | null;
   has_big_screen: boolean;
+  registration_form_enabled: boolean;
   image_url: string | null;
 }
 
@@ -63,6 +64,7 @@ const emptyEvent: Omit<Event, 'id'> = {
   featured_start_date: null,
   featured_end_date: null,
   has_big_screen: false,
+  registration_form_enabled: false,
   image_url: null
 };
 
@@ -111,7 +113,7 @@ const emptyEvent: Omit<Event, 'id'> = {
         return v.endsWith('Z') ? v : new Date(v).toISOString();
       };
 
-      const base = {
+const base = {
         title: (eventData as any).title,
         description: (eventData as any).description || null,
         event_date: toISO((eventData as any).event_date) as string,
@@ -128,6 +130,7 @@ const emptyEvent: Omit<Event, 'id'> = {
         featured_start_date: toISO((eventData as any).featured_start_date),
         featured_end_date: toISO((eventData as any).featured_end_date),
         has_big_screen: !!(eventData as any).has_big_screen,
+        registration_form_enabled: !!(eventData as any).registration_form_enabled,
         image_url: (eventData as any).image_url || null,
       };
 
@@ -327,6 +330,29 @@ interface EventFormProps {
 
 const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }) => {
   const [formData, setFormData] = useState(event);
+
+  type EventRegistration = {
+    id: string;
+    company_name: string;
+    contact_person: string;
+    phone_number: string;
+    team_members: string | null;
+    created_at: string;
+  };
+  const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
+
+  useEffect(() => {
+    const id = (event as any).id as string | undefined;
+    if (!id) { setRegistrations([]); return; }
+    (async () => {
+      const { data } = await (supabase as any)
+        .from('event_registrations')
+        .select('*')
+        .eq('event_id', id)
+        .order('created_at', { ascending: false });
+      setRegistrations(data || []);
+    })();
+  }, [event]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -599,8 +625,36 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave, onCancel, saving }
             />
             <Label htmlFor="has_big_screen">Storbildsskärm</Label>
           </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="registration_form_enabled"
+              checked={!!(formData as any).registration_form_enabled}
+              onCheckedChange={(checked) => updateField('registration_form_enabled' as any, checked)}
+            />
+            <Label htmlFor="registration_form_enabled">Aktivera anmälningsformulär</Label>
+          </div>
         </div>
       </div>
+
+      {(formData as any).registration_form_enabled && ('id' in formData) && (
+        <div className="border-t pt-4">
+          <Label>Inkomna anmälningar</Label>
+          <div className="mt-2 space-y-2">
+            {registrations.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Inga anmälningar ännu.</p>
+            ) : (
+              registrations.map((r) => (
+                <div key={r.id} className="p-3 rounded border">
+                  <div className="font-medium">{r.company_name}</div>
+                  <div className="text-sm text-muted-foreground">Kontakt: {r.contact_person} • {r.phone_number}</div>
+                  {r.team_members && <div className="text-sm mt-1 whitespace-pre-wrap">{r.team_members}</div>}
+                  <div className="text-xs text-muted-foreground mt-1">{new Date(r.created_at).toLocaleString('sv-SE')}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>

@@ -154,6 +154,44 @@ export type Database = {
           },
         ]
       }
+      event_registrations: {
+        Row: {
+          company_name: string
+          contact_person: string
+          created_at: string
+          event_id: string
+          id: string
+          phone_number: string
+          team_members: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_person: string
+          created_at?: string
+          event_id: string
+          id?: string
+          phone_number: string
+          team_members?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_person?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          phone_number?: string
+          team_members?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string
@@ -171,6 +209,7 @@ export type Database = {
           price: number | null
           registration_deadline: string | null
           registration_email: string | null
+          registration_form_enabled: boolean
           registration_phone: string | null
           registration_url: string | null
           status: string | null
@@ -193,6 +232,7 @@ export type Database = {
           price?: number | null
           registration_deadline?: string | null
           registration_email?: string | null
+          registration_form_enabled?: boolean
           registration_phone?: string | null
           registration_url?: string | null
           status?: string | null
@@ -215,6 +255,7 @@ export type Database = {
           price?: number | null
           registration_deadline?: string | null
           registration_email?: string | null
+          registration_form_enabled?: boolean
           registration_phone?: string | null
           registration_url?: string | null
           status?: string | null

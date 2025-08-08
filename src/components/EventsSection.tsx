@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink, PlayCircle, Monitor } from "lucide-react";
@@ -24,6 +27,7 @@ interface Event {
   featured: boolean;
   has_big_screen: boolean;
   image_url: string | null;
+  registration_form_enabled?: boolean;
 }
 
 const EventsSection = () => {
@@ -31,6 +35,7 @@ const EventsSection = () => {
   
   const [loading, setLoading] = useState(true);
   const [interested, setInterested] = useState<Record<string, boolean>>({});
+  const [regForms, setRegForms] = useState<Record<string, { company: string; contact: string; phone: string; team: string; loading: boolean }>>({});
 
   useEffect(() => {
     loadEvents();
@@ -117,6 +122,33 @@ const EventsSection = () => {
     } catch (err) {
       console.error('Interest error', err);
       toast.error('Kunde inte registrera intresse. Försök igen senare.');
+    }
+  };
+
+  const submitRegistration = async (eventId: string) => {
+    const form = regForms[eventId] || { company: '', contact: '', phone: '', team: '', loading: false };
+    if (!form.company || !form.contact || !form.phone) {
+      toast.error('Fyll i företagsnamn, kontaktperson och telefon.');
+      return;
+    }
+    setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: true } }));
+    try {
+      const { error } = await (supabase as any)
+        .from('event_registrations')
+        .insert({
+          event_id: eventId,
+          company_name: form.company,
+          contact_person: form.contact,
+          phone_number: form.phone,
+          team_members: form.team || null,
+        });
+      if (error) throw error;
+      toast.success('Tack! Din anmälan är skickad.');
+      setRegForms(prev => ({ ...prev, [eventId]: { company: '', contact: '', phone: '', team: '', loading: false } }));
+    } catch (e) {
+      console.error(e);
+      toast.error('Kunde inte skicka anmälan. Försök igen.');
+      setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: false } }));
     }
   };
 
@@ -254,6 +286,63 @@ const EventsSection = () => {
                                 </div>
                               </div>
                             </div>
+
+                            {(event as any).registration_form_enabled && (
+                              <div className="mt-6 border-t pt-4">
+                                <h5 className="font-semibold mb-3">Anmälan</h5>
+                                {isRegistrationOpen(event) ? (
+                                  <form
+                                    onSubmit={(e) => { e.preventDefault(); submitRegistration(event.id); }}
+                                    className="grid md:grid-cols-2 gap-3"
+                                  >
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`company_${event.id}`}>Företagsnamn</Label>
+                                      <Input
+                                        id={`company_${event.id}`}
+                                        value={regForms[event.id]?.company || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), company: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`contact_${event.id}`}>Kontaktperson</Label>
+                                      <Input
+                                        id={`contact_${event.id}`}
+                                        value={regForms[event.id]?.contact || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), contact: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`phone_${event.id}`}>Telefonnummer</Label>
+                                      <Input
+                                        id={`phone_${event.id}`}
+                                        value={regForms[event.id]?.phone || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), phone: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1 md:col-span-2">
+                                      <Label htmlFor={`team_${event.id}`}>Namn på lagmedlemmar</Label>
+                                      <Textarea
+                                        id={`team_${event.id}`}
+                                        rows={3}
+                                        value={regForms[event.id]?.team || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), team: e.target.value } }))}
+                                      />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                      <Button type="submit" disabled={!!regForms[event.id]?.loading}>
+                                        {regForms[event.id]?.loading ? 'Skickar...' : 'Skicka anmälan'}
+                                      </Button>
+                                    </div>
+                                  </form>
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">Anmälan är stängd.</p>
+                                )}
+                              </div>
+                            )}
+
                           </CardContent>
                         </Card>
                       ))}
