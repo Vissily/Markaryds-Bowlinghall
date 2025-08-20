@@ -1,13 +1,9 @@
-import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSEO } from "@/hooks/useSEO";
 
 const Markarydsligan = () => {
-  const [activeSeries, setActiveSeries] = useState("serie-a");
-
   // SEO optimization for markarydsligan page
   useSEO({
     title: "Markarydsligan - Bowlingserier | Markaryds Bowlinghall",
@@ -20,41 +16,34 @@ const Markarydsligan = () => {
     {
       id: "serie-a",
       name: "Serie A",
-      description: "Högsta divisionen med de mest rutinerade lagen",
-      teams: "12 lag",
-      schedule: "Onsdagar 19:00"
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8693&fromAdmin=1",
+      schedule: "Måndag 19:00"
     },
     {
       id: "serie-b", 
       name: "Serie B",
-      description: "Andra divisionen för erfarna spelare",
-      teams: "12 lag",
-      schedule: "Torsdagar 19:00"
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8694&fromAdmin=1",
+      schedule: "Tis 19:30"
     },
     {
       id: "serie-c",
       name: "Serie C", 
-      description: "Tredje divisionen för utvecklande spelare",
-      teams: "10 lag",
-      schedule: "Tisdagar 19:00"
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8695&fromAdmin=1",
+      schedule: "Mån 18:00"
     },
     {
       id: "serie-d",
       name: "Serie D",
-      description: "Fjärde divisionen för nybörjare och motionärer",
-      teams: "10 lag",
-      schedule: "Måndagar 19:00"
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8696&fromAdmin=1",
+      schedule: "Tis 17:30"
     },
     {
       id: "serie-e",
       name: "Serie E",
-      description: "Ungdomsserie för spelare under 18 år",
-      teams: "8 lag", 
-      schedule: "Lördagar 14:00"
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8697&fromAdmin=1",
+      schedule: "Tis 18:30"
     }
   ];
-
-  const currentSeries = series.find(s => s.id === activeSeries);
 
   return (
     <main className="min-h-screen bg-background">
@@ -70,74 +59,26 @@ const Markarydsligan = () => {
             </p>
           </div>
 
-          {/* Series Selection Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          {/* Series Buttons with Schedule */}
+          <div className="max-w-4xl mx-auto space-y-6">
             {series.map((serie) => (
-              <Button
-                key={serie.id}
-                variant={activeSeries === serie.id ? "default" : "outline"}
-                size="lg"
-                className="rounded-full px-6 py-3 font-semibold"
-                onClick={() => setActiveSeries(serie.id)}
-              >
-                {serie.name}
-              </Button>
+              <div key={serie.id} className="flex flex-col sm:flex-row items-center justify-between bg-card p-6 rounded-lg border">
+                <div className="text-center sm:text-left mb-4 sm:mb-0">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">{serie.name}</h2>
+                  <p className="text-lg text-muted-foreground">{serie.schedule}</p>
+                </div>
+                <Button 
+                  size="lg" 
+                  className="rounded-full px-8 py-3 font-semibold"
+                  asChild
+                >
+                  <a href={serie.url} target="_blank" rel="noopener noreferrer">
+                    Se tabell & resultat
+                  </a>
+                </Button>
+              </div>
             ))}
           </div>
-
-          {/* Active Series Content */}
-          {currentSeries && (
-            <Card className="max-w-4xl mx-auto">
-              <CardHeader className="text-center">
-                <CardTitle className="text-3xl mb-2">{currentSeries.name}</CardTitle>
-                <CardDescription className="text-lg">
-                  {currentSeries.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-3 gap-6 text-center">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">Antal lag</h3>
-                    <p className="text-2xl font-bold text-primary">{currentSeries.teams}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">Speltider</h3>
-                    <p className="text-2xl font-bold text-primary">{currentSeries.schedule}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">Säsong</h3>
-                    <p className="text-2xl font-bold text-primary">2024/2025</p>
-                  </div>
-                </div>
-
-                <div className="border-t pt-6">
-                  <h3 className="text-xl font-semibold mb-4 text-center">Information</h3>
-                  <div className="prose max-w-none text-center space-y-4">
-                    <p>
-                      Serien pågår från september till maj med en kort juluppehåll. 
-                      Varje lag spelar hemma och borta mot alla andra lag i serien.
-                    </p>
-                    <p>
-                      För mer information om anmälan, regler och spelschema, kontakta oss på telefon eller mejl.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-center gap-4 pt-6">
-                  <Button size="lg" asChild>
-                    <a href="/#kontakt">
-                      Kontakta oss
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild>
-                    <a href="/livescore">
-                      Se resultat
-                    </a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
       <Footer />
