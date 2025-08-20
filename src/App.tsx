@@ -15,7 +15,6 @@ import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
 import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
-import AnalyticsInit from "./components/AnalyticsInit";
 const queryClient = new QueryClient();
 
 const SessionGuard: React.FC = () => {
@@ -31,7 +30,6 @@ const App = () => (
         <Sonner />
         <SessionGuard />
         <BrowserRouter>
-          <AnalyticsInit />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
