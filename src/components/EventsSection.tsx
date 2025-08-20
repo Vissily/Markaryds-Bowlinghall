@@ -169,6 +169,9 @@ const EventsSection = () => {
     }
     setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: true } }));
     try {
+      // Get current user session for security tracking
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const { error } = await (supabase as any)
         .from('event_registrations')
         .insert({
@@ -177,6 +180,7 @@ const EventsSection = () => {
           contact_person: form.contact,
           phone_number: form.phone,
           team_members: form.team || null,
+          user_id: session?.user?.id || null, // Track user if authenticated
         });
       if (error) throw error;
       toast.success('Tack! Din anmälan är skickad.');

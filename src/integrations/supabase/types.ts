@@ -55,6 +55,7 @@ export type Database = {
           id: string
           phone_number: string
           team_members: string | null
+          user_id: string | null
         }
         Insert: {
           company_name: string
@@ -64,6 +65,7 @@ export type Database = {
           id?: string
           phone_number: string
           team_members?: string | null
+          user_id?: string | null
         }
         Update: {
           company_name?: string
@@ -73,6 +75,7 @@ export type Database = {
           id?: string
           phone_number?: string
           team_members?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
