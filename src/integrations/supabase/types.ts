@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -640,7 +640,7 @@ export type Database = {
     }
     Functions: {
       add_admin_user: {
-        Args: { _email: string; _password: string; _display_name: string }
+        Args: { _display_name: string; _email: string; _password: string }
         Returns: string
       }
       cleanup_duplicate_roles: {
@@ -648,7 +648,7 @@ export type Database = {
         Returns: undefined
       }
       create_admin_user_with_password: {
-        Args: { _email: string; _password: string; _display_name?: string }
+        Args: { _display_name?: string; _email: string; _password: string }
         Returns: Json
       }
       get_event_interest_count: {
@@ -661,8 +661,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
         Returns: boolean
       }
