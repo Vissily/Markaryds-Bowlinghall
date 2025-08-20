@@ -12,6 +12,7 @@ const Header = () => {
     { name: "Meny", href: "/menu" },
     { name: "Livestream", href: "/livestream" },
     { name: "Livescore", href: "/livescore" },
+    { name: "Markarydsligan", href: "/markarydsligan" },
     { name: "Evenemang", href: "/events" },
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Kontakt", href: "/#kontakt" },
