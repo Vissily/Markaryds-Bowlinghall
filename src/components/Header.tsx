@@ -10,7 +10,7 @@ const Header = () => {
     { name: "Hem", href: "/" },
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
-    { name: "Livestream", href: "/livestream" },
+    // { name: "Livestream", href: "/livestream" }, // Temporarily hidden
     { name: "Livescore", href: "/livescore" },
     { name: "Markarydsligan", href: "/markarydsligan" },
     { name: "Evenemang", href: "/events" },
