@@ -21,14 +21,14 @@ All colors MUST be HSL.
     --primary-foreground: 0 0% 98%;
     --primary-glow: 185 75% 45%;
 
-    --secondary: 200 90% 55%;
+    --secondary: 200 85% 45%;
     --secondary-foreground: 0 0% 98%;
 
     --accent: 220 12% 92%;
     --accent-foreground: 220 15% 25%;
 
     --muted: 220 10% 96%;
-    --muted-foreground: 215 15% 55%;
+    --muted-foreground: 215 25% 40%;
 
     --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 98%;
@@ -85,14 +85,14 @@ All colors MUST be HSL.
     --primary-foreground: 210 40% 95%;
     --primary-glow: 185 65% 55%;
 
-    --secondary: 200 80% 65%;
+    --secondary: 200 75% 55%;
     --secondary-foreground: 210 40% 95%;
 
     --accent: 215 25% 20%;
     --accent-foreground: 220 20% 75%;
 
     --muted: 215 25% 16%;
-    --muted-foreground: 215 15% 65%;
+    --muted-foreground: 215 25% 70%;
 
     --destructive: 0 60% 55%;
     --destructive-foreground: 210 40% 95%;
