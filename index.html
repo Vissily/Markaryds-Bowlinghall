@@ -4,6 +4,37 @@
     <link rel="icon" href="/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png" type="image/png">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Performance optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Inline critical CSS loading script -->
+    <script>
+      // Asynchronously load CSS to prevent render blocking
+      (function() {
+        var css = document.createElement('link');
+        css.rel = 'preload';
+        css.as = 'style';
+        css.href = '/src/index.css';
+        css.onload = function() {
+          this.onload = null;
+          this.rel = 'stylesheet';
+        };
+        document.head.appendChild(css);
+        
+        // Fallback for browsers that don't support preload
+        var noscript = document.createElement('noscript');
+        var fallback = document.createElement('link');
+        fallback.rel = 'stylesheet';
+        fallback.href = '/src/index.css';
+        noscript.appendChild(fallback);
+        document.head.appendChild(noscript);
+      })();
+    </script>
+    
     <title>Markaryds Bowlinghall - Bowling, Padel & Minigolf i Markaryd</title>
     <meta name="description" content="Markaryds Bowlinghall - Bowlinghall, padel, minigolf, dart och shuffleboard i Markaryd. Öppet 7 dagar i veckan. Boka din aktivitet redan idag!" />
     <meta name="keywords" content="bowling, padel, minigolf, dart, shuffleboard, markaryd, bowlinghall, aktiviteter, sport, familj, underhållning" />
