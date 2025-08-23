@@ -50,12 +50,15 @@ const Hero = () => {
     fetchHeroVideos();
   }, []);
 
-  // Auto-rotate videos every 10 seconds if there are multiple videos
+  // Optimized auto-rotate videos to prevent forced reflows  
   useEffect(() => {
     if (heroVideos.length <= 1) return;
     
     const interval = setInterval(() => {
-      setCurrentVideoIndex((prev) => (prev + 1) % heroVideos.length);
+      // Use requestAnimationFrame to batch DOM updates
+      requestAnimationFrame(() => {
+        setCurrentVideoIndex((prev) => (prev + 1) % heroVideos.length);
+      });
     }, 10000);
 
     return () => clearInterval(interval);

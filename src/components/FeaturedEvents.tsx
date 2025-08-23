@@ -21,12 +21,19 @@ const FeaturedEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [api, setApi] = useState<CarouselApi | null>(null);
 
-  // Autoplay carousel every 4s
+  // Optimized autoplay to prevent forced reflows
   useEffect(() => {
     if (!api) return;
+    
     const id = setInterval(() => {
-      try { api.scrollNext(); } catch {}
+      // Use requestAnimationFrame to avoid forced reflows
+      requestAnimationFrame(() => {
+        try { 
+          api.scrollNext(); 
+        } catch {}
+      });
     }, 4000);
+    
     return () => clearInterval(id);
   }, [api]);
 
