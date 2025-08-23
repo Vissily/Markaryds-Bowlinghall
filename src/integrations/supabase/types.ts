@@ -167,6 +167,7 @@ export type Database = {
           file_size: number | null
           id: string
           is_featured: boolean | null
+          is_optimized: boolean | null
           mime_type: string | null
           show_in_hero: boolean | null
           show_in_slideshow: boolean | null
@@ -174,6 +175,7 @@ export type Database = {
           title: string
           updated_at: string | null
           uploaded_by: string | null
+          video_quality: string | null
         }
         Insert: {
           created_at?: string | null
@@ -182,6 +184,7 @@ export type Database = {
           file_size?: number | null
           id?: string
           is_featured?: boolean | null
+          is_optimized?: boolean | null
           mime_type?: string | null
           show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
@@ -189,6 +192,7 @@ export type Database = {
           title: string
           updated_at?: string | null
           uploaded_by?: string | null
+          video_quality?: string | null
         }
         Update: {
           created_at?: string | null
@@ -197,6 +201,7 @@ export type Database = {
           file_size?: number | null
           id?: string
           is_featured?: boolean | null
+          is_optimized?: boolean | null
           mime_type?: string | null
           show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
@@ -204,6 +209,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
           uploaded_by?: string | null
+          video_quality?: string | null
         }
         Relationships: []
       }

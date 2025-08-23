@@ -48,14 +48,7 @@ const VideoCompressionManager = () => {
 
       if (error) throw error;
       
-      // Map data to include default values for missing fields
-      const videosWithDefaults = (data || []).map(video => ({
-        ...video,
-        is_optimized: video.is_optimized ?? false,
-        video_quality: video.video_quality ?? 'original'
-      }));
-      
-      setVideos(videosWithDefaults);
+      setVideos(data || []);
     } catch (error) {
       console.error('Error fetching videos:', error);
       toast.error('Kunde inte ladda videor');
