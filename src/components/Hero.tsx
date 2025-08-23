@@ -18,6 +18,8 @@ const Hero = () => {
   const [heroVideos, setHeroVideos] = useState<HeroVideo[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [videosLoaded, setVideosLoaded] = useState<Set<number>>(new Set());
+  const [isInView, setIsInView] = useState(false);
 
   // Fetch hero videos from database
   useEffect(() => {
@@ -50,9 +52,26 @@ const Hero = () => {
     fetchHeroVideos();
   }, []);
 
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const heroSection = document.querySelector('[data-hero-section]');
+    if (heroSection) {
+      observer.observe(heroSection);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   // Optimized auto-rotate videos to prevent forced reflows  
   useEffect(() => {
-    if (heroVideos.length <= 1) return;
+    if (heroVideos.length <= 1 || !isInView) return;
     
     const interval = setInterval(() => {
       // Use requestAnimationFrame to batch DOM updates
@@ -62,7 +81,12 @@ const Hero = () => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [heroVideos.length]);
+  }, [heroVideos.length, isInView]);
+
+  // Handle video loading optimization
+  const handleVideoLoad = (index: number) => {
+    setVideosLoaded(prev => new Set([...prev, index]));
+  };
 
   // Default values if content is not loaded yet
   const title = content?.title || 'Markaryds Bowlinghall';
@@ -77,21 +101,26 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section 
+      data-hero-section 
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
       {/* Background Video with Fallback */}
       <div className="absolute inset-0 z-0">
-        {!loading && heroVideos.length > 0 ? (
-          // Show videos from gallery
+        {!loading && heroVideos.length > 0 && isInView ? (
+          // Show videos from gallery with lazy loading
           heroVideos.map((video, index) => (
             <video 
               key={video.id}
-              autoPlay 
+              autoPlay={index === currentVideoIndex && isInView} 
               loop 
               muted 
               playsInline
+              preload={index === 0 ? "metadata" : "none"}
               className={`w-full h-full object-cover transition-opacity duration-1000 ${
                 index === currentVideoIndex ? 'opacity-100' : 'opacity-0 absolute inset-0'
               }`}
+              onLoadedData={() => handleVideoLoad(index)}
               onError={(e) => {
                 console.log('Hero video failed to load:', video.title);
                 const target = e.target as HTMLVideoElement;
@@ -102,6 +131,12 @@ const Hero = () => {
               Your browser does not support the video tag.
             </video>
           ))
+        ) : !loading && heroVideos.length > 0 ? (
+          // Placeholder when not in view
+          <div 
+            className="w-full h-full bg-cover bg-center bg-no-repeat" 
+            style={{ backgroundImage: `url(${heroImage})` }}
+          />
         ) : (
           // Fallback to default video or image
           <video 
