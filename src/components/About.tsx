@@ -53,7 +53,7 @@ const About = () => {
 
               <p>
                 När hallen öppnades fylldes den snabbt och idag, över 10 år senare, spelar ca <strong className="text-foreground">450 personer i veckan</strong>. 
-                Markaryds Bowlingklubb spelar nu med 2 lag i nationella serien och 3 lag i pensionärsserien.
+                Markaryds Bowlingklubb spelar nu med 2 lag i nationella serien och 4 lag i pensionärsserien.
               </p>
 
               <p>
