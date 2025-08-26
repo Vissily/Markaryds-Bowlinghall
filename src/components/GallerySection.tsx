@@ -86,12 +86,15 @@ const GallerySection = () => {
     fetchImages();
   }, []);
 
-  // Auto-play functionality
+  // Optimized auto-play to prevent forced reflows
   useEffect(() => {
     if (!isPlaying || galleryImages.length === 0) return;
     
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % galleryImages.length);
+      // Use requestAnimationFrame to batch DOM updates
+      requestAnimationFrame(() => {
+        setCurrentSlide((prev) => (prev + 1) % galleryImages.length);
+      });
     }, 4000);
 
     return () => clearInterval(interval);

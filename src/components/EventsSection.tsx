@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Calendar, Clock, Users, Trophy, Star, MapPin, Phone, Mail, ExternalLink, PlayCircle, Monitor } from "lucide-react";
+import { toast } from "sonner";
 
 interface Event {
   id: string;
@@ -20,15 +25,56 @@ interface Event {
   event_type: string;
   status: string;
   featured: boolean;
+  has_big_screen: boolean;
+  image_url: string | null;
+  registration_form_enabled?: boolean;
 }
 
 const EventsSection = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
+  
   const [loading, setLoading] = useState(true);
+  const [interested, setInterested] = useState<Record<string, boolean>>({});
+  const [regForms, setRegForms] = useState<Record<string, { company: string; contact: string; phone: string; team: string; loading: boolean }>>({});
 
   useEffect(() => {
     loadEvents();
+
+    // Realtime sync: update event list when participants or other fields change
+    const channel = supabase
+      .channel('events_public_sync')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'events' },
+        (payload: any) => {
+          setEvents((prev) => {
+            // Update existing
+            const updated = prev.map((e) => (payload.new && e.id === payload.new.id ? { ...e, ...payload.new } : e));
+
+            // Handle INSERTs that match our status filter
+            if (payload.eventType === 'INSERT' && payload.new && ['upcoming', 'ongoing'].includes(payload.new.status)) {
+              const exists = updated.some((e) => e.id === payload.new.id);
+              if (!exists) {
+                return [...updated, payload.new].sort(
+                  (a: any, b: any) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
+                );
+              }
+            }
+
+            // Handle DELETEs
+            if (payload.eventType === 'DELETE' && payload.old) {
+              return updated.filter((e) => e.id !== payload.old.id);
+            }
+
+            return updated;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
   }, []);
 
   const loadEvents = async () => {
@@ -43,7 +89,7 @@ const EventsSection = () => {
       
       const allEvents = data || [];
       setEvents(allEvents);
-      setFeaturedEvents(allEvents.filter(event => event.featured));
+      // featuredEvents borttaget - vi visar kategorier istället
     } catch (error) {
       console.error('Error loading events:', error);
     } finally {
@@ -90,14 +136,61 @@ const EventsSection = () => {
         return Trophy;
       case 'competition':
         return Star;
+      case 'livematch':
+        return PlayCircle;
       default:
         return Calendar;
     }
   };
-
   const isRegistrationOpen = (event: Event) => {
     if (!event.registration_deadline) return true;
     return new Date(event.registration_deadline) > new Date();
+  };
+
+  const registerInterest = async (eventId: string) => {
+    try {
+      const { error, data } = await supabase.functions.invoke('register-interest', {
+        body: { eventId },
+      });
+      if (error) throw error;
+      setInterested(prev => ({ ...prev, [eventId]: true }));
+      toast.success('Tack! Vi har registrerat ditt intresse.');
+    } catch (err) {
+      console.error('Interest error', err);
+      toast.error('Kunde inte registrera intresse. Försök igen senare.');
+    }
+  };
+
+  const submitRegistration = async (eventId: string) => {
+    const form = regForms[eventId] || { company: '', contact: '', phone: '', team: '', loading: false };
+    if (!form.company || !form.contact || !form.phone) {
+      toast.error('Fyll i företagsnamn, kontaktperson och telefon.');
+      return;
+    }
+    setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: true } }));
+    try {
+      // Get current user session for security tracking
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { error } = await (supabase as any)
+        .from('event_registrations')
+        .insert({
+          event_id: eventId,
+          company_name: form.company,
+          contact_person: form.contact,
+          phone_number: form.phone,
+          team_members: form.team || null,
+          user_id: session?.user?.id || null, // Track user if authenticated
+        });
+      if (error) throw error;
+      toast.success('Tack! Din anmälan är skickad.');
+      setRegForms(prev => ({ ...prev, [eventId]: { company: '', contact: '', phone: '', team: '', loading: false } }));
+      await loadEvents();
+    } catch (e) {
+      console.error(e);
+      toast.error('Kunde inte skicka anmälan. Försök igen.');
+      setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: false } }));
+    }
   };
 
   if (loading) {
@@ -111,6 +204,12 @@ const EventsSection = () => {
       </section>
     );
   }
+
+  const groupedByType = events.reduce<Record<string, Event[]>>((acc, e) => {
+    const key = e.event_type || 'övrigt';
+    (acc[key] ||= []).push(e);
+    return acc;
+  }, {});
 
   return (
     <section className="py-20 bg-background">
@@ -126,134 +225,172 @@ const EventsSection = () => {
             </p>
           </div>
 
-          {/* Featured Events */}
-          {featuredEvents.length > 0 && (
-            <div className="mb-16">
-              <h3 className="text-2xl font-bold text-foreground mb-8">Utvalda Evenemang</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                {featuredEvents.map((event) => {
-                  const IconComponent = getEventTypeIcon(event.event_type);
-                  return (
-                    <Card key={event.id} className="overflow-hidden shadow-elegant border-primary/20">
-                      <CardHeader className="bg-gradient-primary text-primary-foreground">
-                        <CardTitle className="flex items-center gap-3">
-                          <IconComponent className="w-6 h-6" />
-                          {event.title}
-                          <Badge variant="secondary" className="ml-auto">Utvald</Badge>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Calendar className="w-4 h-4" />
-                            <span>{formatDate(event.event_date)}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            <span>{formatTime(event.event_date)}</span>
-                          </div>
-                          {event.description && (
-                            <p className="text-foreground">{event.description}</p>
-                          )}
-                          {event.price && (
-                            <p className="text-lg font-semibold text-primary">{event.price} kr</p>
-                          )}
-                          <div className="flex justify-between items-center pt-4">
-                            {getStatusBadge(event.status)}
-                            <div className="flex gap-2">
-                              {event.registration_url && isRegistrationOpen(event) && (
-                                <Button variant="default" size="sm" asChild>
-                                  <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                                    Anmäl dig
-                                    <ExternalLink className="w-4 h-4 ml-1" />
-                                  </a>
-                                </Button>
-                              )}
-                              <Button variant="outline" size="sm" asChild>
-                                <a href="/events">Läs mer</a>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
-          {/* All Events */}
+          {/* Alla evenemang per kategori */}
           {events.length > 0 && (
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-foreground mb-8">Alla Kommande Evenemang</h3>
-              <div className="grid gap-4">
-                {events.map((event) => {
-                  const IconComponent = getEventTypeIcon(event.event_type);
-                  return (
-                    <Card key={event.id} className="shadow-card">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <IconComponent className="w-5 h-5 text-primary" />
-                              <h4 className="text-xl font-semibold text-foreground">{event.title}</h4>
-                              {event.featured && <Badge variant="secondary">Utvald</Badge>}
+              {Object.entries(groupedByType).map(([type, list]) => {
+                const typeLabels: Record<string, string> = { livematch: 'Livematch', tournament: 'Turnering', competition: 'Tävling' };
+                const label = typeLabels[type] || type;
+                const IconComponent = getEventTypeIcon(type);
+                return (
+                  <div key={type} className="mb-12">
+                    <h3 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-2">
+                      <IconComponent className="w-5 h-5 text-primary" /> {label}
+                    </h3>
+                    <div className="grid gap-4">
+                      {list.map((event) => (
+                        <Card key={event.id} className="shadow-card overflow-hidden">
+                          <CardContent className="p-6">
+                            <div className="flex flex-col md:flex-row gap-6">
+                              <div className="w-full md:w-1/3">
+                                {event.image_url && (
+                                  <AspectRatio ratio={9/16}>
+                                    <img
+                                      src={event.image_url}
+                                      alt={`Affisch för ${event.title}`}
+                                      className="h-full w-full object-contain bg-muted rounded"
+                                      loading="lazy"
+                                    />
+                                  </AspectRatio>
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex justify-between items-start">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <IconComponent className="w-5 h-5 text-primary" />
+                                      <h4 className="text-xl font-semibold text-foreground">{event.title}</h4>
+                                    </div>
+                                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
+                                      <span className="flex items-center gap-1">
+                                        <Calendar className="w-4 h-4" />
+                                        {formatDate(event.event_date)}
+                                      </span>
+                                      <span className="flex items-center gap-1">
+                                        <Clock className="w-4 h-4" />
+                                        {formatTime(event.event_date)}
+                                      </span>
+                                      {event.max_participants && (
+                                        <span className="flex items-center gap-1">
+                                          <Users className="w-4 h-4" />
+                                          {event.current_participants}/{event.max_participants}
+                                        </span>
+                                      )}
+                                      {event.price && (
+                                        <span className="font-semibold text-primary">{event.price} kr</span>
+                                      )}
+                                      {event.has_big_screen && (
+                                        <Badge variant="outline" className="flex items-center gap-1">
+                                          <Monitor className="w-3.5 h-3.5" />
+                                          Storbildsskärm
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    {event.description && (
+                                      <p className="text-foreground mb-3">{event.description}</p>
+                                    )}
+                                    <div className="flex gap-2 flex-wrap">
+                                      {event.registration_email && (
+                                        <span className="flex items-center gap-1">
+                                          <Mail className="w-4 h-4" />
+                                          {event.registration_email}
+                                        </span>
+                                      )}
+                                      {event.registration_phone && (
+                                        <span className="flex items-center gap-1">
+                                          <Phone className="w-4 h-4" />
+                                          {event.registration_phone}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col items-end gap-2 p-2">
+                                    {getStatusBadge(event.status)}
+                                    {event.registration_url && isRegistrationOpen(event) && (
+                                      <Button variant="outline" size="sm" asChild>
+                                        <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
+                                          Anmäl dig
+                                          <ExternalLink className="w-4 h-4 ml-1" />
+                                        </a>
+                                      </Button>
+                                    )}
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      disabled={!!interested[event.id]}
+                                      onClick={() => registerInterest(event.id)}
+                                    >
+                                      {interested[event.id] ? 'Intresse registrerat' : 'Jag är intresserad'}
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                {formatDate(event.event_date)}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                {formatTime(event.event_date)}
-                              </span>
-                              {event.max_participants && (
-                                <span className="flex items-center gap-1">
-                                  <Users className="w-4 h-4" />
-                                  {event.current_participants}/{event.max_participants}
-                                </span>
-                              )}
-                              {event.price && (
-                                <span className="font-semibold text-primary">{event.price} kr</span>
-                              )}
-                            </div>
-                            {event.description && (
-                              <p className="text-foreground mb-3">{event.description}</p>
+
+                            {(event as any).registration_form_enabled && (
+                              <div className="mt-6 border-t pt-4">
+                                <h5 className="font-semibold mb-3">Anmälan</h5>
+                                {isRegistrationOpen(event) ? (
+                                  <form
+                                    onSubmit={(e) => { e.preventDefault(); submitRegistration(event.id); }}
+                                    className="grid md:grid-cols-2 gap-3"
+                                  >
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`company_${event.id}`}>Företagsnamn</Label>
+                                      <Input
+                                        id={`company_${event.id}`}
+                                        value={regForms[event.id]?.company || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), company: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`contact_${event.id}`}>Kontaktperson</Label>
+                                      <Input
+                                        id={`contact_${event.id}`}
+                                        value={regForms[event.id]?.contact || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), contact: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label htmlFor={`phone_${event.id}`}>Telefonnummer</Label>
+                                      <Input
+                                        id={`phone_${event.id}`}
+                                        value={regForms[event.id]?.phone || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), phone: e.target.value } }))}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="space-y-1 md:col-span-2">
+                                      <Label htmlFor={`team_${event.id}`}>Namn på lagmedlemmar</Label>
+                                      <Textarea
+                                        id={`team_${event.id}`}
+                                        rows={3}
+                                        value={regForms[event.id]?.team || ''}
+                                        onChange={(e) => setRegForms(prev => ({ ...prev, [event.id]: { ...(prev[event.id]||{ company:'', contact:'', phone:'', team:'', loading:false }), team: e.target.value } }))}
+                                      />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                      <Button type="submit" disabled={!!regForms[event.id]?.loading}>
+                                        {regForms[event.id]?.loading ? 'Skickar...' : 'Skicka anmälan'}
+                                      </Button>
+                                    </div>
+                                  </form>
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">Anmälan är stängd.</p>
+                                )}
+                              </div>
                             )}
-                            <div className="flex gap-4 text-sm">
-                              {event.registration_email && (
-                                <span className="flex items-center gap-1">
-                                  <Mail className="w-4 h-4" />
-                                  {event.registration_email}
-                                </span>
-                              )}
-                              {event.registration_phone && (
-                                <span className="flex items-center gap-1">
-                                  <Phone className="w-4 h-4" />
-                                  {event.registration_phone}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            {getStatusBadge(event.status)}
-                            {event.registration_url && isRegistrationOpen(event) && (
-                              <Button variant="outline" size="sm" asChild>
-                                <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                                  Anmäl dig
-                                  <ExternalLink className="w-4 h-4 ml-1" />
-                                </a>
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
 

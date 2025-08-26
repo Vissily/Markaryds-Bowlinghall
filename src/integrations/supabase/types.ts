@@ -7,13 +7,86 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
+      event_interests: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          ip_hash: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          ip_hash?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          ip_hash?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_interests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_registrations: {
+        Row: {
+          company_name: string
+          contact_person: string
+          created_at: string
+          event_id: string
+          id: string
+          phone_number: string
+          team_members: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_person: string
+          created_at?: string
+          event_id: string
+          id?: string
+          phone_number: string
+          team_members?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_person?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          phone_number?: string
+          team_members?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string
@@ -22,11 +95,16 @@ export type Database = {
           event_date: string
           event_type: string | null
           featured: boolean | null
+          featured_end_date: string | null
+          featured_start_date: string | null
+          has_big_screen: boolean
           id: string
+          image_url: string | null
           max_participants: number | null
           price: number | null
           registration_deadline: string | null
           registration_email: string | null
+          registration_form_enabled: boolean
           registration_phone: string | null
           registration_url: string | null
           status: string | null
@@ -40,11 +118,16 @@ export type Database = {
           event_date: string
           event_type?: string | null
           featured?: boolean | null
+          featured_end_date?: string | null
+          featured_start_date?: string | null
+          has_big_screen?: boolean
           id?: string
+          image_url?: string | null
           max_participants?: number | null
           price?: number | null
           registration_deadline?: string | null
           registration_email?: string | null
+          registration_form_enabled?: boolean
           registration_phone?: string | null
           registration_url?: string | null
           status?: string | null
@@ -58,11 +141,16 @@ export type Database = {
           event_date?: string
           event_type?: string | null
           featured?: boolean | null
+          featured_end_date?: string | null
+          featured_start_date?: string | null
+          has_big_screen?: boolean
           id?: string
+          image_url?: string | null
           max_participants?: number | null
           price?: number | null
           registration_deadline?: string | null
           registration_email?: string | null
+          registration_form_enabled?: boolean
           registration_phone?: string | null
           registration_url?: string | null
           status?: string | null
@@ -79,6 +167,7 @@ export type Database = {
           file_size: number | null
           id: string
           is_featured: boolean | null
+          is_optimized: boolean | null
           mime_type: string | null
           show_in_hero: boolean | null
           show_in_slideshow: boolean | null
@@ -86,6 +175,7 @@ export type Database = {
           title: string
           updated_at: string | null
           uploaded_by: string | null
+          video_quality: string | null
         }
         Insert: {
           created_at?: string | null
@@ -94,6 +184,7 @@ export type Database = {
           file_size?: number | null
           id?: string
           is_featured?: boolean | null
+          is_optimized?: boolean | null
           mime_type?: string | null
           show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
@@ -101,6 +192,7 @@ export type Database = {
           title: string
           updated_at?: string | null
           uploaded_by?: string | null
+          video_quality?: string | null
         }
         Update: {
           created_at?: string | null
@@ -109,6 +201,7 @@ export type Database = {
           file_size?: number | null
           id?: string
           is_featured?: boolean | null
+          is_optimized?: boolean | null
           mime_type?: string | null
           show_in_hero?: boolean | null
           show_in_slideshow?: boolean | null
@@ -116,6 +209,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
           uploaded_by?: string | null
+          video_quality?: string | null
         }
         Relationships: []
       }
@@ -364,6 +458,39 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           button_link: string | null
@@ -433,7 +560,7 @@ export type Database = {
     }
     Functions: {
       add_admin_user: {
-        Args: { _email: string; _password: string; _display_name: string }
+        Args: { _display_name: string; _email: string; _password: string }
         Returns: string
       }
       cleanup_duplicate_roles: {
@@ -441,8 +568,12 @@ export type Database = {
         Returns: undefined
       }
       create_admin_user_with_password: {
-        Args: { _email: string; _password: string; _display_name?: string }
+        Args: { _display_name?: string; _email: string; _password: string }
         Returns: Json
+      }
+      get_event_interest_count: {
+        Args: { _event_id: string }
+        Returns: number
       }
       get_user_role: {
         Args: { _user_id: string }
@@ -450,8 +581,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
         Returns: boolean
       }
@@ -466,6 +597,10 @@ export type Database = {
       secure_promote_to_admin_v2: {
         Args: { _target_user_id: string }
         Returns: Json
+      }
+      sync_event_participant_counts: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

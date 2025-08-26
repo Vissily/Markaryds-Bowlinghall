@@ -5,17 +5,23 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
 import Livescore from "./pages/Livescore";
+import Markarydsligan from "./pages/Markarydsligan";
 import Events from "./pages/Events";
 import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
 import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
-
 const queryClient = new QueryClient();
+
+const SessionGuard: React.FC = () => {
+  useSessionTimeout();
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -23,12 +29,14 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SessionGuard />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/livescore" element={<Livescore />} />
+            <Route path="/markarydsligan" element={<Markarydsligan />} />
             <Route path="/events" element={<Events />} />
             <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />
