@@ -200,8 +200,8 @@ const Hero = () => {
               </a>
             </Button>
             <Button variant="outline" size="xl" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white hover:text-primary" asChild>
-              <a href="#activities">
-                Se Aktiviteter
+              <a href="/prislista">
+                Prislista
               </a>
             </Button>
           </div>
