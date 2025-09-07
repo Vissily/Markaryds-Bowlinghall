@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, Clock, MapPin } from "lucide-react";
+import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,12 +18,19 @@ const Header = () => {
     { name: "Hem", href: "/" },
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
-    // { name: "Livestream", href: "/livestream" }, // Temporarily hidden
-    { name: "Livescore", href: "/livescore" },
-    { name: "Markarydsligan", href: "/markarydsligan" },
     { name: "Evenemang", href: "/events" },
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Kontakt", href: "/#kontakt" },
+  ];
+
+  const livescoreItems = [
+    { name: "Livescore", href: "/livescore" },
+    { name: "Livestream", href: "/livestream" },
+  ];
+
+  const ligaItems = [
+    { name: "Markarydsligan", href: "/markarydsligan" },
+    { name: "Dartligan", href: "https://seriespel.markarydsbowling.se/dart/main" },
   ];
 
   return (
@@ -32,17 +47,62 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
+          <NavigationMenu className="hidden lg:flex flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
+            <NavigationMenuList className="space-x-6 xl:space-x-8 2xl:space-x-10">
+              {navigation.map((item) => (
+                <NavigationMenuItem key={item.name}>
+                  <NavigationMenuLink
+                    href={item.href}
+                    className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                  >
+                    {item.name}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+              
+              {/* Livescore Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent">
+                  Livescore
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-48 p-2">
+                    {livescoreItems.map((item) => (
+                      <NavigationMenuLink
+                        key={item.name}
+                        href={item.href}
+                        className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      >
+                        {item.name}
+                      </NavigationMenuLink>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Liga Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent">
+                  Ligor
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-48 p-2">
+                    {ligaItems.map((item) => (
+                      <NavigationMenuLink
+                        key={item.name}
+                        href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      >
+                        {item.name}
+                      </NavigationMenuLink>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Contact Info */}
           <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6 border-l border-border">
@@ -85,7 +145,7 @@ const Header = () => {
         {/* Mobile Menu */}
         <div className={cn(
           "lg:hidden overflow-hidden transition-all duration-300",
-          isMenuOpen ? "max-h-96 pb-6" : "max-h-0"
+          isMenuOpen ? "max-h-[500px] pb-6" : "max-h-0"
         )}>
           <nav className="flex flex-col space-y-4 pt-4 border-t border-border">
             {navigation.map((item) => (
@@ -98,6 +158,38 @@ const Header = () => {
                 {item.name}
               </a>
             ))}
+            
+            {/* Mobile Livescore Section */}
+            <div className="space-y-2">
+              <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Livescore</div>
+              {livescoreItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+
+            {/* Mobile Liga Section */}
+            <div className="space-y-2">
+              <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Ligor</div>
+              {ligaItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target={item.href.startsWith('http') ? '_blank' : undefined}
+                  rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
             <div className="pt-4 space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
