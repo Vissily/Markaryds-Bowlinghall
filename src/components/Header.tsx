@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,6 +7,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
+  const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const navigation = [
     { name: "Hem", href: "/" },
@@ -55,8 +57,17 @@ const Header = () => {
             {/* Livescore Dropdown */}
             <div className="relative">
               <button
-                onMouseEnter={() => setLivescoreOpen(true)}
-                onMouseLeave={() => setLivescoreOpen(false)}
+                onMouseEnter={() => {
+                  if (livescoreTimeoutRef.current) {
+                    clearTimeout(livescoreTimeoutRef.current);
+                  }
+                  setLivescoreOpen(true);
+                }}
+                onMouseLeave={() => {
+                  livescoreTimeoutRef.current = setTimeout(() => {
+                    setLivescoreOpen(false);
+                  }, 150);
+                }}
                 className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
               >
                 Livescore
@@ -64,9 +75,18 @@ const Header = () => {
               </button>
               {livescoreOpen && (
                 <div
-                  onMouseEnter={() => setLivescoreOpen(true)}
-                  onMouseLeave={() => setLivescoreOpen(false)}
-                  className="absolute top-full left-0 mt-1 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                  onMouseEnter={() => {
+                    if (livescoreTimeoutRef.current) {
+                      clearTimeout(livescoreTimeoutRef.current);
+                    }
+                    setLivescoreOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    livescoreTimeoutRef.current = setTimeout(() => {
+                      setLivescoreOpen(false);
+                    }, 150);
+                  }}
+                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
                 >
                   {livescoreItems.map((item) => (
                     <a
@@ -84,8 +104,17 @@ const Header = () => {
             {/* Liga Dropdown */}
             <div className="relative">
               <button
-                onMouseEnter={() => setLigaOpen(true)}
-                onMouseLeave={() => setLigaOpen(false)}
+                onMouseEnter={() => {
+                  if (ligaTimeoutRef.current) {
+                    clearTimeout(ligaTimeoutRef.current);
+                  }
+                  setLigaOpen(true);
+                }}
+                onMouseLeave={() => {
+                  ligaTimeoutRef.current = setTimeout(() => {
+                    setLigaOpen(false);
+                  }, 150);
+                }}
                 className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
               >
                 Ligor
@@ -93,9 +122,18 @@ const Header = () => {
               </button>
               {ligaOpen && (
                 <div
-                  onMouseEnter={() => setLigaOpen(true)}
-                  onMouseLeave={() => setLigaOpen(false)}
-                  className="absolute top-full left-0 mt-1 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                  onMouseEnter={() => {
+                    if (ligaTimeoutRef.current) {
+                      clearTimeout(ligaTimeoutRef.current);
+                    }
+                    setLigaOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    ligaTimeoutRef.current = setTimeout(() => {
+                      setLigaOpen(false);
+                    }, 150);
+                  }}
+                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
                 >
                   {ligaItems.map((item) => (
                     <a
