@@ -62,11 +62,11 @@ const Header = () => {
               
               {/* Livescore Dropdown */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent">
+                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent border-none">
                   Livescore
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="w-48 p-2">
+                <NavigationMenuContent className="bg-background border border-border shadow-lg z-50">
+                  <div className="w-40 p-1">
                     {livescoreItems.map((item) => (
                       <NavigationMenuLink
                         key={item.name}
@@ -82,11 +82,11 @@ const Header = () => {
 
               {/* Liga Dropdown */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent">
+                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent border-none">
                   Ligor
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="w-48 p-2">
+                <NavigationMenuContent className="bg-background border border-border shadow-lg z-50">
+                  <div className="w-40 p-1">
                     {ligaItems.map((item) => (
                       <NavigationMenuLink
                         key={item.name}
