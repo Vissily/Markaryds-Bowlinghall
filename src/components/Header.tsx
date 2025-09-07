@@ -2,17 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [livescoreOpen, setLivescoreOpen] = useState(false);
+  const [ligaOpen, setLigaOpen] = useState(false);
 
   const navigation = [
     { name: "Hem", href: "/" },
@@ -47,62 +41,77 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
-            <NavigationMenuList className="space-x-6 xl:space-x-8 2xl:space-x-10">
-              {navigation.map((item) => (
-                <NavigationMenuItem key={item.name}>
-                  <NavigationMenuLink
-                    href={item.href}
-                    className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
-                  >
-                    {item.name}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
-              
-              {/* Livescore Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent border-none">
-                  Livescore
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-background border border-border shadow-lg z-50">
-                  <div className="w-40 p-1">
-                    {livescoreItems.map((item) => (
-                      <NavigationMenuLink
-                        key={item.name}
-                        href={item.href}
-                        className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                      >
-                        {item.name}
-                      </NavigationMenuLink>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
+            {navigation.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+              >
+                {item.name}
+              </a>
+            ))}
+            
+            {/* Livescore Dropdown */}
+            <div className="relative">
+              <button
+                onMouseEnter={() => setLivescoreOpen(true)}
+                onMouseLeave={() => setLivescoreOpen(false)}
+                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+              >
+                Livescore
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {livescoreOpen && (
+                <div
+                  onMouseEnter={() => setLivescoreOpen(true)}
+                  onMouseLeave={() => setLivescoreOpen(false)}
+                  className="absolute top-full left-0 mt-1 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                >
+                  {livescoreItems.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
 
-              {/* Liga Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap bg-transparent border-none">
-                  Ligor
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-background border border-border shadow-lg z-50">
-                  <div className="w-40 p-1">
-                    {ligaItems.map((item) => (
-                      <NavigationMenuLink
-                        key={item.name}
-                        href={item.href}
-                        target={item.href.startsWith('http') ? '_blank' : undefined}
-                        rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                      >
-                        {item.name}
-                      </NavigationMenuLink>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+            {/* Liga Dropdown */}
+            <div className="relative">
+              <button
+                onMouseEnter={() => setLigaOpen(true)}
+                onMouseLeave={() => setLigaOpen(false)}
+                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+              >
+                Ligor
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {ligaOpen && (
+                <div
+                  onMouseEnter={() => setLigaOpen(true)}
+                  onMouseLeave={() => setLigaOpen(false)}
+                  className="absolute top-full left-0 mt-1 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                >
+                  {ligaItems.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target={item.href.startsWith('http') ? '_blank' : undefined}
+                      rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </nav>
 
           {/* Contact Info */}
           <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6 border-l border-border">
