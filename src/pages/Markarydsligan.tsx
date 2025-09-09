@@ -42,6 +42,18 @@ const Markarydsligan = () => {
       name: "Serie E",
       url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8697&fromAdmin=1",
       schedule: "Tis 18:30"
+    },
+    {
+      id: "55-grupp-1",
+      name: "55+ Grupp 1",
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8822&fromAdmin=1",
+      schedule: "Ons 16:00"
+    },
+    {
+      id: "55-grupp-2", 
+      name: "55+ Grupp 2",
+      url: "https://www.sbhf.se/ligaservice/index.php/serie/index?parentId=8823&fromAdmin=1",
+      schedule: "Fre 16:00"
     }
   ];
 
