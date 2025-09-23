@@ -146,7 +146,7 @@ const GallerySection = () => {
             ) : (
               <>
                 {/* Main slideshow */}
-                <div className="relative aspect-[21/9] overflow-hidden">
+                <div className="relative aspect-[21/9]">
                   {galleryImages.map((image, index) => (
                     <div
                       key={image.id}

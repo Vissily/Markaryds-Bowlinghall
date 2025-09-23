@@ -103,7 +103,7 @@ const Hero = () => {
   return (
     <section 
       data-hero-section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center"
     >
       {/* Background Video with Fallback */}
       <div className="absolute inset-0 z-0">
@@ -224,10 +224,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-4 h-4 bg-secondary rounded-full animate-float opacity-60"></div>
-      <div className="absolute top-40 right-20 w-6 h-6 bg-white rounded-full animate-float opacity-40" style={{animationDelay: '1s'}}></div>
-      <div className="absolute bottom-40 left-20 w-3 h-3 bg-secondary rounded-full animate-float opacity-50" style={{animationDelay: '2s'}}></div>
+      {/* Floating Elements - Positioned safely within viewport */}
+      <div className="absolute top-20 left-4 lg:left-10 w-4 h-4 bg-secondary rounded-full animate-float opacity-60"></div>
+      <div className="absolute top-40 right-4 lg:right-20 w-6 h-6 bg-white rounded-full animate-float opacity-40" style={{animationDelay: '1s'}}></div>
+      <div className="absolute bottom-40 left-4 lg:left-20 w-3 h-3 bg-secondary rounded-full animate-float opacity-50" style={{animationDelay: '2s'}}></div>
     </section>
   );
 };
