@@ -32,37 +32,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const fetchRole = (userId: string) => {
+      // Defer role fetching to prevent deadlocks and avoid calling Supabase inside the auth callback directly
+      setTimeout(() => {
+        supabase
+          .rpc('get_user_role', { _user_id: userId })
+          .then(({ data, error }) => {
+            if (error) {
+              console.error('Error fetching user role:', error);
+              setUserRole(null);
+              return;
+            }
+            setUserRole(data);
+          });
+      }, 0);
+    };
+
+    // Set up auth state listener (callback MUST be sync)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
+
+      setLoading(false);
+    });
+
+    // Check for existing session
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
-          // Defer role fetching to prevent deadlocks
-          setTimeout(async () => {
-            try {
-              const { data: roleData } = await supabase
-                .rpc('get_user_role', { _user_id: session.user.id });
-              setUserRole(roleData);
-            } catch (error) {
-              console.error('Error fetching user role:', error);
-            }
-          }, 0);
+          fetchRole(session.user.id);
         } else {
           setUserRole(null);
         }
-        
-        setLoading(false);
-      }
-    );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
 
     return () => subscription.unsubscribe();
   }, []);

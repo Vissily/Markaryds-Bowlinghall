@@ -28,7 +28,7 @@ interface SiteContent {
 }
 
 const AdminSimple = () => {
-  const { user, userRole, signOut } = useAuth();
+  const { user, userRole, signOut, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [content, setContent] = useState<SiteContent>({
     title: '',
@@ -37,16 +37,18 @@ const AdminSimple = () => {
     button_text: '',
     button_link: ''
   });
-  const [loading, setLoading] = useState(true);
+  const [contentLoading, setContentLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
     if (user && userRole === 'admin') {
       loadContent();
     }
-  }, [user, userRole]);
+  }, [user, userRole, authLoading]);
 
   const loadContent = async () => {
+    setContentLoading(true);
     try {
       const { data, error } = await supabase
         .from('site_content')
@@ -73,7 +75,7 @@ const AdminSimple = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setContentLoading(false);
     }
   };
 
@@ -185,7 +187,7 @@ const AdminSimple = () => {
     }
   };
 
-  if (loading) {
+  if (authLoading || contentLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
