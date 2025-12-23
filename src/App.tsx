@@ -29,8 +29,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <SessionGuard />
         <BrowserRouter>
+          <SessionGuard />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
