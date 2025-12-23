@@ -464,7 +464,7 @@ export type Database = {
           created_at: string
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           table_name: string
           user_agent: string | null
           user_id: string | null
@@ -474,7 +474,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           table_name: string
           user_agent?: string | null
           user_id?: string | null
@@ -484,7 +484,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           table_name?: string
           user_agent?: string | null
           user_id?: string | null
@@ -563,18 +563,12 @@ export type Database = {
         Args: { _display_name: string; _email: string; _password: string }
         Returns: string
       }
-      cleanup_duplicate_roles: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_duplicate_roles: { Args: never; Returns: undefined }
       create_admin_user_with_password: {
         Args: { _display_name?: string; _email: string; _password: string }
         Returns: Json
       }
-      get_event_interest_count: {
-        Args: { _event_id: string }
-        Returns: number
-      }
+      get_event_interest_count: { Args: { _event_id: string }; Returns: number }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -586,10 +580,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      promote_first_user_to_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      promote_first_user_to_admin: { Args: never; Returns: undefined }
       secure_promote_to_admin: {
         Args: { _target_user_id: string }
         Returns: Json
@@ -598,10 +589,7 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: Json
       }
-      sync_event_participant_counts: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      sync_event_participant_counts: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "editor" | "user"
