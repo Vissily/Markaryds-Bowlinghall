@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 interface SiteContent {
@@ -14,62 +14,30 @@ interface SiteContent {
 }
 
 export const useSiteContent = (sectionKey: string) => {
-  const [content, setContent] = useState<SiteContent | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: content, isLoading: loading, error } = useQuery({
+    queryKey: ['site-content', sectionKey],
+    queryFn: async () => {
+      const { data, error: supabaseError } = await supabase
+        .from('site_content')
+        .select('*')
+        .eq('section_key', sectionKey)
+        .maybeSingle();
 
-  useEffect(() => {
-    const loadContent = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data, error: supabaseError } = await supabase
-          .from('site_content')
-          .select('*')
-          .eq('section_key', sectionKey)
-          .single();
-
-        if (supabaseError && supabaseError.code !== 'PGRST116') {
-          throw supabaseError;
-        }
-
-        setContent(data);
-      } catch (err) {
-        console.error('Error loading content:', err);
-        setError('Kunde inte ladda innehåll');
-      } finally {
-        setLoading(false);
+      if (supabaseError) {
+        throw supabaseError;
       }
-    };
 
-    loadContent();
+      return data as SiteContent | null;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes - content rarely changes
+    gcTime: 30 * 60 * 1000, // 30 minutes cache
+  });
 
-    // Subscribe to changes
-    const subscription = supabase
-      .channel(`site_content_${sectionKey}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'site_content',
-          filter: `section_key=eq.${sectionKey}`,
-        },
-        (payload) => {
-          if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
-            setContent(payload.new as SiteContent);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [sectionKey]);
-
-  return { content, loading, error };
+  return { 
+    content: content ?? null, 
+    loading, 
+    error: error ? 'Kunde inte ladda innehåll' : null 
+  };
 };
 
 export default useSiteContent;
