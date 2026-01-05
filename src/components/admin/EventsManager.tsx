@@ -70,22 +70,7 @@ const emptyEvent: Omit<Event, 'id'> = {
 
   useEffect(() => {
     loadEvents();
-
-    // Realtime sync in admin: reload when events (incl. current_participants) change
-    const channel = supabase
-      .channel('events_admin_sync')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'events' },
-        () => {
-          loadEvents();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
+    // Removed realtime subscription to reduce egress - use manual sync button instead
   }, []);
 
   const loadEvents = async () => {
