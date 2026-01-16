@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff, Download, Play, PlayCircle } from "lucide-react";
+import { Trash2, Edit, Star, StarOff, Save, X, Monitor, MonitorOff, Download, Play, PlayCircle, Youtube, Link } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import MediaUpload from "./ImageUpload";
@@ -21,6 +21,7 @@ interface GalleryImage {
   show_in_hero: boolean;
   sort_order: number;
   created_at: string;
+  youtube_url: string | null;
 }
 
 const GalleryManager = () => {
@@ -29,6 +30,10 @@ const GalleryManager = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editYoutubeUrl, setEditYoutubeUrl] = useState("");
+  const [addingYoutube, setAddingYoutube] = useState(false);
+  const [newYoutubeUrl, setNewYoutubeUrl] = useState("");
+  const [newYoutubeTitle, setNewYoutubeTitle] = useState("");
   const { toast } = useToast();
 
   const fetchImages = async () => {
@@ -181,6 +186,7 @@ const GalleryManager = () => {
     setEditingId(image.id);
     setEditTitle(image.title);
     setEditDescription(image.description || "");
+    setEditYoutubeUrl(image.youtube_url || "");
   };
 
   const saveEdit = async () => {
@@ -191,7 +197,8 @@ const GalleryManager = () => {
         .from('gallery_images')
         .update({
           title: editTitle.trim(),
-          description: editDescription.trim() || null
+          description: editDescription.trim() || null,
+          youtube_url: editYoutubeUrl.trim() || null
         })
         .eq('id', editingId);
 
@@ -199,13 +206,19 @@ const GalleryManager = () => {
 
       setImages(images.map(img => 
         img.id === editingId 
-          ? { ...img, title: editTitle.trim(), description: editDescription.trim() || null }
+          ? { 
+              ...img, 
+              title: editTitle.trim(), 
+              description: editDescription.trim() || null,
+              youtube_url: editYoutubeUrl.trim() || null
+            }
           : img
       ));
 
       setEditingId(null);
       setEditTitle("");
       setEditDescription("");
+      setEditYoutubeUrl("");
 
       toast({
         title: "Media uppdaterad",
@@ -225,6 +238,55 @@ const GalleryManager = () => {
     setEditingId(null);
     setEditTitle("");
     setEditDescription("");
+    setEditYoutubeUrl("");
+  };
+
+  const handleAddYoutubeVideo = async () => {
+    if (!newYoutubeUrl.trim() || !newYoutubeTitle.trim()) {
+      toast({
+        title: "Fyll i alla fält",
+        description: "Både titel och YouTube-länk krävs",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Inte inloggad');
+
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .insert({
+          title: newYoutubeTitle.trim(),
+          youtube_url: newYoutubeUrl.trim(),
+          file_path: `youtube-${Date.now()}`, // Placeholder path
+          uploaded_by: user.id,
+          mime_type: 'video/youtube',
+          show_in_hero: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setImages([...images, data]);
+      setNewYoutubeUrl("");
+      setNewYoutubeTitle("");
+      setAddingYoutube(false);
+
+      toast({
+        title: "YouTube-video tillagd",
+        description: "Videon har lagts till och visas i hero-sektionen"
+      });
+    } catch (error) {
+      console.error('Error adding YouTube video:', error);
+      toast({
+        title: "Fel vid tillägg",
+        description: "Kunde inte lägga till YouTube-video",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDownload = async (image: GalleryImage) => {
@@ -262,6 +324,54 @@ const GalleryManager = () => {
 
   return (
     <div className="space-y-6">
+      {/* YouTube Video Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Youtube className="w-5 h-5 text-red-600" />
+            Lägg till YouTube-video för Hero
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {addingYoutube ? (
+            <div className="space-y-3">
+              <Input
+                value={newYoutubeTitle}
+                onChange={(e) => setNewYoutubeTitle(e.target.value)}
+                placeholder="Titel för videon"
+              />
+              <Input
+                value={newYoutubeUrl}
+                onChange={(e) => setNewYoutubeUrl(e.target.value)}
+                placeholder="YouTube-länk (t.ex. https://www.youtube.com/watch?v=...)"
+              />
+              <div className="flex gap-2">
+                <Button onClick={handleAddYoutubeVideo}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Lägg till video
+                </Button>
+                <Button variant="outline" onClick={() => {
+                  setAddingYoutube(false);
+                  setNewYoutubeUrl("");
+                  setNewYoutubeTitle("");
+                }}>
+                  <X className="w-4 h-4 mr-2" />
+                  Avbryt
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                💡 YouTube-videor visas i hero-sektionen på startsidan och drar ingen bandbredd från din Supabase-lagring.
+              </p>
+            </div>
+          ) : (
+            <Button onClick={() => setAddingYoutube(true)} variant="outline">
+              <Youtube className="w-4 h-4 mr-2" />
+              Lägg till YouTube-video
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Ladda upp ny media</CardTitle>
@@ -290,12 +400,31 @@ const GalleryManager = () => {
                         className="w-full h-full object-cover"
                       />
                     )}
-                    {image.mime_type?.startsWith('video/') && (
+                    {image.mime_type?.startsWith('video/') && !image.youtube_url && image.mime_type !== 'video/youtube' && (
                       <video
                         src={getImageUrl(image.file_path)}
                         className="w-full h-full object-cover"
                         controls
                       />
+                    )}
+                    {(image.youtube_url || image.mime_type === 'video/youtube') && (
+                      <div className="w-full h-full bg-red-50 flex items-center justify-center">
+                        <div className="text-center">
+                          <Youtube className="w-12 h-12 text-red-600 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600">{image.title}</p>
+                          {image.youtube_url && (
+                            <a 
+                              href={image.youtube_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 hover:underline flex items-center justify-center gap-1 mt-1"
+                            >
+                              <Link className="w-3 h-3" />
+                              Öppna i YouTube
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     )}
                     {image.mime_type === 'application/pdf' && (
                       <div className="w-full h-full bg-red-50 flex items-center justify-center">
@@ -339,6 +468,11 @@ const GalleryManager = () => {
                           onChange={(e) => setEditDescription(e.target.value)}
                           placeholder="Beskrivning"
                           rows={2}
+                        />
+                        <Input
+                          value={editYoutubeUrl}
+                          onChange={(e) => setEditYoutubeUrl(e.target.value)}
+                          placeholder="YouTube-länk (valfritt)"
                         />
                         <div className="flex gap-2">
                           <Button size="sm" onClick={saveEdit}>
@@ -384,7 +518,7 @@ const GalleryManager = () => {
                           >
                             {image.show_in_slideshow ? <MonitorOff className="w-3 h-3" /> : <Monitor className="w-3 h-3" />}
                           </Button>
-                          {image.mime_type?.startsWith('video/') && (
+                          {(image.mime_type?.startsWith('video/') || image.youtube_url) && (
                             <Button
                               size="sm"
                               variant="outline"
