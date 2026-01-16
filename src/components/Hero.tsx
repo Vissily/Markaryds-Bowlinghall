@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, Calendar } from "lucide-react";
 import heroImage from "@/assets/hero-bowling.jpg";
@@ -9,38 +9,46 @@ import { supabase } from "@/integrations/supabase/client";
 interface HeroVideo {
   id: string;
   title: string;
-  file_path: string;
-  mime_type: string;
+  youtube_url: string | null;
 }
+
+// Extract YouTube video ID from various URL formats
+const getYouTubeVideoId = (url: string): string | null => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/,
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+};
 
 const Hero = () => {
   const { content } = useSiteContent('hero');
   const [heroVideos, setHeroVideos] = useState<HeroVideo[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [videoStarted, setVideoStarted] = useState(false);
   const [userInteracted, setUserInteracted] = useState(false);
 
-  // Fetch hero videos from database - only load first 3 initially for performance
+  // Fetch hero videos with YouTube URLs from database
   useEffect(() => {
     const fetchHeroVideos = async () => {
       try {
         const { data, error } = await supabase
           .from('gallery_images')
-          .select('id, title, file_path, mime_type')
+          .select('id, title, youtube_url')
           .eq('show_in_hero', true)
-          .like('mime_type', 'video/%')
+          .not('youtube_url', 'is', null)
           .order('sort_order', { ascending: true })
-          .limit(3); // Only load 3 videos for better performance
+          .limit(3);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          const formattedVideos = data.map(video => ({
-            ...video,
-            file_path: supabase.storage.from('gallery-images').getPublicUrl(video.file_path).data.publicUrl
-          }));
-          setHeroVideos(formattedVideos);
+          setHeroVideos(data);
         }
       } catch (error) {
         console.error('Error fetching hero videos:', error);
@@ -52,11 +60,10 @@ const Hero = () => {
     fetchHeroVideos();
   }, []);
 
-  // Detect user interaction to start video playback (saves bandwidth on mobile)
+  // Detect user interaction to start video playback
   useEffect(() => {
     const handleInteraction = () => {
       setUserInteracted(true);
-      // Remove listeners after first interaction
       window.removeEventListener('scroll', handleInteraction);
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
@@ -77,22 +84,19 @@ const Hero = () => {
     };
   }, []);
 
-  // Auto-rotate videos with longer interval
+  // Auto-rotate videos
   useEffect(() => {
-    if (heroVideos.length <= 1 || !videoStarted) return;
+    if (heroVideos.length <= 1 || !userInteracted) return;
     
     const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        setCurrentVideoIndex((prev) => (prev + 1) % heroVideos.length);
-      });
-    }, 15000); // Longer interval = fewer video loads
+      setCurrentVideoIndex((prev) => (prev + 1) % heroVideos.length);
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, [heroVideos.length, videoStarted]);
+  }, [heroVideos.length, userInteracted]);
 
-  const handleVideoCanPlay = useCallback(() => {
-    setVideoStarted(true);
-  }, []);
+  const currentVideo = heroVideos[currentVideoIndex];
+  const youtubeId = currentVideo?.youtube_url ? getYouTubeVideoId(currentVideo.youtube_url) : null;
 
   // Default values
   const title = content?.title || 'Markaryds Bowlinghall';
@@ -109,52 +113,31 @@ const Hero = () => {
       data-hero-section 
       className="relative h-[80vh] min-h-[600px] flex items-center justify-center"
     >
-      {/* Background - Show image first, then video on interaction */}
+      {/* Background - Show image first, then YouTube video on interaction */}
       <div className="absolute inset-0 z-0">
         {/* Always show image as base layer for instant loading */}
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-            videoStarted ? 'opacity-0' : 'opacity-100'
+            userInteracted && youtubeId ? 'opacity-0' : 'opacity-100'
           }`}
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         
-        {/* Only load video after user interaction */}
-        {userInteracted && !loading && heroVideos.length > 0 && (
-          <>
-            {/* Current video */}
-            <video 
-              key={heroVideos[currentVideoIndex]?.id}
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              preload="metadata"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                videoStarted ? 'opacity-100' : 'opacity-0'
-              }`}
-              onCanPlay={handleVideoCanPlay}
-              onError={(e) => {
-                console.log('Hero video failed to load');
-                const target = e.target as HTMLVideoElement;
-                target.style.display = 'none';
-              }}
-            >
-              <source 
-                src={heroVideos[currentVideoIndex]?.file_path} 
-                type={heroVideos[currentVideoIndex]?.mime_type} 
-              />
-            </video>
-            
-            {/* Preload next video in background */}
-            {heroVideos.length > 1 && (
-              <link 
-                rel="preload" 
-                as="video" 
-                href={heroVideos[(currentVideoIndex + 1) % heroVideos.length]?.file_path}
-              />
-            )}
-          </>
+        {/* YouTube embed - only load after user interaction */}
+        {userInteracted && !loading && youtubeId && (
+          <iframe
+            key={currentVideo?.id}
+            className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
+            title={currentVideo?.title || 'Hero video'}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            style={{ 
+              border: 'none',
+              pointerEvents: 'none',
+              transform: 'scale(1.5)', // Scale up to cover and hide YouTube UI
+              transformOrigin: 'center center'
+            }}
+          />
         )}
         
         {/* Dark overlay */}
