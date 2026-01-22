@@ -18,6 +18,7 @@ import LivestreamsManager from '@/components/admin/LivestreamsManager';
 import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AdminFAQ from '@/components/admin/AdminFAQ';
+import MarkarydsliganManager from '@/components/admin/MarkarydsliganManager';
 
 interface SiteContent {
   title?: string;
@@ -268,7 +269,7 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="faq" className="space-y-4 lg:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto lg:h-10 gap-1 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 h-auto lg:h-10 gap-1 p-1">
             <TabsTrigger value="faq" className="text-xs lg:text-sm px-2 lg:px-3 py-2">FAQ</TabsTrigger>
             <TabsTrigger value="content" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Hemsida</TabsTrigger>
             <TabsTrigger value="gallery" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Galleri</TabsTrigger>
@@ -277,6 +278,7 @@ const AdminSimple = () => {
             <TabsTrigger value="hours" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Öppet</TabsTrigger>
             <TabsTrigger value="events" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Event</TabsTrigger>
             <TabsTrigger value="livestreams" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Stream</TabsTrigger>
+            <TabsTrigger value="markarydsligan" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Markarydsligan</TabsTrigger>
           </TabsList>
 
           <TabsContent value="faq">
@@ -388,6 +390,17 @@ const AdminSimple = () => {
 
           <TabsContent value="livestreams" className="mt-4 lg:mt-6">
             <LivestreamsManager />
+          </TabsContent>
+
+          <TabsContent value="markarydsligan" className="mt-4 lg:mt-6">
+            <Card>
+              <CardHeader className="px-4 lg:px-6">
+                <CardTitle className="text-lg lg:text-xl">Hantera Markarydsligan</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 lg:px-6">
+                <MarkarydsliganManager />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
