@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowDown, ArrowUp, Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { markarydsliganDefaultSeries } from "@/data/markarydsliganDefaults";
 
 type SerieRow = {
   id: string;
@@ -77,6 +78,37 @@ const MarkarydsliganManager: React.FC = () => {
     void loadSeries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const importDefaults = async () => {
+    setSaving(true);
+    try {
+      // Upsert på name så att man kan "synka" flera gånger utan dubletter.
+      // OBS: kräver att man är admin (RLS). Detta körs i adminpanelen.
+      const payload = markarydsliganDefaultSeries.map((s, idx) => ({
+        name: s.name,
+        schedule: s.schedule,
+        url: s.url,
+        sort_order: idx,
+      }));
+
+      const { error } = await supabase
+        .from("markarydsligan_series")
+        .upsert(payload, { onConflict: "name" });
+
+      if (error) throw error;
+      toast({ title: "Klart!", description: "Befintliga serier importerade/synkade" });
+      await loadSeries();
+    } catch (e) {
+      console.error("Error importing default series:", e);
+      toast({
+        title: "Fel",
+        description: "Kunde inte importera serier",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const startEdit = (row: SerieRow) => {
     setEditingId(row.id);
@@ -217,6 +249,24 @@ const MarkarydsliganManager: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      {sortedSeries.length === 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Synka befintliga serier</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Sidan har redan standardserier. Klicka här för att importera dem till databasen så att du kan ändra dem i efterhand.
+            </p>
+            <div className="flex justify-end">
+              <Button onClick={importDefaults} disabled={saving}>
+                Importera standardserier
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Lägg till serie</CardTitle>
