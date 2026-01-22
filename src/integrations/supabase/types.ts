@@ -267,6 +267,36 @@ export type Database = {
         }
         Relationships: []
       }
+      markarydsligan_series: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          schedule: string
+          sort_order: number | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          schedule: string
+          sort_order?: number | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          schedule?: string
+          sort_order?: number | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       menu_categories: {
         Row: {
           created_at: string
