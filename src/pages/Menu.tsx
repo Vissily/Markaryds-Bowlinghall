@@ -4,15 +4,26 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MenuSection from "@/components/MenuSection";
 import { ChefHat, Clock, Users, Star } from "lucide-react";
-import { useSEO } from "@/hooks/useSEO";
+import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 
 const Menu = () => {
-  // SEO optimization for menu page
   useSEO({
-    title: "Meny & Priser - Markaryds Bowlinghall | Mat & Dryck",
-    description: "Se vår meny med pizza, hamburgare, tilltugg och dryck. Specialpris på fajitasbuffé för grupper. Beställ mat till din bowling- eller padelupplevelse i Markaryd.",
-    keywords: "meny, mat, pizza, hamburgare, fajitas, buffé, dryck, markaryd bowlinghall, restaurang",
-    canonical: "https://markarydsbowling.se/menu"
+    title: "Meny – Mat & Dryck | Markaryds Bowlinghall",
+    description: "Se vår meny med pizza, hamburgare, tilltugg och dryck. Fajitasbuffé för grupper från 145 kr. Beställ mat till din bowlingupplevelse i Markaryd.",
+    keywords: "restaurang markaryd, mat bowling, pizza markaryd, fajitasbuffé, bowlinghall restaurang",
+    canonical: "https://markarydsbowling.se/menu",
+    ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
+    jsonLd: [
+      createBreadcrumbJsonLd([
+        { name: "Hem", url: "https://markarydsbowling.se" },
+        { name: "Meny", url: "https://markarydsbowling.se/menu" },
+      ]),
+      createWebPageJsonLd({
+        name: "Meny – Mat & Dryck",
+        description: "Meny med pizza, hamburgare och fajitasbuffé på Markaryds Bowlinghall.",
+        url: "https://markarydsbowling.se/menu",
+      }),
+    ],
   });
   const specialOffer = {
     title: "FAJITASBUFFÉ",

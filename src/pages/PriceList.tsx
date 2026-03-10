@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useSEO } from "@/hooks/useSEO";
+import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -24,10 +24,22 @@ const PriceList = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useSEO({
-    title: "Prislista - Markaryds Bowlinghall | Priser Bowling, Padel & Minigolf",
-    description: "Se våra aktuella priser för bowling, padel, minigolf och övriga aktiviteter på Markaryds Bowlinghall. Transparent prissättning för familjer och grupper i Markaryd.",
-    keywords: "prislista, priser, bowling, padel, minigolf, dart, shuffleboard, markaryd, bowlinghall, timdebitering, aktiviteter",
-    canonical: "https://markarydsbowling.se/prislista"
+    title: "Prislista – Bowling, Padel & Minigolf | Markaryds Bowlinghall",
+    description: "Aktuella priser för bowling, padel, minigolf, dart och shuffleboard på Markaryds Bowlinghall i Markaryd. Bra priser för familjer och grupper.",
+    keywords: "priser bowling markaryd, padel pris, minigolf pris, bowlinghall prislista, aktiviteter pris markaryd",
+    canonical: "https://markarydsbowling.se/prislista",
+    ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
+    jsonLd: [
+      createBreadcrumbJsonLd([
+        { name: "Hem", url: "https://markarydsbowling.se" },
+        { name: "Prislista", url: "https://markarydsbowling.se/prislista" },
+      ]),
+      createWebPageJsonLd({
+        name: "Prislista",
+        description: "Aktuella priser för bowling, padel, minigolf och mer på Markaryds Bowlinghall.",
+        url: "https://markarydsbowling.se/prislista",
+      }),
+    ],
   });
 
   useEffect(() => {

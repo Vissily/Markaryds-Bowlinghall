@@ -9,16 +9,20 @@ import Hours from "@/components/Hours";
 import Contact from "@/components/Contact";
 import ReviewsSection from "@/components/ReviewsSection";
 import Footer from "@/components/Footer";
-import { useSEO } from "@/hooks/useSEO";
+import { useSEO, createBreadcrumbJsonLd } from "@/hooks/useSEO";
 
 const Index = () => {
-  // SEO optimization for homepage
   useSEO({
-    title: "Markaryds Bowlinghall - Bowling, Padel & Minigolf i Markaryd",
-    description: "Markaryds Bowlinghall - Bowlinghall, padel, minigolf, dart och shuffleboard i Markaryd. Öppet 7 dagar i veckan. Boka din aktivitet redan idag!",
-    keywords: "bowling, padel, minigolf, dart, shuffleboard, markaryd, bowlinghall, aktiviteter, sport, familj, underhållning",
-    canonical: "https://markarydsbowling.se"
+    title: "Markaryds Bowlinghall – Bowling, Padel & Minigolf i Markaryd",
+    description: "Upplev bowling, padel, minigolf, dart och shuffleboard på Markaryds Bowlinghall. Öppet 7 dagar i veckan – boka online idag!",
+    keywords: "bowling markaryd, padel markaryd, minigolf markaryd, bowlinghall, aktiviteter markaryd, familjeaktiviteter småland",
+    canonical: "https://markarydsbowling.se",
+    ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
+    jsonLd: createBreadcrumbJsonLd([
+      { name: "Hem", url: "https://markarydsbowling.se" },
+    ]),
   });
+
   return (
     <main className="min-h-screen">
       <Header />

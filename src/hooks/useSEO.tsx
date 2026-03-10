@@ -6,84 +6,145 @@ interface SEOProps {
   keywords?: string;
   canonical?: string;
   ogImage?: string;
+  ogType?: string;
+  jsonLd?: Record<string, any> | Record<string, any>[];
+  noIndex?: boolean;
 }
+
+const getOrCreateMeta = (attribute: string, value: string): HTMLMetaElement => {
+  let el = document.querySelector(`meta[${attribute}="${value}"]`) as HTMLMetaElement;
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attribute.split('=')[0], value.replace(/"/g, ''));
+    // Determine correct attribute
+    if (attribute.startsWith('property')) {
+      el.setAttribute('property', value);
+    } else {
+      el.setAttribute('name', value);
+    }
+    document.head.appendChild(el);
+  }
+  return el;
+};
+
+const setMetaContent = (selector: string, attr: string, key: string, content: string) => {
+  let el = document.querySelector(selector) as HTMLMetaElement;
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+};
 
 export const useSEO = ({
   title,
   description,
   keywords,
   canonical,
-  ogImage
+  ogImage,
+  ogType = 'website',
+  jsonLd,
+  noIndex = false,
 }: SEOProps) => {
   useEffect(() => {
-    // Update document title
+    // Title
     if (title) {
       document.title = title;
+      setMetaContent('meta[property="og:title"]', 'property', 'og:title', title);
+      setMetaContent('meta[name="twitter:title"]', 'name', 'twitter:title', title);
     }
 
-    // Update meta description
+    // Description
     if (description) {
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', description);
-      }
+      setMetaContent('meta[name="description"]', 'name', 'description', description);
+      setMetaContent('meta[property="og:description"]', 'property', 'og:description', description);
+      setMetaContent('meta[name="twitter:description"]', 'name', 'twitter:description', description);
     }
 
-    // Update meta keywords
+    // Keywords
     if (keywords) {
-      const metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (metaKeywords) {
-        metaKeywords.setAttribute('content', keywords);
-      }
+      setMetaContent('meta[name="keywords"]', 'name', 'keywords', keywords);
     }
 
-    // Update canonical URL
+    // OG Type
+    setMetaContent('meta[property="og:type"]', 'property', 'og:type', ogType);
+
+    // Canonical
     if (canonical) {
-      let canonicalLink = document.querySelector('link[rel="canonical"]');
-      if (!canonicalLink) {
-        canonicalLink = document.createElement('link');
-        canonicalLink.setAttribute('rel', 'canonical');
-        document.head.appendChild(canonicalLink);
+      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.setAttribute('rel', 'canonical');
+        document.head.appendChild(link);
       }
-      canonicalLink.setAttribute('href', canonical);
+      link.setAttribute('href', canonical);
+      setMetaContent('meta[property="og:url"]', 'property', 'og:url', canonical);
     }
 
-    // Update Open Graph image
+    // OG Image
     if (ogImage) {
-      const ogImageMeta = document.querySelector('meta[property="og:image"]');
-      if (ogImageMeta) {
-        ogImageMeta.setAttribute('content', ogImage);
-      }
+      setMetaContent('meta[property="og:image"]', 'property', 'og:image', ogImage);
+      setMetaContent('meta[name="twitter:image"]', 'name', 'twitter:image', ogImage);
     }
 
-    // Update Open Graph title and description
-    if (title) {
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) {
-        ogTitle.setAttribute('content', title);
-      }
+    // Robots
+    if (noIndex) {
+      setMetaContent('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow');
     }
 
-    if (description) {
-      const ogDescription = document.querySelector('meta[property="og:description"]');
-      if (ogDescription) {
-        ogDescription.setAttribute('content', description);
+    // JSON-LD structured data
+    if (jsonLd) {
+      const scriptId = 'seo-json-ld';
+      let script = document.getElementById(scriptId) as HTMLScriptElement;
+      if (!script) {
+        script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
       }
-    }
 
-    // Update Twitter meta
-    if (title) {
-      const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-      if (twitterTitle) {
-        twitterTitle.setAttribute('content', title);
-      }
-    }
+      const ldArray = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      // Merge with existing main LD if needed
+      script.textContent = JSON.stringify(
+        ldArray.length === 1 ? ldArray[0] : ldArray
+      );
 
-    if (description) {
-      const twitterDescription = document.querySelector('meta[name="twitter:description"]');
-      if (twitterDescription) {
-        twitterDescription.setAttribute('content', description);
-      }
+      return () => {
+        script.remove();
+      };
     }
-  }, [title, description, keywords, canonical, ogImage]);
+  }, [title, description, keywords, canonical, ogImage, ogType, jsonLd, noIndex]);
 };
+
+// Helper to generate BreadcrumbList JSON-LD
+export const createBreadcrumbJsonLd = (
+  items: { name: string; url: string }[]
+) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.name,
+    item: item.url,
+  })),
+});
+
+// Helper to generate WebPage JSON-LD
+export const createWebPageJsonLd = (opts: {
+  name: string;
+  description: string;
+  url: string;
+}) => ({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: opts.name,
+  description: opts.description,
+  url: opts.url,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Markaryds Bowlinghall',
+    url: 'https://markarydsbowling.se',
+  },
+});

@@ -1,18 +1,29 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { useSEO } from "@/hooks/useSEO";
+import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 import { supabase } from "@/integrations/supabase/client";
 import React, { useEffect, useMemo, useState } from "react";
 import { markarydsliganDefaultSeries } from "@/data/markarydsliganDefaults";
 
 const Markarydsligan = () => {
-  // SEO optimization for markarydsligan page
   useSEO({
-    title: "Markarydsligan - Bowlingserier | Markaryds Bowlinghall",
-    description: "Följ Markarydsligan med våra 5 bowlingserier - Serie A, B, C, D och E. Se tabeller, resultat och anmäl ditt lag för säsongen.",
-    keywords: "markarydsligan, bowlingserier, serie a, serie b, serie c, bowling liga, markaryd, bowlinghall",
-    canonical: "https://markarydsbowling.se/markarydsligan"
+    title: "Markarydsligan – Bowlingserier | Markaryds Bowlinghall",
+    description: "Följ Markarydsligan med bowlingserier A–E. Se tabeller, resultat och anmäl ditt lag på Markaryds Bowlinghall.",
+    keywords: "markarydsligan, bowling liga markaryd, bowlingserier, bowling tävling, serie a bowling",
+    canonical: "https://markarydsbowling.se/markarydsligan",
+    ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
+    jsonLd: [
+      createBreadcrumbJsonLd([
+        { name: "Hem", url: "https://markarydsbowling.se" },
+        { name: "Markarydsligan", url: "https://markarydsbowling.se/markarydsligan" },
+      ]),
+      createWebPageJsonLd({
+        name: "Markarydsligan",
+        description: "Bowlingserier A–E på Markaryds Bowlinghall.",
+        url: "https://markarydsbowling.se/markarydsligan",
+      }),
+    ],
   });
 
   type SerieRow = {
