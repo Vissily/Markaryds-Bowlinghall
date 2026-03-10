@@ -10,8 +10,10 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
+  const [oppettiderOpen, setOppettiderOpen] = useState(false);
   const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const oppettiderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('http')) return; // external link, let default behavior
