@@ -154,6 +154,55 @@ const Auth = () => {
                   </Button>
                 </form>
               </TabsContent>
+              
+              <TabsContent value="signup" className="space-y-4">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email" className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
+                    </Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="info@markarydsbowling.se"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-name" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Namn
+                    </Label>
+                    <Input
+                      id="signup-name"
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Ditt namn"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password" className="flex items-center gap-2">
+                      <Lock className="h-4 w-4" />
+                      Lösenord
+                    </Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Minst 8 tecken"
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? 'Registrerar...' : 'Registrera'}
+                  </Button>
+                </form>
+              </TabsContent>
             </Tabs>
             
             <Separator className="my-6" />
