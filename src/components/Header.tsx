@@ -231,8 +231,8 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium py-2"
-                onClick={() => setIsMenuOpen(false)}
+                className="text-foreground hover:text-primary transition-colors font-medium py-2 cursor-pointer"
+                onClick={(e) => handleNavClick(e, item.href)}
               >
                 {item.name}
               </a>
