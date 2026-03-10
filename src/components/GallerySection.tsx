@@ -140,7 +140,7 @@ const GallerySection = () => {
         <Card className="overflow-hidden shadow-elegant border-2">
           <CardContent className="p-0 relative">
             {galleryImages.length === 0 ? (
-              <div className="aspect-[21/9] flex items-center justify-center bg-muted">
+              <div className="aspect-[16/9] md:aspect-[2/1] flex items-center justify-center bg-muted">
                 <p className="text-muted-foreground">Inga bilder markerade för slideshow än.</p>
               </div>
             ) : (
