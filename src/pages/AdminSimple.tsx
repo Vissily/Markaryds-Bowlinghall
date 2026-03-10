@@ -19,6 +19,7 @@ import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AdminFAQ from '@/components/admin/AdminFAQ';
 import MarkarydsliganManager from '@/components/admin/MarkarydsliganManager';
+import ContentEditor from '@/components/admin/ContentEditor';
 
 interface SiteContent {
   title?: string;
