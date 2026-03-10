@@ -46,9 +46,12 @@ const Header = () => {
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
     { name: "Evenemang", href: "/events" },
+    { name: "Kontakt", href: "/#kontakt" },
+  ];
+
+  const oppettiderItems = [
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Prislista", href: "/prislista" },
-    { name: "Kontakt", href: "/#kontakt" },
   ];
 
   const livescoreItems = [
