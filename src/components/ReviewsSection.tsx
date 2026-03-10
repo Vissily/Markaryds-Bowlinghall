@@ -53,7 +53,7 @@ const ReviewsSection = () => {
 
     let animationId: number;
     let scrollPos = 0;
-    const speed = 0.5; // pixels per frame
+    const speed = 0.2; // pixels per frame (slower)
 
     const animate = () => {
       if (!isPaused && container) {
