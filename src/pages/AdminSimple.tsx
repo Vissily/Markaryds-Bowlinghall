@@ -19,6 +19,7 @@ import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AdminFAQ from '@/components/admin/AdminFAQ';
 import MarkarydsliganManager from '@/components/admin/MarkarydsliganManager';
+import ContentEditor from '@/components/admin/ContentEditor';
 
 interface SiteContent {
   title?: string;
@@ -285,7 +286,7 @@ const AdminSimple = () => {
             <AdminFAQ />
           </TabsContent>
 
-          <TabsContent value="content" className="mt-4 lg:mt-6">
+          <TabsContent value="content" className="mt-4 lg:mt-6 space-y-6">
             <Card className="max-w-none lg:max-w-2xl lg:mx-auto">
               <CardHeader className="px-4 lg:px-6">
                 <CardTitle className="text-lg lg:text-xl">Startsida - Hero-sektion</CardTitle>
@@ -352,6 +353,10 @@ const AdminSimple = () => {
                 </div>
               </CardContent>
             </Card>
+
+            <div className="max-w-none lg:max-w-2xl lg:mx-auto">
+              <ContentEditor sectionKey="menu_hero" sectionTitle="Menysida - Hero-sektion" />
+            </div>
           </TabsContent>
 
           <TabsContent value="gallery" className="mt-4 lg:mt-6">
