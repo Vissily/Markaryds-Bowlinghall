@@ -110,12 +110,19 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="signin">Logga in</TabsTrigger>
-                <TabsTrigger value="signup">Registrera</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm font-medium text-blue-800">
+                    🔒 Endast befintliga admin-användare kan logga in
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Kontakta administratören för nya konton
+                  </p>
+                </div>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-username" className="flex items-center gap-2">
