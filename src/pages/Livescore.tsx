@@ -1,14 +1,25 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useSEO } from "@/hooks/useSEO";
+import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 
 const Livescore = () => {
-  // SEO optimization for livescore page
   useSEO({
-    title: "Livescore - Markaryds Bowlinghall | Poäng och Resultat Live",
-    description: "Följ live-resultat och poäng från tävlingar och matcher på Markaryds Bowlinghall. Se aktuella ställningar i realtid.",
-    keywords: "livescore, bowling resultat, live poäng, tävlingar, markaryd bowlinghall, lanetalk",
-    canonical: "https://markarydsbowling.se/livescore"
+    title: "Livescore – Resultat i Realtid | Markaryds Bowlinghall",
+    description: "Följ bowlingresultat live från Markaryds Bowlinghall. Se aktuella poängställningar från tävlingar och matcher i realtid.",
+    keywords: "bowling livescore, live resultat bowling, bowling poäng, tävlingsresultat markaryd",
+    canonical: "https://markarydsbowling.se/livescore",
+    ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
+    jsonLd: [
+      createBreadcrumbJsonLd([
+        { name: "Hem", url: "https://markarydsbowling.se" },
+        { name: "Livescore", url: "https://markarydsbowling.se/livescore" },
+      ]),
+      createWebPageJsonLd({
+        name: "Livescore",
+        description: "Live bowlingresultat från Markaryds Bowlinghall.",
+        url: "https://markarydsbowling.se/livescore",
+      }),
+    ],
   });
 
   return (
