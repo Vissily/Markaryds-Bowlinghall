@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MenuSection from "@/components/MenuSection";
-import { ChefHat, Clock, Users, Star } from "lucide-react";
+import { ChefHat, Clock, Users } from "lucide-react";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 
 const Menu = () => {
@@ -25,12 +25,6 @@ const Menu = () => {
       }),
     ],
   });
-  const specialOffer = {
-    title: "FAJITASBUFFÉ",
-    price: "145 / 95",
-    description: "Minst 15 personer och förbokning, pris avser vuxen / barn exkl dricka",
-    features: ["All you can eat", "Kött & vegetariskt", "Tillbehör ingår", "Perfekt för grupper"]
-  };
 
   return (
     <main className="min-h-screen bg-background">
@@ -71,30 +65,6 @@ const Menu = () => {
 
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
-          
-          {/* Special Offer Highlight */}
-          <div className="mb-16">
-            <Card className="overflow-hidden shadow-elegant border-0 bg-gradient-to-r from-orange-500/10 to-red-500/10">
-              <CardHeader className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-                <CardTitle className="text-3xl font-bold flex items-center gap-3">
-                  <Star className="w-8 h-8" />
-                  {specialOffer.title}
-                  <span className="ml-auto text-2xl">{specialOffer.price}</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <p className="text-lg text-foreground mb-6">{specialOffer.description}</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {specialOffer.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                      <span className="text-foreground font-medium">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
           {/* Menu from Database */}
           <div className="mb-16">
