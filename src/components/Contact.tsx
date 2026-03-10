@@ -152,7 +152,7 @@ const Contact = () => {
                 <h3 className="text-2xl font-bold text-foreground mb-6">Hitta Hit</h3>
                 <div className="rounded-lg overflow-hidden aspect-video">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2218.5!2d13.5958!3d56.4608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4651104c5e8f1b1d%3A0x4019078290e7c40!2sHannabadsv%C3%A4gen%202F%2C%20285%2032%20Markaryd!5e0!3m2!1ssv!2sse!4v1700000000000"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2218.5!2d13.5937!3d56.4592!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46511062d6a43e4d%3A0x5765e506b18e6e10!2sMarkaryds%20Bowlinghall!5e0!3m2!1ssv!2sse!4v1700000000000"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
