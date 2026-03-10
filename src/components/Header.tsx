@@ -10,8 +10,10 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
+  const [oppettiderOpen, setOppettiderOpen] = useState(false);
   const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const oppettiderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('http')) return; // external link, let default behavior
@@ -44,9 +46,12 @@ const Header = () => {
     { name: "Aktiviteter", href: "/#aktiviteter" },
     { name: "Meny", href: "/menu" },
     { name: "Evenemang", href: "/events" },
+    { name: "Kontakt", href: "/#kontakt" },
+  ];
+
+  const oppettiderItems = [
     { name: "Öppettider", href: "/#oppettider" },
     { name: "Prislista", href: "/prislista" },
-    { name: "Kontakt", href: "/#kontakt" },
   ];
 
   const livescoreItems = [
@@ -85,6 +90,46 @@ const Header = () => {
               </a>
             ))}
             
+            {/* Öppettider Dropdown */}
+            <div className="relative">
+              <button
+                onMouseEnter={() => {
+                  if (oppettiderTimeoutRef.current) clearTimeout(oppettiderTimeoutRef.current);
+                  setOppettiderOpen(true);
+                }}
+                onMouseLeave={() => {
+                  oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
+                }}
+                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+              >
+                Öppettider
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {oppettiderOpen && (
+                <div
+                  onMouseEnter={() => {
+                    if (oppettiderTimeoutRef.current) clearTimeout(oppettiderTimeoutRef.current);
+                    setOppettiderOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
+                  }}
+                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                >
+                  {oppettiderItems.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Livescore Dropdown */}
             <div className="relative">
               <button
@@ -239,6 +284,21 @@ const Header = () => {
               </a>
             ))}
             
+            {/* Mobile Öppettider Section */}
+            <div className="space-y-2">
+              <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Öppettider</div>
+              {oppettiderItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
+                  onClick={(e) => handleNavClick(e, item.href)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+
             {/* Mobile Livescore Section */}
             <div className="space-y-2">
               <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Livescore</div>
