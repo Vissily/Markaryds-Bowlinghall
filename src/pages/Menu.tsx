@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MenuSection from "@/components/MenuSection";
-import { ChefHat, Clock, Users, Star } from "lucide-react";
+import { ChefHat, Clock, Users } from "lucide-react";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 
 const Menu = () => {
