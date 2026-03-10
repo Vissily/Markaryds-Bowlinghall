@@ -306,7 +306,7 @@ const Header = () => {
             
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-1 text-foreground hover:text-primary transition-colors"
+              className={cn("lg:hidden p-1 hover:text-primary transition-colors", scrolled ? "text-foreground" : "text-white")}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
