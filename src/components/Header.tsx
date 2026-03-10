@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,14 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
   const [oppettiderOpen, setOppettiderOpen] = useState(false);
@@ -95,7 +103,12 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+      scrolled || isMenuOpen
+        ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
+        : "bg-transparent border-b border-transparent"
+    )}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12">
           {/* Logo */}
@@ -114,7 +127,10 @@ const Header = () => {
                 key={item.name}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer"
+                className={cn(
+                  "hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer",
+                  scrolled ? "text-foreground" : "text-white"
+                )}
               >
                 {item.name}
               </a>
@@ -130,7 +146,7 @@ const Header = () => {
                 onMouseLeave={() => {
                   oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
                 }}
-                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                className={cn("flex items-center hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap", scrolled ? "text-foreground" : "text-white")}
               >
                 Öppettider
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -174,7 +190,7 @@ const Header = () => {
                     setLivescoreOpen(false);
                   }, 150);
                 }}
-                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                className={cn("flex items-center hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap", scrolled ? "text-foreground" : "text-white")}
               >
                 Livescore
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -222,7 +238,7 @@ const Header = () => {
                     setLigaOpen(false);
                   }, 150);
                 }}
-                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                className={cn("flex items-center hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap", scrolled ? "text-foreground" : "text-white")}
               >
                 Ligor
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -260,7 +276,7 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6">
+          <div className={cn("hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm flex-shrink-0 min-w-0 pl-4 xl:pl-6", scrolled ? "text-muted-foreground" : "text-white/80")}>
             <div className="flex items-center space-x-1.5">
               <Phone className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 flex-shrink-0" />
               <span className="whitespace-nowrap">0730-740 600</span>
@@ -290,7 +306,7 @@ const Header = () => {
             
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-1 text-foreground hover:text-primary transition-colors"
+              className={cn("lg:hidden p-1 hover:text-primary transition-colors", scrolled ? "text-foreground" : "text-white")}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
