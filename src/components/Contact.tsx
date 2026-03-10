@@ -4,7 +4,7 @@ import { Phone, Mail, MapPin, ExternalLink, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+const dayNames: Record<number, string> = { 0: 'Söndag', 1: 'Måndag', 2: 'Tisdag', 3: 'Onsdag', 4: 'Torsdag', 5: 'Fredag', 6: 'Lördag' };
 
 const Contact = () => {
   const { data: openingHours } = useQuery({
