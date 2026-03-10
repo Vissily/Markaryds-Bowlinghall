@@ -127,7 +127,10 @@ const Header = () => {
                 key={item.name}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer"
+                className={cn(
+                  "hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer",
+                  scrolled ? "text-foreground" : "text-white"
+                )}
               >
                 {item.name}
               </a>
