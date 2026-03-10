@@ -284,6 +284,21 @@ const Header = () => {
               </a>
             ))}
             
+            {/* Mobile Öppettider Section */}
+            <div className="space-y-2">
+              <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Öppettider</div>
+              {oppettiderItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
+                  onClick={(e) => handleNavClick(e, item.href)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+
             {/* Mobile Livescore Section */}
             <div className="space-y-2">
               <div className="text-foreground font-medium py-2 text-sm text-muted-foreground">Livescore</div>
