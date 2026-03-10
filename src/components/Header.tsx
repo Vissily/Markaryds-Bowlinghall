@@ -241,7 +241,7 @@ const Header = () => {
             </div>
             <div className="flex items-center space-x-1.5 min-w-0">
               <Clock className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 flex-shrink-0" />
-              <span className="truncate max-w-[160px] 2xl:max-w-[200px]">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+              <span className="truncate max-w-[200px] 2xl:max-w-[250px]">{todayHoursText}</span>
             </div>
           </div>
 
