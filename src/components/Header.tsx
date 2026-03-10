@@ -1,14 +1,43 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
   const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('http')) return; // external link, let default behavior
+    e.preventDefault();
+    setIsMenuOpen(false);
+    
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      const targetPath = path || '/';
+      
+      if (location.pathname === targetPath) {
+        // Same page, just scroll
+        const el = document.getElementById(hash);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // Navigate to page then scroll
+        navigate(targetPath);
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      navigate(href);
+    }
+  }, [navigate, location.pathname]);
 
   const navigation = [
     { name: "Hem", href: "/" },
@@ -48,7 +77,8 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                onClick={(e) => handleNavClick(e, item.href)}
+                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 {item.name}
               </a>
@@ -92,7 +122,8 @@ const Header = () => {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
                     >
                       {item.name}
                     </a>
@@ -139,9 +170,10 @@ const Header = () => {
                     <a
                       key={item.name}
                       href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
                       target={item.href.startsWith('http') ? '_blank' : undefined}
                       rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
                     >
                       {item.name}
                     </a>
@@ -199,8 +231,8 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium py-2"
-                onClick={() => setIsMenuOpen(false)}
+                className="text-foreground hover:text-primary transition-colors font-medium py-2 cursor-pointer"
+                onClick={(e) => handleNavClick(e, item.href)}
               >
                 {item.name}
               </a>
@@ -213,8 +245,8 @@ const Header = () => {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block"
-                  onClick={() => setIsMenuOpen(false)}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
+                  onClick={(e) => handleNavClick(e, item.href)}
                 >
                   {item.name}
                 </a>
@@ -230,8 +262,8 @@ const Header = () => {
                   href={item.href}
                   target={item.href.startsWith('http') ? '_blank' : undefined}
                   rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block"
-                  onClick={() => setIsMenuOpen(false)}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
+                  onClick={(e) => handleNavClick(e, item.href)}
                 >
                   {item.name}
                 </a>
