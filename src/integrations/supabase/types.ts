@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -592,15 +592,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      add_admin_user: {
-        Args: { _display_name: string; _email: string; _password: string }
-        Returns: string
-      }
       cleanup_duplicate_roles: { Args: never; Returns: undefined }
-      create_admin_user_with_password: {
-        Args: { _display_name?: string; _email: string; _password: string }
-        Returns: Json
-      }
       get_event_interest_count: { Args: { _event_id: string }; Returns: number }
       get_user_role: {
         Args: { _user_id: string }
@@ -612,11 +604,6 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
-      }
-      promote_first_user_to_admin: { Args: never; Returns: undefined }
-      secure_promote_to_admin: {
-        Args: { _target_user_id: string }
-        Returns: Json
       }
       secure_promote_to_admin_v2: {
         Args: { _target_user_id: string }
