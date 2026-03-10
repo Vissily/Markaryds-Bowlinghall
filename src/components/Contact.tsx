@@ -4,7 +4,7 @@ import { Phone, Mail, MapPin, ExternalLink, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+const dayNames: Record<number, string> = { 0: 'Söndag', 1: 'Måndag', 2: 'Tisdag', 3: 'Onsdag', 4: 'Torsdag', 5: 'Fredag', 6: 'Lördag' };
 
 const Contact = () => {
   const { data: openingHours } = useQuery({
@@ -88,11 +88,15 @@ const Contact = () => {
                       <h4 className="font-semibold text-foreground mb-1">Öppettider</h4>
                       {openingHours && openingHours.length > 0 ? (
                         <div className="space-y-1">
-                          {openingHours.map((h) => (
-                            <p key={h.id} className="text-muted-foreground text-sm">
-                              {dayNames[h.day_of_week - 1]}: {h.is_closed ? 'Stängt' : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`}
-                            </p>
-                          ))}
+                          {[1,2,3,4,5,6,0].map((dayNum) => {
+                            const h = openingHours.find(oh => oh.day_of_week === dayNum);
+                            if (!h) return null;
+                            return (
+                              <p key={h.id} className="text-muted-foreground text-sm">
+                                {dayNames[h.day_of_week]}: {h.is_closed ? 'Stängt' : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`}
+                              </p>
+                            );
+                          })}
                         </div>
                       ) : (
                         <p className="text-muted-foreground text-sm">Laddar öppettider...</p>
