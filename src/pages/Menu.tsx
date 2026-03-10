@@ -8,6 +8,12 @@ import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/use
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Menu = () => {
+  const { content: heroContent } = useSiteContent('menu_hero');
+
+  const heroTitle = heroContent?.title || 'Meny';
+  const heroSubtitle = heroContent?.subtitle || 'Från kök till bord';
+  const heroDescription = heroContent?.description || 'Smakfulla rätter och drycker för alla tillfällen – från snabba mellanmål till fullständiga måltider';
+
   useSEO({
     title: "Meny – Mat & Dryck | Markaryds Bowlinghall",
     description: "Se vår meny med pizza, hamburgare, tilltugg och dryck. Fajitasbuffé för grupper från 145 kr. Beställ mat till din bowlingupplevelse i Markaryd.",
@@ -37,18 +43,18 @@ const Menu = () => {
         <div className="container mx-auto max-w-4xl text-center relative z-10">
           <div className="inline-flex items-center space-x-2 bg-background/80 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-primary/20">
             <ChefHat className="w-5 h-5 text-primary" />
-            <span className="text-foreground font-medium">Från kök till bord</span>
+            <span className="text-foreground font-medium">{heroSubtitle}</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
             Vår
             <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Meny
+              {heroTitle}
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Smakfulla rätter och drycker för alla tillfällen – från snabba mellanmål till fullständiga måltider
+            {heroDescription}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
