@@ -156,18 +156,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Clean up existing state before signing in
       cleanupAuthState();
       
-      // Wait a bit to ensure cleanup is complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Attempt global sign out first
-      try {
-        await supabase.auth.signOut({ scope: 'global' });
-        // Wait for sign out to complete
-        await new Promise(resolve => setTimeout(resolve, 200));
-      } catch (err) {
-        // Continue even if this fails
-      }
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: username,
         password,

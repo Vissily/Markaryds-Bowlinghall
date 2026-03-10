@@ -104,9 +104,8 @@ const Footer = () => {
             © {new Date().getFullYear()} Markaryds Bowlinghall. Alla rättigheter förbehållna.
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:opacity-100 transition-opacity">GDPR</a>
             <a href="/prislista" className="hover:opacity-100 transition-opacity">Prislista</a>
-            <a href="#" className="hover:opacity-100 transition-opacity">Markarydsligan</a>
+            <a href="/markarydsligan" className="hover:opacity-100 transition-opacity">Markarydsligan</a>
             <a href="/auth" className="hover:opacity-100 transition-opacity">Admin</a>
           </div>
         </div>
