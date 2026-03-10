@@ -90,24 +90,26 @@ const Markarydsligan = () => {
           </div>
 
           {/* Series Buttons with Schedule */}
-          <div className="max-w-4xl mx-auto space-y-6">
-            {series.map((serie) => (
-              <div key={serie.id} className="flex flex-col sm:flex-row items-center justify-between bg-card p-6 rounded-lg border">
-                <div className="text-center sm:text-left mb-4 sm:mb-0">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">{serie.name}</h2>
-                  <p className="text-lg text-muted-foreground">{serie.schedule}</p>
-                </div>
-                <Button 
-                  size="lg" 
-                  className="rounded-full px-8 py-3 font-semibold"
-                  asChild
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-card rounded-lg border divide-y divide-border">
+              {series.map((serie) => (
+                <a
+                  key={serie.id}
+                  href={serie.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 hover:bg-muted/50 transition-colors group"
                 >
-                  <a href={serie.url} target="_blank" rel="noopener noreferrer">
-                    Se tabell & resultat
-                  </a>
-                </Button>
-              </div>
-            ))}
+                  <div className="min-w-0">
+                    <span className="font-semibold text-foreground text-sm sm:text-base">{serie.name}</span>
+                    <span className="text-muted-foreground text-xs sm:text-sm ml-2">– {serie.schedule}</span>
+                  </div>
+                  <span className="text-primary text-xs sm:text-sm font-medium whitespace-nowrap ml-3 group-hover:underline">
+                    Se resultat →
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
