@@ -8,6 +8,7 @@ import FeaturedEvents from "@/components/FeaturedEvents";
 import Hours from "@/components/Hours";
 import Contact from "@/components/Contact";
 import ReviewsSection from "@/components/ReviewsSection";
+import FAQSection, { createFAQJsonLd } from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import { useSEO, createBreadcrumbJsonLd } from "@/hooks/useSEO";
 
@@ -18,9 +19,12 @@ const Index = () => {
     keywords: "bowling markaryd, padel markaryd, minigolf markaryd, bowlinghall, aktiviteter markaryd, familjeaktiviteter småland",
     canonical: "https://markarydsbowling.se",
     ogImage: "https://markarydsbowling.se/lovable-uploads/d8ae05f0-bff1-4c53-91fa-49db4627300c.png",
-    jsonLd: createBreadcrumbJsonLd([
-      { name: "Hem", url: "https://markarydsbowling.se" },
-    ]),
+    jsonLd: [
+      createBreadcrumbJsonLd([
+        { name: "Hem", url: "https://markarydsbowling.se" },
+      ]),
+      createFAQJsonLd(),
+    ],
   });
 
   return (
@@ -34,6 +38,7 @@ const Index = () => {
       <GallerySection />
       <Activities />
       <Hours />
+      <FAQSection />
       <Contact />
       <Footer />
     </main>
