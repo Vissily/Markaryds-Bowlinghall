@@ -5,11 +5,39 @@ import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [livescoreOpen, setLivescoreOpen] = useState(false);
   const [ligaOpen, setLigaOpen] = useState(false);
   const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('http')) return; // external link, let default behavior
+    e.preventDefault();
+    setIsMenuOpen(false);
+    
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      const targetPath = path || '/';
+      
+      if (location.pathname === targetPath) {
+        // Same page, just scroll
+        const el = document.getElementById(hash);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // Navigate to page then scroll
+        navigate(targetPath);
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      navigate(href);
+    }
+  }, [navigate, location.pathname]);
 
   const navigation = [
     { name: "Hem", href: "/" },
