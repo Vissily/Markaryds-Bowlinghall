@@ -101,7 +101,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-background/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm opacity-60">
           <div>
-            © 2024 Markaryds Bowlinghall. Alla rättigheter förbehållna.
+            © {new Date().getFullYear()} Markaryds Bowlinghall. Alla rättigheter förbehållna.
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="hover:opacity-100 transition-opacity">GDPR</a>
