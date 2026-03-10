@@ -90,6 +90,46 @@ const Header = () => {
               </a>
             ))}
             
+            {/* Öppettider Dropdown */}
+            <div className="relative">
+              <button
+                onMouseEnter={() => {
+                  if (oppettiderTimeoutRef.current) clearTimeout(oppettiderTimeoutRef.current);
+                  setOppettiderOpen(true);
+                }}
+                onMouseLeave={() => {
+                  oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
+                }}
+                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+              >
+                Öppettider
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {oppettiderOpen && (
+                <div
+                  onMouseEnter={() => {
+                    if (oppettiderTimeoutRef.current) clearTimeout(oppettiderTimeoutRef.current);
+                    setOppettiderOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
+                  }}
+                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                >
+                  {oppettiderItems.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Livescore Dropdown */}
             <div className="relative">
               <button
