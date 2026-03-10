@@ -159,10 +159,6 @@ const GallerySection = () => {
                         src={image.file_path}
                         alt={image.title}
                         className="w-full h-full object-cover object-center"
-                        style={{ 
-                          imageRendering: 'crisp-edges',
-                          filter: 'contrast(1.05) brightness(1.02)'
-                        }}
                         loading="lazy"
                       />
                     </div>
