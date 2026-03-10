@@ -14,6 +14,13 @@ Allow: /menu
 Allow: /events
 Allow: /livestream
 Allow: /prislista
+Allow: /markarydsligan
+Allow: /livescore
+
+# AI Crawler information
+# llms.txt for AI search engines
+# See https://markarydsbowling.se/llms.txt
+# See https://markarydsbowling.se/llms-full.txt
 
 # Crawl delay
 Crawl-delay: 1
