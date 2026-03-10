@@ -208,7 +208,7 @@ const GallerySection = () => {
                       <button
                         key={image.id}
                         onClick={() => goToSlide(index)}
-                        className={`w-16 h-12 rounded overflow-hidden border-2 transition-all duration-300 ${
+                        className={`w-20 h-14 rounded-md overflow-hidden border-2 transition-all duration-300 ${
                           index === currentSlide 
                             ? 'border-primary scale-110' 
                             : 'border-border hover:border-primary/50'
