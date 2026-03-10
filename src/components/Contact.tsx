@@ -88,11 +88,15 @@ const Contact = () => {
                       <h4 className="font-semibold text-foreground mb-1">Öppettider</h4>
                       {openingHours && openingHours.length > 0 ? (
                         <div className="space-y-1">
-                          {openingHours.map((h) => (
-                            <p key={h.id} className="text-muted-foreground text-sm">
-                              {dayNames[h.day_of_week - 1]}: {h.is_closed ? 'Stängt' : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`}
-                            </p>
-                          ))}
+                          {[1,2,3,4,5,6,0].map((dayNum) => {
+                            const h = openingHours.find(oh => oh.day_of_week === dayNum);
+                            if (!h) return null;
+                            return (
+                              <p key={h.id} className="text-muted-foreground text-sm">
+                                {dayNames[h.day_of_week]}: {h.is_closed ? 'Stängt' : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`}
+                              </p>
+                            );
+                          })}
                         </div>
                       ) : (
                         <p className="text-muted-foreground text-sm">Laddar öppettider...</p>
