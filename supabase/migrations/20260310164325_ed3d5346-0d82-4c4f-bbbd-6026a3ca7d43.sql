@@ -1,0 +1,1 @@
+DELETE FROM markarydsligan_series WHERE name IN ('Division 1', 'Division 2', 'Division 3');
