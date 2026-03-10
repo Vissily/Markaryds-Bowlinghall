@@ -33,11 +33,11 @@ const Menu = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-background">
+    <main className="min-h-screen bg-background">
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-32 px-4 overflow-hidden">
+      <section className="relative pt-28 pb-16 px-4 overflow-hidden bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10"></div>
         <div className="container mx-auto max-w-4xl text-center relative z-10">
           <div className="inline-flex items-center space-x-2 bg-background/80 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-primary/20">
