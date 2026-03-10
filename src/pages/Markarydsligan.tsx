@@ -90,7 +90,31 @@ const Markarydsligan = () => {
           </div>
 
           {/* Series Buttons with Schedule */}
-          <div className="max-w-4xl mx-auto space-y-6">
+          {/* Mobile: compact list */}
+          <div className="sm:hidden max-w-4xl mx-auto">
+            <div className="bg-card rounded-lg border divide-y divide-border">
+              {series.map((serie) => (
+                <a
+                  key={serie.id}
+                  href={serie.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors group"
+                >
+                  <div className="min-w-0">
+                    <span className="font-semibold text-foreground text-sm">{serie.name}</span>
+                    <span className="text-muted-foreground text-xs ml-2">– {serie.schedule}</span>
+                  </div>
+                  <span className="text-primary text-xs font-medium whitespace-nowrap ml-3 group-hover:underline">
+                    Se resultat →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: large cards */}
+          <div className="hidden sm:block max-w-4xl mx-auto space-y-6">
             {series.map((serie) => (
               <div key={serie.id} className="flex flex-col sm:flex-row items-center justify-between bg-card p-6 rounded-lg border">
                 <div className="text-center sm:text-left mb-4 sm:mb-0">
