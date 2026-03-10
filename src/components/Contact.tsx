@@ -1,8 +1,30 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, ExternalLink, Clock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
 
 const Contact = () => {
+  const { data: openingHours } = useQuery({
+    queryKey: ['opening-hours-contact'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opening_hours')
+        .select('*')
+        .order('day_of_week', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const formatTime = (time: string | null) => {
+    if (!time) return '';
+    return time.slice(0, 5); // "HH:MM"
+  };
+
   return (
     <section id="kontakt" className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -64,11 +86,17 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground mb-1">Öppettider</h4>
-                      <p className="text-muted-foreground">Mån-Tis: 10-20</p>
-                      <p className="text-muted-foreground">Ons-Tor: 10-21</p>
-                      <p className="text-muted-foreground">Fre: 10-00, Lör: 15-23, Sön: 11-16</p>
-                      <p className="text-muted-foreground">Lördag: 15-23 (bowling stänger 22)</p>
-                      <p className="text-muted-foreground">Söndag: 11-16</p>
+                      {openingHours && openingHours.length > 0 ? (
+                        <div className="space-y-1">
+                          {openingHours.map((h) => (
+                            <p key={h.id} className="text-muted-foreground text-sm">
+                              {dayNames[h.day_of_week - 1]}: {h.is_closed ? 'Stängt' : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`}
+                            </p>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-muted-foreground text-sm">Laddar öppettider...</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -118,16 +146,17 @@ const Contact = () => {
             <div>
               <Card className="p-8 shadow-card h-full">
                 <h3 className="text-2xl font-bold text-foreground mb-6">Hitta Hit</h3>
-                <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin className="w-12 h-12 mx-auto mb-4" />
-                    <p className="text-lg font-semibold">Markaryds Bowlinghall</p>
-                    <p>Hannabadsvägen 2F, 285 32 Markaryd</p>
-                    <p className="mt-4 text-sm">
-                      Beläget centralt i Markaryd med<br />
-                      goda parkeringsmöjligheter
-                    </p>
-                  </div>
+                <div className="rounded-lg overflow-hidden aspect-video">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2218.5!2d13.5958!3d56.4608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4651104c5e8f1b1d%3A0x4019078290e7c40!2sHannabadsv%C3%A4gen%202F%2C%20285%2032%20Markaryd!5e0!3m2!1ssv!2sse!4v1700000000000"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Markaryds Bowlinghall karta"
+                  />
                 </div>
                 
                 <div className="mt-6 space-y-3 text-sm text-muted-foreground">
