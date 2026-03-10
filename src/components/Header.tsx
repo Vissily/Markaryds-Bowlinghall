@@ -77,7 +77,8 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                onClick={(e) => handleNavClick(e, item.href)}
+                className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 {item.name}
               </a>
