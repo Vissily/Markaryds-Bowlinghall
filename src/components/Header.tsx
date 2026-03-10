@@ -262,8 +262,8 @@ const Header = () => {
                   href={item.href}
                   target={item.href.startsWith('http') ? '_blank' : undefined}
                   rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block"
-                  onClick={() => setIsMenuOpen(false)}
+                  className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
+                  onClick={(e) => handleNavClick(e, item.href)}
                 >
                   {item.name}
                 </a>
