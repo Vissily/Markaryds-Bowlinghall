@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import MenuSection from "@/components/MenuSection";
 import { ChefHat, Clock, Users } from "lucide-react";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Menu = () => {
   useSEO({
