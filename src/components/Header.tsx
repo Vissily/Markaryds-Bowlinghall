@@ -152,7 +152,7 @@ const Header = () => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6 border-l border-border">
+          <div className="hidden xl:flex items-center space-x-4 2xl:space-x-6 text-xs 2xl:text-sm text-muted-foreground flex-shrink-0 min-w-0 pl-4 xl:pl-6">
             <div className="flex items-center space-x-1.5">
               <Phone className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 flex-shrink-0" />
               <span className="whitespace-nowrap">0730-740 600</span>
