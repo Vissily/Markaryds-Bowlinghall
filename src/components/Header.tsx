@@ -109,8 +109,8 @@ const Header = () => {
         ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
         : "bg-transparent border-b border-transparent"
     )}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-10 xl:px-16">
+        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-20 gap-6 lg:gap-8 xl:gap-10 2xl:gap-14">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0 w-32 sm:w-40 lg:w-48 xl:w-56 pr-2 lg:pr-4">
             <img 
@@ -121,7 +121,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 justify-center max-w-2xl px-2 ml-4 lg:ml-6 xl:ml-8 2xl:ml-10">
+          <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 2xl:space-x-9 flex-1 justify-center max-w-3xl px-2">
             {navigation.map((item) => (
               <a
                 key={item.name}
