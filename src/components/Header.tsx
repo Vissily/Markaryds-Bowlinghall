@@ -1,8 +1,12 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Clock, MapPin, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const dayNamesShort: Record<number, string> = { 0: 'Sön', 1: 'Mån', 2: 'Tis', 3: 'Ons', 4: 'Tor', 5: 'Fre', 6: 'Lör' };
 
 const Header = () => {
   const navigate = useNavigate();
@@ -14,6 +18,32 @@ const Header = () => {
   const livescoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const oppettiderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch today's opening hours dynamically
+  const { data: openingHours } = useQuery({
+    queryKey: ['opening-hours-header'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opening_hours')
+        .select('*')
+        .order('day_of_week', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const todayHoursText = useMemo(() => {
+    if (!openingHours?.length) return 'Laddar...';
+    // JS getDay(): 0=Sunday, which matches our DB
+    const jsDay = new Date().getDay();
+    const today = openingHours.find(h => h.day_of_week === jsDay);
+    if (!today) return 'Idag: Se öppettider';
+    if (today.is_closed) return `Idag (${dayNamesShort[jsDay]}): Stängt`;
+    const open = today.open_time?.slice(0, 5) || '';
+    const close = today.close_time?.slice(0, 5) || '';
+    return `Idag (${dayNamesShort[jsDay]}): ${open}–${close}`;
+  }, [openingHours]);
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('http')) return; // external link, let default behavior
@@ -237,7 +267,7 @@ const Header = () => {
             </div>
             <div className="flex items-center space-x-1.5 min-w-0">
               <Clock className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 flex-shrink-0" />
-              <span className="truncate max-w-[160px] 2xl:max-w-[200px]">Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+              <span className="truncate max-w-[200px] 2xl:max-w-[250px]">{todayHoursText}</span>
             </div>
           </div>
 
@@ -337,7 +367,7 @@ const Header = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />
-                <span>Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+                <span>{todayHoursText}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
