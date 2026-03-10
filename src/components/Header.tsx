@@ -190,7 +190,7 @@ const Header = () => {
                     setLivescoreOpen(false);
                   }, 150);
                 }}
-                className="flex items-center text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap"
+                className={cn("flex items-center hover:text-primary transition-colors font-medium text-sm xl:text-base whitespace-nowrap", scrolled ? "text-foreground" : "text-white")}
               >
                 Livescore
                 <ChevronDown className="ml-1 h-4 w-4" />
