@@ -146,7 +146,7 @@ const GallerySection = () => {
             ) : (
               <>
                 {/* Main slideshow */}
-                <div className="relative aspect-[21/9]">
+                <div className="relative aspect-[16/9] md:aspect-[2/1]">
                   {galleryImages.map((image, index) => (
                     <div
                       key={image.id}
