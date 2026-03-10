@@ -122,7 +122,8 @@ const Header = () => {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
                     >
                       {item.name}
                     </a>
