@@ -45,6 +45,7 @@ const Header = () => {
     { name: "Meny", href: "/menu" },
     { name: "Evenemang", href: "/events" },
     { name: "Öppettider", href: "/#oppettider" },
+    { name: "Prislista", href: "/prislista" },
     { name: "Kontakt", href: "/#kontakt" },
   ];
 
