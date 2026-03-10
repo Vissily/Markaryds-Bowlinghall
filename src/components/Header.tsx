@@ -341,7 +341,7 @@ const Header = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />
-                <span>Mån-Tis 10-20, Ons-Tor 10-21, Fre 10-00</span>
+                <span>{todayHoursText}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
