@@ -19,6 +19,32 @@ const Header = () => {
   const ligaTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const oppettiderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Fetch today's opening hours dynamically
+  const { data: openingHours } = useQuery({
+    queryKey: ['opening-hours-header'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opening_hours')
+        .select('*')
+        .order('day_of_week', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const todayHoursText = useMemo(() => {
+    if (!openingHours?.length) return 'Laddar...';
+    // JS getDay(): 0=Sunday, which matches our DB
+    const jsDay = new Date().getDay();
+    const today = openingHours.find(h => h.day_of_week === jsDay);
+    if (!today) return 'Idag: Se öppettider';
+    if (today.is_closed) return `Idag (${dayNamesShort[jsDay]}): Stängt`;
+    const open = today.open_time?.slice(0, 5) || '';
+    const close = today.close_time?.slice(0, 5) || '';
+    return `Idag (${dayNamesShort[jsDay]}): ${open}–${close}`;
+  }, [openingHours]);
+
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('http')) return; // external link, let default behavior
     e.preventDefault();
