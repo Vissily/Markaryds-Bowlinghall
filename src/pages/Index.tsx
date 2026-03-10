@@ -7,6 +7,7 @@ import Activities from "@/components/Activities";
 import FeaturedEvents from "@/components/FeaturedEvents";
 import Hours from "@/components/Hours";
 import Contact from "@/components/Contact";
+import ReviewsSection from "@/components/ReviewsSection";
 import Footer from "@/components/Footer";
 import { useSEO } from "@/hooks/useSEO";
 
@@ -28,6 +29,7 @@ const Index = () => {
       <GallerySection />
       <Activities />
       <Hours />
+      <ReviewsSection />
       <Contact />
       <Footer />
     </main>
