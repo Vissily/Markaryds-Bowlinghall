@@ -140,13 +140,13 @@ const GallerySection = () => {
         <Card className="overflow-hidden shadow-elegant border-2">
           <CardContent className="p-0 relative">
             {galleryImages.length === 0 ? (
-              <div className="aspect-[21/9] flex items-center justify-center bg-muted">
+              <div className="aspect-[16/9] md:aspect-[2/1] flex items-center justify-center bg-muted">
                 <p className="text-muted-foreground">Inga bilder markerade för slideshow än.</p>
               </div>
             ) : (
               <>
                 {/* Main slideshow */}
-                <div className="relative aspect-[21/9]">
+                <div className="relative aspect-[16/9] md:aspect-[2/1]">
                   {galleryImages.map((image, index) => (
                     <div
                       key={image.id}
@@ -208,7 +208,7 @@ const GallerySection = () => {
                       <button
                         key={image.id}
                         onClick={() => goToSlide(index)}
-                        className={`w-16 h-12 rounded overflow-hidden border-2 transition-all duration-300 ${
+                        className={`w-20 h-14 rounded-md overflow-hidden border-2 transition-all duration-300 ${
                           index === currentSlide 
                             ? 'border-primary scale-110' 
                             : 'border-border hover:border-primary/50'
