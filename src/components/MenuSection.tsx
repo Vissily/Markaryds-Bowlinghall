@@ -90,28 +90,28 @@ const MenuSection = () => {
         
         return (
           <Card key={category.id} className="overflow-hidden shadow-elegant border-0">
-            <CardHeader className={`bg-gradient-to-r ${gradient} text-white`}>
-              <CardTitle className="text-3xl font-bold flex items-center gap-3">
-                <IconComponent className="w-8 h-8" />
+            <CardHeader className={`bg-gradient-to-r ${gradient} text-white px-4 py-4 sm:px-6 sm:py-6`}>
+              <CardTitle className="text-xl sm:text-3xl font-bold flex items-center gap-2 sm:gap-3">
+                <IconComponent className="w-6 h-6 sm:w-8 sm:h-8" />
                 {category.name}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid gap-6">
+            <CardContent className="p-4 sm:p-8">
+              <div className="grid gap-4 sm:gap-6">
                 {items.map((item) => (
-                  <div key={item.id} className="relative group">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-xl text-foreground">{item.name}</h3>
+                  <div key={item.id} className="relative group pb-4">
+                    <div className="flex justify-between items-start gap-2 sm:gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-2 sm:gap-3 mb-1">
+                          <h3 className="font-bold text-base sm:text-xl text-foreground break-words">{item.name}</h3>
                         </div>
                         {item.description && (
-                          <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.description}</p>
                         )}
                       </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-foreground">{item.price}</span>
-                        <span className="text-muted-foreground ml-1">kr</span>
+                      <div className="text-right shrink-0">
+                        <span className="text-lg sm:text-2xl font-bold text-foreground">{item.price}</span>
+                        <span className="text-sm sm:text-base text-muted-foreground ml-1">kr</span>
                       </div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-50"></div>
