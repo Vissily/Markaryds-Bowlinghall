@@ -90,13 +90,13 @@ const MenuSection = () => {
         
         return (
           <Card key={category.id} className="overflow-hidden shadow-elegant border-0">
-            <CardHeader className={`bg-gradient-to-r ${gradient} text-white`}>
-              <CardTitle className="text-3xl font-bold flex items-center gap-3">
-                <IconComponent className="w-8 h-8" />
+            <CardHeader className={`bg-gradient-to-r ${gradient} text-white px-4 py-4 sm:px-6 sm:py-6`}>
+              <CardTitle className="text-xl sm:text-3xl font-bold flex items-center gap-2 sm:gap-3">
+                <IconComponent className="w-6 h-6 sm:w-8 sm:h-8" />
                 {category.name}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-8">
               <div className="grid gap-4 sm:gap-6">
                 {items.map((item) => (
                   <div key={item.id} className="relative group pb-4">
