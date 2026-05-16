@@ -1,0 +1,1 @@
+DELETE FROM public.price_items WHERE id = '527d404d-4b32-4f6e-af59-8823be0ed062';
