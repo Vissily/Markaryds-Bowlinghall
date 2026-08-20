@@ -96,7 +96,7 @@ const Mix55 = () => {
     [teams, scores, selectedRound],
   );
 
-  const top8 = standings.slice(0, PLAYOFF_CUTOFF);
+  
   const isTotal = selectedRound === "total";
 
   return (
