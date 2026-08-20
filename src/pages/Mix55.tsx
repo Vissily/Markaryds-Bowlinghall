@@ -245,8 +245,8 @@ const Mix55 = () => {
                       <th className="px-3 py-3">#</th>
                       <th className="px-3 py-3">Lag</th>
                       <th className="px-3 py-3 text-right">Matcher</th>
-                      <th className="px-3 py-3 text-right">Omg. slagning</th>
-                      <th className="px-3 py-3 text-right">Omg. poäng</th>
+                      {!isTotal && <th className="px-3 py-3 text-right">Omg. slagning</th>}
+                      {!isTotal && <th className="px-3 py-3 text-right">Omg. poäng</th>}
                       <th className="px-3 py-3 text-right">Total slagning</th>
                       <th className="px-3 py-3 text-right">Serier</th>
                       <th className="px-3 py-3 text-right">Snitt</th>
