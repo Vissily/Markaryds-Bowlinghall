@@ -247,7 +247,7 @@ const Mix55 = () => {
                       <th className="px-3 py-3 text-right">Matcher</th>
                       {!isTotal && <th className="px-3 py-3 text-right">Omg. slagning</th>}
                       {!isTotal && <th className="px-3 py-3 text-right">Omg. poäng</th>}
-                      <th className="px-3 py-3 text-right">Total slagning</th>
+                      {isTotal && <th className="px-3 py-3 text-right">Total slagning</th>}
                       <th className="px-3 py-3 text-right">Serier</th>
                       <th className="px-3 py-3 text-right">Snitt</th>
                       <th className="px-3 py-3 text-right">Poäng</th>
@@ -288,7 +288,9 @@ const Mix55 = () => {
                             {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
                           </td>
                         )}
-                        <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
+                        {isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
+                        )}
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalSeries}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.average.toFixed(2)}</td>
                         <td className="px-3 py-3 text-right font-bold text-lg tabular-nums">
@@ -352,10 +354,12 @@ const Mix55 = () => {
                             </div>
                           </div>
                         )}
-                        <div className="bg-muted/50 rounded-md py-2">
-                          <div className="text-xs text-muted-foreground">Total slagning</div>
-                          <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
-                        </div>
+                        {isTotal && (
+                          <div className="bg-muted/50 rounded-md py-2">
+                            <div className="text-xs text-muted-foreground">Total slagning</div>
+                            <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
+                          </div>
+                        )}
                         <div className="bg-muted/50 rounded-md py-2">
                           <div className="text-xs text-muted-foreground">Snitt</div>
                           <div className="text-lg font-semibold tabular-nums">
