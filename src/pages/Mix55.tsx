@@ -288,7 +288,9 @@ const Mix55 = () => {
                             {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
                           </td>
                         )}
-                        <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
+                        {isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
+                        )}
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalSeries}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.average.toFixed(2)}</td>
                         <td className="px-3 py-3 text-right font-bold text-lg tabular-nums">
