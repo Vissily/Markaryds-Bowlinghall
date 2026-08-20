@@ -287,8 +287,38 @@ const Mix55Manager = () => {
           </div>
 
           <div className="space-y-2">
-            {teams.map((team) => (
-              <div key={team.id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+            {teams.map((team, index) => (
+              <React.Fragment key={team.id}>
+                {index === 0 && (
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 1 · 14:00–15:30 (lag 1–8)</p>
+                )}
+                {index === 8 && (
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 2 · 15:30–17:00 (lag 9–16)</p>
+                )}
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 items-center">
+                <div className="flex items-center gap-1">
+                  <span className="w-6 text-sm text-muted-foreground tabular-nums">{index + 1}.</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Flytta upp ${team.name}`}
+                    disabled={index === 0}
+                    onClick={() => moveTeam(index, -1)}
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Flytta ner ${team.name}`}
+                    disabled={index === teams.length - 1}
+                    onClick={() => moveTeam(index, 1)}
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </Button>
+                </div>
                 <Input
                   value={team.name}
                   onChange={(e) =>
@@ -325,6 +355,7 @@ const Mix55Manager = () => {
                   </Button>
                 </div>
               </div>
+              </React.Fragment>
             ))}
           </div>
         </CardContent>
