@@ -354,10 +354,12 @@ const Mix55 = () => {
                             </div>
                           </div>
                         )}
-                        <div className="bg-muted/50 rounded-md py-2">
-                          <div className="text-xs text-muted-foreground">Total slagning</div>
-                          <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
-                        </div>
+                        {isTotal && (
+                          <div className="bg-muted/50 rounded-md py-2">
+                            <div className="text-xs text-muted-foreground">Total slagning</div>
+                            <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
+                          </div>
+                        )}
                         <div className="bg-muted/50 rounded-md py-2">
                           <div className="text-xs text-muted-foreground">Snitt</div>
                           <div className="text-lg font-semibold tabular-nums">
