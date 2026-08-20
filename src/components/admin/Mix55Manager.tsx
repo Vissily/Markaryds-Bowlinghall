@@ -158,7 +158,17 @@ const Mix55Manager = () => {
       if (error) throw error;
 
       await loadData();
-      toast({ title: "Sparat", description: `Omgång ${round} har sparats` });
+      const savedRound = round;
+      const maxRounds = Math.max(1, Number(roundsCount) || 1);
+      if (savedRound < maxRounds) {
+        setRound(savedRound + 1);
+        toast({
+          title: "Sparat",
+          description: `Omgång ${savedRound} har sparats. Omgång ${savedRound + 1} är nu öppen – du kan alltid gå tillbaka och redigera.`,
+        });
+      } else {
+        toast({ title: "Sparat", description: `Omgång ${savedRound} har sparats` });
+      }
     } catch (e) {
       console.error(e);
       toast({ title: "Fel", description: "Kunde inte spara omgången", variant: "destructive" });
