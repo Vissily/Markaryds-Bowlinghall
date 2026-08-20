@@ -16,6 +16,7 @@ import Mix55 from "./pages/Mix55";
 import Events from "./pages/Events";
 import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import AdminSimple from "./pages/AdminSimple";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin" element={<AdminSimple />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

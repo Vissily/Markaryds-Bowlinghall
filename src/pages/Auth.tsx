@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { isValidEmail, validatePasswordStrength } from '@/utils/security';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,25 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
+
+  const handleForgotPassword = async () => {
+    setResetMessage(null);
+    if (!isValidEmail(username)) {
+      setResetMessage('Fyll i din e-postadress ovan först.');
+      return;
+    }
+    setIsSubmitting(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(username, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setIsSubmitting(false);
+    setResetMessage(
+      error
+        ? 'Kunde inte skicka återställningsmail: ' + error.message
+        : 'Om kontot finns har vi skickat ett mail med en återställningslänk.'
+    );
+  };
 
   // Add debug logging
   console.log('Auth component - user:', user);
@@ -160,6 +180,20 @@ const Auth = () => {
                     {isSubmitting ? 'Loggar in...' : 'Logga in'}
                   </Button>
                 </form>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={isSubmitting}
+                    className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+                  >
+                    Glömt lösenord?
+                  </button>
+                </div>
+                {resetMessage && (
+                  <p className="text-sm text-center text-muted-foreground">{resetMessage}</p>
+                )}
               </TabsContent>
             </Tabs>
             
