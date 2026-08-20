@@ -86,7 +86,7 @@ export function buildStandings(
         : teamScores.filter((s) => s.round_number === selectedRound);
 
     const totalPins = relevant.reduce((sum, s) => sum + s.pins, 0);
-    const totalSeries = relevant.reduce((sum, s) => sum + s.series, 0);
+    const totalSeries = relevant.length * SERIES_PER_ROUND;
     const totalPoints = relevant.reduce(
       (sum, s) => sum + (pointsByRound.get(s.round_number)?.[team.id] ?? 0),
       0,
@@ -118,6 +118,9 @@ export function buildStandings(
 export function formatPoints(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
+
+/** Varje omgång spelas alltid som 8 serier per lag. */
+export const SERIES_PER_ROUND = 8;
 
 export const LANE_COUNT = 8;
 export const TEAMS_PER_SESSION = 8;
