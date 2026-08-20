@@ -280,10 +280,14 @@ const Mix55 = () => {
                           </div>
                         </td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.matchesPlayed}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{row.roundPins ?? "–"}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">
-                          {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
-                        </td>
+                        {!isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">{row.roundPins ?? "–"}</td>
+                        )}
+                        {!isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">
+                            {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
+                          </td>
+                        )}
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalSeries}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.average.toFixed(2)}</td>
