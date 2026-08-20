@@ -99,6 +99,7 @@ const Header = () => {
 
   const ligaItems = [
     { name: "Markarydsligan", href: "/markarydsligan" },
+    { name: "Mix 55+", href: "/mix55" },
     { name: "Dartligan", href: "https://seriespel.markarydsbowling.se/dart/main" },
   ];
 
@@ -160,7 +161,7 @@ const Header = () => {
                   onMouseLeave={() => {
                     oppettiderTimeoutRef.current = setTimeout(() => setOppettiderOpen(false), 150);
                   }}
-                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                  className="absolute top-full left-0 mt-0.5 w-44 bg-background border border-border rounded-md shadow-lg z-50"
                 >
                   {oppettiderItems.map((item) => (
                     <a
@@ -208,7 +209,7 @@ const Header = () => {
                       setLivescoreOpen(false);
                     }, 150);
                   }}
-                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                  className="absolute top-full left-0 mt-0.5 w-44 bg-background border border-border rounded-md shadow-lg z-50"
                 >
                   {livescoreItems.map((item) => (
                     <a
@@ -256,7 +257,7 @@ const Header = () => {
                       setLigaOpen(false);
                     }, 150);
                   }}
-                  className="absolute top-full left-0 mt-0.5 w-40 bg-background border border-border rounded-md shadow-lg z-50"
+                  className="absolute top-full left-0 mt-0.5 w-44 bg-background border border-border rounded-md shadow-lg z-50"
                 >
                   {ligaItems.map((item) => (
                     <a
