@@ -92,6 +92,17 @@ const Mix55Manager = () => {
     [startDate, roundsCount],
   );
 
+  const savedRounds = useMemo(
+    () => new Set(scores.map((s) => s.round_number)),
+    [scores],
+  );
+
+  const roundOptions = useMemo(() => {
+    const maxRounds = Math.max(1, Number(roundsCount) || 1);
+    const highest = Math.max(maxRounds, round, ...Array.from(savedRounds, (r) => r));
+    return Array.from({ length: highest }, (_, i) => i + 1);
+  }, [roundsCount, round, savedRounds]);
+
   const addTeam = async () => {
     if (!newTeam.name.trim()) {
       toast({ title: "Fel", description: "Lagnamn krävs", variant: "destructive" });
@@ -158,7 +169,17 @@ const Mix55Manager = () => {
       if (error) throw error;
 
       await loadData();
-      toast({ title: "Sparat", description: `Omgång ${round} har sparats` });
+      const savedRound = round;
+      const maxRounds = Math.max(1, Number(roundsCount) || 1);
+      if (savedRound < maxRounds) {
+        setRound(savedRound + 1);
+        toast({
+          title: "Sparat",
+          description: `Omgång ${savedRound} har sparats. Omgång ${savedRound + 1} är nu öppen – du kan alltid gå tillbaka och redigera.`,
+        });
+      } else {
+        toast({ title: "Sparat", description: `Omgång ${savedRound} har sparats` });
+      }
     } catch (e) {
       console.error(e);
       toast({ title: "Fel", description: "Kunde inte spara omgången", variant: "destructive" });
@@ -367,18 +388,29 @@ const Mix55Manager = () => {
           <CardTitle className="text-lg">Resultat per omgång</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="mix55-round">Omgång</Label>
-              <Input
-                id="mix55-round"
-                type="number"
-                min={1}
-                className="w-28"
-                value={round}
-                onChange={(e) => setRound(Math.max(1, Number(e.target.value) || 1))}
-              />
+          <div className="space-y-2">
+            <Label>Omgång</Label>
+            <div className="flex flex-wrap gap-2">
+              {roundOptions.map((r) => (
+                <Button
+                  key={r}
+                  size="sm"
+                  variant={r === round ? "default" : savedRounds.has(r) ? "secondary" : "outline"}
+                  className="rounded-full"
+                  onClick={() => setRound(r)}
+                >
+                  Omgång {r}
+                  {savedRounds.has(r) && " ✓"}
+                </Button>
+              ))}
             </div>
+            <p className="text-sm text-muted-foreground">
+              {savedRounds.has(round)
+                ? `Omgång ${round} är sparad – ändra siffrorna och spara igen för att korrigera.`
+                : `Omgång ${round} är öppen för inmatning.`}
+            </p>
+          </div>
+          <div>
             <Button onClick={saveRound} disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
               {saving ? "Sparar..." : `Spara omgång ${round}`}
