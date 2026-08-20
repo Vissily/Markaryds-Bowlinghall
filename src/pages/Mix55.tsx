@@ -14,7 +14,7 @@ import {
   type Mix55Score,
   type Mix55Team,
 } from "@/lib/mix55";
-import { Trophy, Medal, CalendarDays } from "lucide-react";
+import { Medal, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PLAYOFF_CUTOFF = 8;
@@ -43,7 +43,7 @@ const Mix55 = () => {
   const [scores, setScores] = useState<Mix55Score[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRound, setSelectedRound] = useState<number | "total">("total");
-  const [view, setView] = useState<"table" | "schedule" | "bracket">("table");
+  const [view, setView] = useState<"table" | "schedule">("table");
   const [settings, setSettings] = useState<Mix55Settings | null>(null);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const Mix55 = () => {
     [teams, scores, selectedRound],
   );
 
-  const top8 = standings.slice(0, PLAYOFF_CUTOFF);
+  
   const isTotal = selectedRound === "total";
 
   return (
@@ -146,15 +146,6 @@ const Mix55 = () => {
             >
               <CalendarDays className="w-4 h-4 mr-1" />
               Spelschema
-            </Button>
-            <Button
-              variant={view === "bracket" ? "default" : "outline"}
-              size="sm"
-              className="rounded-full"
-              onClick={() => setView(view === "bracket" ? "table" : "bracket")}
-            >
-              <Trophy className="w-4 h-4 mr-1" />
-              Slutspel
             </Button>
           </div>
 
@@ -210,30 +201,6 @@ const Mix55 = () => {
                   </div>
                 ))
               )}
-            </div>
-          ) : view === "bracket" ? (
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-4 text-center text-foreground">Slutspel – Topp 8</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {[0, 1, 2, 3].map((i) => {
-                  const home = top8[i];
-                  const away = top8[PLAYOFF_CUTOFF - 1 - i];
-                  return (
-                    <div key={i} className="bg-card border rounded-lg p-4">
-                      <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
-                        Kvartsfinal {i + 1}
-                      </div>
-                      <div className="flex items-center justify-between text-lg font-semibold text-foreground">
-                        <span className="truncate">{home ? `${i + 1}. ${home.team.name}` : "–"}</span>
-                        <span className="text-muted-foreground text-sm px-2">mot</span>
-                        <span className="truncate text-right">
-                          {away ? `${PLAYOFF_CUTOFF - i}. ${away.team.name}` : "–"}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           ) : (
             <div className="max-w-6xl mx-auto">
