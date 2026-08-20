@@ -388,18 +388,29 @@ const Mix55Manager = () => {
           <CardTitle className="text-lg">Resultat per omgång</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="mix55-round">Omgång</Label>
-              <Input
-                id="mix55-round"
-                type="number"
-                min={1}
-                className="w-28"
-                value={round}
-                onChange={(e) => setRound(Math.max(1, Number(e.target.value) || 1))}
-              />
+          <div className="space-y-2">
+            <Label>Omgång</Label>
+            <div className="flex flex-wrap gap-2">
+              {roundOptions.map((r) => (
+                <Button
+                  key={r}
+                  size="sm"
+                  variant={r === round ? "default" : savedRounds.has(r) ? "secondary" : "outline"}
+                  className="rounded-full"
+                  onClick={() => setRound(r)}
+                >
+                  Omgång {r}
+                  {savedRounds.has(r) && " ✓"}
+                </Button>
+              ))}
             </div>
+            <p className="text-sm text-muted-foreground">
+              {savedRounds.has(round)
+                ? `Omgång ${round} är sparad – ändra siffrorna och spara igen för att korrigera.`
+                : `Omgång ${round} är öppen för inmatning.`}
+            </p>
+          </div>
+          <div>
             <Button onClick={saveRound} disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
               {saving ? "Sparar..." : `Spara omgång ${round}`}
