@@ -5,23 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Save, Trash2, Download, RotateCcw, CalendarDays } from "lucide-react";
+import { Plus, Save, Trash2, Download, RotateCcw, CalendarDays, ArrowUp, ArrowDown } from "lucide-react";
 import {
   buildStandings,
-  buildLaneSchedule,
+  buildRoundDates,
+  buildSessionSchedule,
   calculateRoundPoints,
   formatPoints,
-  formatRoundDate,
-  type Mix55Round,
+  formatRoundDay,
+  isThursday,
   type Mix55Score,
+  type Mix55Settings,
   type Mix55Team,
 } from "@/lib/mix55";
-
-const toLocalInput = (iso: string) => {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
 
 const Mix55Manager = () => {
   const { toast } = useToast();
@@ -32,30 +28,33 @@ const Mix55Manager = () => {
   const [round, setRound] = useState(1);
   const [draft, setDraft] = useState<Record<string, { pins: string; series: string }>>({});
   const [newTeam, setNewTeam] = useState({ name: "", player1: "", player2: "" });
-  const [rounds, setRounds] = useState<Mix55Round[]>([]);
-  const [newRound, setNewRound] = useState({ round_number: "", play_at: "", note: "" });
+  const [settings, setSettings] = useState<Mix55Settings | null>(null);
+  const [startDate, setStartDate] = useState("");
+  const [roundsCount, setRoundsCount] = useState("10");
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [teamsRes, scoresRes, roundsRes] = await Promise.all([
+      const [teamsRes, scoresRes, settingsRes] = await Promise.all([
         supabase
           .from("mix55_teams")
           .select("id,name,player1,player2,sort_order")
           .order("sort_order", { ascending: true })
           .order("name", { ascending: true }),
         supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
-        supabase
-          .from("mix55_rounds")
-          .select("id,round_number,play_at,note")
-          .order("round_number", { ascending: true }),
+        supabase.from("mix55_settings").select("id,start_date,rounds_count").limit(1).maybeSingle(),
       ]);
       if (teamsRes.error) throw teamsRes.error;
       if (scoresRes.error) throw scoresRes.error;
-      if (roundsRes.error) throw roundsRes.error;
+      if (settingsRes.error) throw settingsRes.error;
       setTeams((teamsRes.data as Mix55Team[]) ?? []);
       setScores((scoresRes.data as Mix55Score[]) ?? []);
-      setRounds((roundsRes.data as Mix55Round[]) ?? []);
+      const s = (settingsRes.data as Mix55Settings | null) ?? null;
+      setSettings(s);
+      if (s) {
+        setStartDate(s.start_date);
+        setRoundsCount(String(s.rounds_count));
+      }
     } catch (e) {
       console.error(e);
       toast({ title: "Fel", description: "Kunde inte ladda Mix 55+ data", variant: "destructive" });
