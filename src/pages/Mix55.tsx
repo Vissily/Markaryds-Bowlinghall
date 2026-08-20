@@ -97,6 +97,7 @@ const Mix55 = () => {
   );
 
   const top8 = standings.slice(0, PLAYOFF_CUTOFF);
+  const isTotal = selectedRound === "total";
 
   return (
     <main className="min-h-screen bg-background">
@@ -244,8 +245,8 @@ const Mix55 = () => {
                       <th className="px-3 py-3">#</th>
                       <th className="px-3 py-3">Lag</th>
                       <th className="px-3 py-3 text-right">Matcher</th>
-                      <th className="px-3 py-3 text-right">Omg. slagning</th>
-                      <th className="px-3 py-3 text-right">Omg. poäng</th>
+                      {!isTotal && <th className="px-3 py-3 text-right">Omg. slagning</th>}
+                      {!isTotal && <th className="px-3 py-3 text-right">Omg. poäng</th>}
                       <th className="px-3 py-3 text-right">Total slagning</th>
                       <th className="px-3 py-3 text-right">Serier</th>
                       <th className="px-3 py-3 text-right">Snitt</th>
@@ -279,10 +280,14 @@ const Mix55 = () => {
                           </div>
                         </td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.matchesPlayed}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{row.roundPins ?? "–"}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">
-                          {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
-                        </td>
+                        {!isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">{row.roundPins ?? "–"}</td>
+                        )}
+                        {!isTotal && (
+                          <td className="px-3 py-3 text-right tabular-nums">
+                            {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
+                          </td>
+                        )}
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalPins}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.totalSeries}</td>
                         <td className="px-3 py-3 text-right tabular-nums">{row.average.toFixed(2)}</td>
@@ -333,11 +338,20 @@ const Mix55 = () => {
                           <div className="text-xs text-muted-foreground">poäng</div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-                        <div className="bg-muted/50 rounded-md py-2">
-                          <div className="text-xs text-muted-foreground">Omg. slagning</div>
-                          <div className="text-lg font-semibold tabular-nums">{row.roundPins ?? "–"}</div>
-                        </div>
+                      <div
+                        className={cn(
+                          "grid gap-2 mt-3 text-center",
+                          isTotal ? "grid-cols-2" : "grid-cols-3",
+                        )}
+                      >
+                        {!isTotal && (
+                          <div className="bg-muted/50 rounded-md py-2">
+                            <div className="text-xs text-muted-foreground">Omg. slagning</div>
+                            <div className="text-lg font-semibold tabular-nums">
+                              {row.roundPins ?? "–"}
+                            </div>
+                          </div>
+                        )}
                         <div className="bg-muted/50 rounded-md py-2">
                           <div className="text-xs text-muted-foreground">Total slagning</div>
                           <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
@@ -350,8 +364,10 @@ const Mix55 = () => {
                         </div>
                       </div>
                       <div className="mt-2 text-xs text-muted-foreground">
-                        Matcher: {row.matchesPlayed} · Serier: {row.totalSeries} · Omg. poäng:{" "}
-                        {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
+                        Matcher: {row.matchesPlayed} · Serier: {row.totalSeries}
+                        {!isTotal && (
+                          <> · Omg. poäng: {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}</>
+                        )}
                       </div>
                     </div>
                   </div>
