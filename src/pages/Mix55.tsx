@@ -6,10 +6,11 @@ import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/use
 import { supabase } from "@/integrations/supabase/client";
 import {
   buildStandings,
-  buildLaneSchedule,
+  buildRoundDates,
+  buildSessionSchedule,
   formatPoints,
-  formatRoundDate,
-  type Mix55Round,
+  formatRoundDay,
+  type Mix55Settings,
   type Mix55Score,
   type Mix55Team,
 } from "@/lib/mix55";
@@ -43,31 +44,28 @@ const Mix55 = () => {
   const [loading, setLoading] = useState(true);
   const [selectedRound, setSelectedRound] = useState<number | "total">("total");
   const [view, setView] = useState<"table" | "schedule" | "bracket">("table");
-  const [rounds, setRounds] = useState<Mix55Round[]>([]);
+  const [settings, setSettings] = useState<Mix55Settings | null>(null);
 
   useEffect(() => {
     let active = true;
     const load = async () => {
       try {
-        const [teamsRes, scoresRes, roundsRes] = await Promise.all([
+        const [teamsRes, scoresRes, settingsRes] = await Promise.all([
           supabase
             .from("mix55_teams")
             .select("id,name,player1,player2,sort_order")
             .order("sort_order", { ascending: true })
             .order("name", { ascending: true }),
           supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
-          supabase
-            .from("mix55_rounds")
-            .select("id,round_number,play_at,note")
-            .order("round_number", { ascending: true }),
+          supabase.from("mix55_settings").select("id,start_date,rounds_count").limit(1).maybeSingle(),
         ]);
         if (teamsRes.error) throw teamsRes.error;
         if (scoresRes.error) throw scoresRes.error;
-        if (roundsRes.error) throw roundsRes.error;
+        if (settingsRes.error) throw settingsRes.error;
         if (!active) return;
         setTeams((teamsRes.data as Mix55Team[]) ?? []);
         setScores((scoresRes.data as Mix55Score[]) ?? []);
-        setRounds((roundsRes.data as Mix55Round[]) ?? []);
+        setSettings((settingsRes.data as Mix55Settings | null) ?? null);
       } catch (e) {
         console.error("Error loading Mix 55+ data:", e);
       } finally {
@@ -80,12 +78,17 @@ const Mix55 = () => {
     };
   }, []);
 
+  const scheduleRounds = useMemo(
+    () => (settings ? buildRoundDates(settings.start_date, settings.rounds_count) : []),
+    [settings],
+  );
+
   const scoredRounds = useMemo(
     () =>
       Array.from(
-        new Set([...scores.map((s) => s.round_number), ...rounds.map((r) => r.round_number)]),
+        new Set([...scores.map((s) => s.round_number), ...scheduleRounds.map((r) => r.round_number)]),
       ).sort((a, b) => a - b),
-    [scores, rounds],
+    [scores, scheduleRounds],
   );
 
   const standings = useMemo(
@@ -163,32 +166,43 @@ const Mix55 = () => {
           ) : view === "schedule" ? (
             <div className="max-w-4xl mx-auto space-y-6">
               <h2 className="text-2xl font-bold text-center text-foreground">Spelschema</h2>
-              {rounds.length === 0 ? (
+              <p className="text-center text-muted-foreground">
+                Varannan torsdag. Lag 1–8 spelar 14:00–15:30, lag 9–16 spelar 15:30–17:00.
+              </p>
+              {scheduleRounds.length === 0 ? (
                 <p className="text-center text-muted-foreground">
-                  Inga speltillfällen är inlagda ännu.
+                  Spelschemat är inte inlagt ännu.
                 </p>
               ) : (
-                rounds.map((r) => (
-                  <div key={r.id} className="bg-card border rounded-lg p-4">
+                scheduleRounds.map((r) => (
+                  <div key={r.round_number} className="bg-card border rounded-lg p-4">
                     <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
                       <h3 className="text-xl font-bold text-foreground">Omgång {r.round_number}</h3>
-                      <span className="text-base text-muted-foreground">{formatRoundDate(r.play_at)}</span>
+                      <span className="text-base text-muted-foreground">{formatRoundDay(r.date)}</span>
                     </div>
-                    {r.note && <p className="text-sm text-muted-foreground mb-3">{r.note}</p>}
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {buildLaneSchedule(teams, r.round_number).map((lane) => (
-                        <div
-                          key={lane.lane}
-                          className="flex items-start gap-3 bg-muted/40 rounded-md px-3 py-2"
-                        >
-                          <span className="text-lg font-bold text-primary shrink-0">
-                            Bana {lane.lane}
-                          </span>
-                          <span className="text-base text-foreground">
-                            {lane.teams.length > 0
-                              ? lane.teams.map((t) => t.name).join(" – ")
-                              : "Ledig"}
-                          </span>
+                    <div className="space-y-4">
+                      {buildSessionSchedule(teams, r.round_number).map((group) => (
+                        <div key={group.session.index}>
+                          <div className="text-sm font-semibold text-primary mb-2">
+                            {group.session.label} · {group.session.startTime}–{group.session.endTime}
+                          </div>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            {group.lanes.map((lane) => (
+                              <div
+                                key={lane.lane}
+                                className="flex items-start gap-3 bg-muted/40 rounded-md px-3 py-2"
+                              >
+                                <span className="text-lg font-bold text-primary shrink-0">
+                                  Bana {lane.lane}
+                                </span>
+                                <span className="text-base text-foreground">
+                                  {lane.teams.length > 0
+                                    ? lane.teams.map((t) => t.name).join(", ")
+                                    : "Ledig"}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>

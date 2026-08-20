@@ -120,46 +120,87 @@ export function formatPoints(value: number): string {
 }
 
 export const LANE_COUNT = 8;
+export const TEAMS_PER_SESSION = 8;
 
-export type Mix55Round = {
+export type Mix55Settings = {
   id: string;
-  round_number: number;
-  play_at: string;
-  note: string | null;
+  start_date: string; // YYYY-MM-DD (en torsdag)
+  rounds_count: number;
 };
+
+export type SessionInfo = {
+  index: 0 | 1;
+  label: string;
+  startTime: string;
+  endTime: string;
+};
+
+export const MIX55_SESSIONS: SessionInfo[] = [
+  { index: 0, label: "Grupp 1 (lag 1–8)", startTime: "14:00", endTime: "15:30" },
+  { index: 1, label: "Grupp 2 (lag 9–16)", startTime: "15:30", endTime: "17:00" },
+];
 
 export type LaneAssignment = {
   lane: number;
   teams: Mix55Team[];
 };
 
-/**
- * 16 lag delas i 8 par (par 1 = lag 1 & 2, par 2 = lag 3 & 4, osv).
- * Varje par flyttar en bana per omgång: par p spelar på bana ((p + omgång - 1) % 8) + 1.
- */
-export function buildLaneSchedule(teams: Mix55Team[], roundNumber: number): LaneAssignment[] {
-  const lanes: LaneAssignment[] = Array.from({ length: LANE_COUNT }, (_, i) => ({
-    lane: i + 1,
-    teams: [],
-  }));
+export type SessionSchedule = {
+  session: SessionInfo;
+  lanes: LaneAssignment[];
+};
 
-  teams.forEach((team, index) => {
-    const pair = Math.floor(index / 2);
-    const lane = ((pair + (roundNumber - 1)) % LANE_COUNT + LANE_COUNT) % LANE_COUNT;
-    lanes[lane].teams.push(team);
-  });
+export type ScheduledRound = {
+  round_number: number;
+  date: Date;
+};
 
-  return lanes;
+/** Varannan torsdag från startdatumet. */
+export function buildRoundDates(startDate: string, roundsCount: number): ScheduledRound[] {
+  if (!startDate || roundsCount < 1) return [];
+  const [y, m, d] = startDate.split("-").map(Number);
+  const rounds: ScheduledRound[] = [];
+  for (let r = 1; r <= roundsCount; r++) {
+    const date = new Date(y, (m ?? 1) - 1, d ?? 1);
+    date.setDate(date.getDate() + 14 * (r - 1));
+    rounds.push({ round_number: r, date });
+  }
+  return rounds;
 }
 
-export function formatRoundDate(playAt: string): string {
-  const date = new Date(playAt);
+export function isThursday(dateStr: string): boolean {
+  if (!dateStr) return false;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1).getDay() === 4;
+}
+
+/**
+ * Lag 1–8 spelar första passet, lag 9–16 andra passet (ordningen styrs i admin).
+ * Varje lag har egen bana och flyttar en bana per omgång.
+ */
+export function buildSessionSchedule(teams: Mix55Team[], roundNumber: number): SessionSchedule[] {
+  return MIX55_SESSIONS.map((session) => {
+    const groupTeams = teams.slice(
+      session.index * TEAMS_PER_SESSION,
+      session.index * TEAMS_PER_SESSION + TEAMS_PER_SESSION,
+    );
+    const lanes: LaneAssignment[] = Array.from({ length: LANE_COUNT }, (_, i) => ({
+      lane: i + 1,
+      teams: [],
+    }));
+    groupTeams.forEach((team, index) => {
+      const laneIndex = ((index + (roundNumber - 1)) % LANE_COUNT + LANE_COUNT) % LANE_COUNT;
+      lanes[laneIndex].teams.push(team);
+    });
+    return { session, lanes };
+  });
+}
+
+export function formatRoundDay(date: Date): string {
   return new Intl.DateTimeFormat("sv-SE", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
   }).format(date);
 }

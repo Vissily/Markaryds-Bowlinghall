@@ -365,33 +365,6 @@ export type Database = {
           },
         ]
       }
-      mix55_rounds: {
-        Row: {
-          created_at: string
-          id: string
-          note: string | null
-          play_at: string
-          round_number: number
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          note?: string | null
-          play_at: string
-          round_number: number
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          note?: string | null
-          play_at?: string
-          round_number?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
       mix55_scores: {
         Row: {
           created_at: string
@@ -429,6 +402,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mix55_settings: {
+        Row: {
+          created_at: string
+          id: string
+          rounds_count: number
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rounds_count?: number
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rounds_count?: number
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       mix55_teams: {
         Row: {

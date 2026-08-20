@@ -5,23 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Save, Trash2, Download, RotateCcw, CalendarDays } from "lucide-react";
+import { Plus, Save, Trash2, Download, RotateCcw, CalendarDays, ArrowUp, ArrowDown } from "lucide-react";
 import {
   buildStandings,
-  buildLaneSchedule,
+  buildRoundDates,
+  buildSessionSchedule,
   calculateRoundPoints,
   formatPoints,
-  formatRoundDate,
-  type Mix55Round,
+  formatRoundDay,
+  isThursday,
   type Mix55Score,
+  type Mix55Settings,
   type Mix55Team,
 } from "@/lib/mix55";
-
-const toLocalInput = (iso: string) => {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
 
 const Mix55Manager = () => {
   const { toast } = useToast();
@@ -32,30 +28,33 @@ const Mix55Manager = () => {
   const [round, setRound] = useState(1);
   const [draft, setDraft] = useState<Record<string, { pins: string; series: string }>>({});
   const [newTeam, setNewTeam] = useState({ name: "", player1: "", player2: "" });
-  const [rounds, setRounds] = useState<Mix55Round[]>([]);
-  const [newRound, setNewRound] = useState({ round_number: "", play_at: "", note: "" });
+  const [settings, setSettings] = useState<Mix55Settings | null>(null);
+  const [startDate, setStartDate] = useState("");
+  const [roundsCount, setRoundsCount] = useState("10");
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [teamsRes, scoresRes, roundsRes] = await Promise.all([
+      const [teamsRes, scoresRes, settingsRes] = await Promise.all([
         supabase
           .from("mix55_teams")
           .select("id,name,player1,player2,sort_order")
           .order("sort_order", { ascending: true })
           .order("name", { ascending: true }),
         supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
-        supabase
-          .from("mix55_rounds")
-          .select("id,round_number,play_at,note")
-          .order("round_number", { ascending: true }),
+        supabase.from("mix55_settings").select("id,start_date,rounds_count").limit(1).maybeSingle(),
       ]);
       if (teamsRes.error) throw teamsRes.error;
       if (scoresRes.error) throw scoresRes.error;
-      if (roundsRes.error) throw roundsRes.error;
+      if (settingsRes.error) throw settingsRes.error;
       setTeams((teamsRes.data as Mix55Team[]) ?? []);
       setScores((scoresRes.data as Mix55Score[]) ?? []);
-      setRounds((roundsRes.data as Mix55Round[]) ?? []);
+      const s = (settingsRes.data as Mix55Settings | null) ?? null;
+      setSettings(s);
+      if (s) {
+        setStartDate(s.start_date);
+        setRoundsCount(String(s.rounds_count));
+      }
     } catch (e) {
       console.error(e);
       toast({ title: "Fel", description: "Kunde inte ladda Mix 55+ data", variant: "destructive" });
@@ -86,6 +85,11 @@ const Mix55Manager = () => {
       .map((t) => ({ team_id: t.id, pins: Number(draft[t.id].pins) || 0 }));
     return calculateRoundPoints(entries, Math.max(teams.length, 1));
   }, [teams, draft]);
+
+  const scheduleRounds = useMemo(
+    () => buildRoundDates(startDate, Math.max(1, Number(roundsCount) || 0)),
+    [startDate, roundsCount],
+  );
 
   const addTeam = async () => {
     if (!newTeam.name.trim()) {
@@ -163,52 +167,40 @@ const Mix55Manager = () => {
   };
 
 
-  const addRound = async () => {
-    const num = Number(newRound.round_number);
-    if (!num || num < 1 || !newRound.play_at) {
-      toast({
-        title: "Fel",
-        description: "Ange omgångsnummer samt datum och tid",
-        variant: "destructive",
-      });
+  const saveSettings = async () => {
+    if (!startDate) {
+      toast({ title: "Fel", description: "Välj startdatum", variant: "destructive" });
       return;
     }
-    const { error } = await supabase.from("mix55_rounds").insert({
-      round_number: num,
-      play_at: new Date(newRound.play_at).toISOString(),
-      note: newRound.note.trim() || null,
-    });
+    if (!isThursday(startDate)) {
+      toast({ title: "Fel", description: "Startdatumet måste vara en torsdag", variant: "destructive" });
+      return;
+    }
+    const count = Math.max(1, Number(roundsCount) || 1);
+    const payload = { start_date: startDate, rounds_count: count };
+    const { error } = settings
+      ? await supabase.from("mix55_settings").update(payload).eq("id", settings.id)
+      : await supabase.from("mix55_settings").insert(payload);
     if (error) {
-      toast({
-        title: "Fel",
-        description: "Kunde inte spara speltillfället (finns omgången redan?)",
-        variant: "destructive",
-      });
+      toast({ title: "Fel", description: "Kunde inte spara spelschemat", variant: "destructive" });
       return;
     }
-    setNewRound({ round_number: "", play_at: "", note: "" });
     await loadData();
-    toast({ title: "Sparat", description: "Speltillfället har lagts till" });
+    toast({ title: "Sparat", description: "Spelschemat har uppdaterats" });
   };
 
-  const updateRound = async (r: Mix55Round) => {
-    const { error } = await supabase
-      .from("mix55_rounds")
-      .update({ play_at: new Date(r.play_at).toISOString(), note: r.note })
-      .eq("id", r.id);
-    if (error) {
-      toast({ title: "Fel", description: "Kunde inte spara ändringen", variant: "destructive" });
-      return;
-    }
-    toast({ title: "Sparat", description: `Omgång ${r.round_number} uppdaterad` });
-  };
-
-  const deleteRound = async (id: string) => {
-    if (!window.confirm("Ta bort speltillfället?")) return;
-    const { error } = await supabase.from("mix55_rounds").delete().eq("id", id);
-    if (error) {
-      toast({ title: "Fel", description: "Kunde inte ta bort", variant: "destructive" });
-      return;
+  const moveTeam = async (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= teams.length) return;
+    const next = [...teams];
+    [next[index], next[target]] = [next[target], next[index]];
+    setTeams(next);
+    const updates = next.map((t, i) =>
+      supabase.from("mix55_teams").update({ sort_order: i + 1 }).eq("id", t.id),
+    );
+    const results = await Promise.all(updates);
+    if (results.some((r) => r.error)) {
+      toast({ title: "Fel", description: "Kunde inte spara ordningen", variant: "destructive" });
     }
     await loadData();
   };
@@ -295,8 +287,38 @@ const Mix55Manager = () => {
           </div>
 
           <div className="space-y-2">
-            {teams.map((team) => (
-              <div key={team.id} className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+            {teams.map((team, index) => (
+              <React.Fragment key={team.id}>
+                {index === 0 && (
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 1 · 14:00–15:30 (lag 1–8)</p>
+                )}
+                {index === 8 && (
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 2 · 15:30–17:00 (lag 9–16)</p>
+                )}
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 items-center">
+                <div className="flex items-center gap-1">
+                  <span className="w-6 text-sm text-muted-foreground tabular-nums">{index + 1}.</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Flytta upp ${team.name}`}
+                    disabled={index === 0}
+                    onClick={() => moveTeam(index, -1)}
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Flytta ner ${team.name}`}
+                    disabled={index === teams.length - 1}
+                    onClick={() => moveTeam(index, 1)}
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </Button>
+                </div>
                 <Input
                   value={team.name}
                   onChange={(e) =>
@@ -333,6 +355,7 @@ const Mix55Manager = () => {
                   </Button>
                 </div>
               </div>
+              </React.Fragment>
             ))}
           </div>
         </CardContent>
@@ -408,91 +431,63 @@ const Mix55Manager = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Alla 16 lag spelar samma dag på 8 banor (2 lag per bana). Banorna roterar automatiskt ett
-            steg per omgång – lag som spelade på bana 1 spelar på bana 2 nästa omgång.
+            Serien spelas varannan torsdag. Lag 1–8 spelar 14:00–15:30 och lag 9–16 spelar
+            15:30–17:00 (ordningen styr du i listan ovan). Varje lag har egen bana och flyttar en
+            bana per omgång.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-end">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-end">
             <div className="space-y-1">
-              <Label htmlFor="mix55-new-round">Omgång</Label>
+              <Label htmlFor="mix55-start-date">Första torsdagen</Label>
               <Input
-                id="mix55-new-round"
+                id="mix55-start-date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              {startDate && !isThursday(startDate) && (
+                <p className="text-xs text-destructive">Välj en torsdag</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="mix55-rounds-count">Antal omgångar</Label>
+              <Input
+                id="mix55-rounds-count"
                 type="number"
                 min={1}
-                value={newRound.round_number}
-                onChange={(e) => setNewRound({ ...newRound, round_number: e.target.value })}
+                value={roundsCount}
+                onChange={(e) => setRoundsCount(e.target.value)}
               />
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="mix55-new-date">Datum & tid</Label>
-              <Input
-                id="mix55-new-date"
-                type="datetime-local"
-                value={newRound.play_at}
-                onChange={(e) => setNewRound({ ...newRound, play_at: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="mix55-new-note">Notering (valfri)</Label>
-              <Input
-                id="mix55-new-note"
-                value={newRound.note}
-                onChange={(e) => setNewRound({ ...newRound, note: e.target.value })}
-              />
-            </div>
-            <Button onClick={addRound}>
-              <Plus className="w-4 h-4 mr-2" /> Lägg till omgång
+            <Button onClick={saveSettings}>
+              <Save className="w-4 h-4 mr-2" /> Spara spelschema
             </Button>
           </div>
 
           <div className="space-y-4">
-            {rounds.map((r) => (
-              <div key={r.id} className="border rounded-lg p-3 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
-                  <div className="font-semibold">Omgång {r.round_number}</div>
-                  <Input
-                    type="datetime-local"
-                    value={toLocalInput(r.play_at)}
-                    onChange={(e) =>
-                      setRounds(
-                        rounds.map((x) =>
-                          x.id === r.id
-                            ? { ...x, play_at: new Date(e.target.value).toISOString() }
-                            : x,
-                        ),
-                      )
-                    }
-                  />
-                  <Input
-                    placeholder="Notering"
-                    value={r.note ?? ""}
-                    onChange={(e) =>
-                      setRounds(rounds.map((x) => (x.id === r.id ? { ...x, note: e.target.value } : x)))
-                    }
-                  />
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => updateRound(r)}>
-                      <Save className="w-4 h-4 mr-1" /> Spara
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      aria-label={`Ta bort omgång ${r.round_number}`}
-                      onClick={() => deleteRound(r.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+            {scheduleRounds.map((r) => (
+              <div key={r.round_number} className="border rounded-lg p-3 space-y-3">
+                <div className="font-semibold">
+                  Omgång {r.round_number} – {formatRoundDay(r.date)}
                 </div>
-                <div className="text-xs text-muted-foreground">{formatRoundDate(r.play_at)}</div>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {buildLaneSchedule(teams, r.round_number).map((lane) => (
-                    <div key={lane.lane} className="flex gap-2 bg-muted/40 rounded-md px-3 py-1.5 text-sm">
-                      <span className="font-semibold text-primary shrink-0">Bana {lane.lane}</span>
-                      <span>{lane.teams.length > 0 ? lane.teams.map((t) => t.name).join(" – ") : "Ledig"}</span>
+                {buildSessionSchedule(teams, r.round_number).map((group) => (
+                  <div key={group.session.index} className="space-y-1">
+                    <div className="text-sm font-medium text-primary">
+                      {group.session.label} · {group.session.startTime}–{group.session.endTime}
                     </div>
-                  ))}
-                </div>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {group.lanes.map((lane) => (
+                        <div
+                          key={lane.lane}
+                          className="flex gap-2 bg-muted/40 rounded-md px-3 py-1.5 text-sm"
+                        >
+                          <span className="font-semibold text-primary shrink-0">Bana {lane.lane}</span>
+                          <span>{lane.teams.length > 0 ? lane.teams.map((t) => t.name).join(", ") : "Ledig"}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
