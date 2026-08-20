@@ -365,6 +365,74 @@ export type Database = {
           },
         ]
       }
+      mix55_scores: {
+        Row: {
+          created_at: string
+          id: string
+          pins: number
+          round_number: number
+          series: number
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pins?: number
+          round_number: number
+          series?: number
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pins?: number
+          round_number?: number
+          series?: number
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mix55_scores_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "mix55_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mix55_teams: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          player1: string
+          player2: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          player1?: string
+          player2?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          player1?: string
+          player2?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       opening_hours: {
         Row: {
           close_time: string | null

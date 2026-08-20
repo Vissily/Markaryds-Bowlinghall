@@ -12,6 +12,7 @@ import Menu from "./pages/Menu";
 import Livestream from "./pages/Livestream";
 import Livescore from "./pages/Livescore";
 import Markarydsligan from "./pages/Markarydsligan";
+import Mix55 from "./pages/Mix55";
 import Events from "./pages/Events";
 import PriceList from "./pages/PriceList";
 import Auth from "./pages/Auth";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/livescore" element={<Livescore />} />
             <Route path="/markarydsligan" element={<Markarydsligan />} />
+            <Route path="/mix55" element={<Mix55 />} />
             <Route path="/events" element={<Events />} />
             <Route path="/prislista" element={<PriceList />} />
             <Route path="/auth" element={<Auth />} />

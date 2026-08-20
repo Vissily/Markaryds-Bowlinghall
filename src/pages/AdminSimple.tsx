@@ -19,6 +19,7 @@ import GalleryManager from '@/components/admin/GalleryManager';
 import PriceManager from '@/components/admin/PriceManager';
 import AdminFAQ from '@/components/admin/AdminFAQ';
 import MarkarydsliganManager from '@/components/admin/MarkarydsliganManager';
+import Mix55Manager from '@/components/admin/Mix55Manager';
 import ContentEditor from '@/components/admin/ContentEditor';
 
 interface SiteContent {
@@ -270,7 +271,7 @@ const AdminSimple = () => {
         </div>
 
         <Tabs defaultValue="faq" className="space-y-4 lg:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 h-auto lg:h-10 gap-1 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-10 h-auto lg:h-10 gap-1 p-1">
             <TabsTrigger value="faq" className="text-xs lg:text-sm px-2 lg:px-3 py-2">FAQ</TabsTrigger>
             <TabsTrigger value="content" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Hemsida</TabsTrigger>
             <TabsTrigger value="gallery" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Galleri</TabsTrigger>
@@ -280,6 +281,7 @@ const AdminSimple = () => {
             <TabsTrigger value="events" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Event</TabsTrigger>
             <TabsTrigger value="livestreams" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Stream</TabsTrigger>
             <TabsTrigger value="markarydsligan" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Markarydsligan</TabsTrigger>
+            <TabsTrigger value="mix55" className="text-xs lg:text-sm px-2 lg:px-3 py-2">Mix 55+</TabsTrigger>
           </TabsList>
 
           <TabsContent value="faq">
@@ -404,6 +406,16 @@ const AdminSimple = () => {
               </CardHeader>
               <CardContent className="px-4 lg:px-6">
                 <MarkarydsliganManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="mix55" className="mt-4 lg:mt-6">
+            <Card>
+              <CardHeader className="px-4 lg:px-6">
+                <CardTitle className="text-lg lg:text-xl">Hantera Korpen Mix 55+</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 lg:px-6">
+                <Mix55Manager />
               </CardContent>
             </Card>
           </TabsContent>
