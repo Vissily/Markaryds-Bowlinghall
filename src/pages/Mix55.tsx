@@ -43,7 +43,7 @@ const Mix55 = () => {
   const [scores, setScores] = useState<Mix55Score[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRound, setSelectedRound] = useState<number | "total">("total");
-  const [view, setView] = useState<"table" | "schedule" | "bracket">("table");
+  const [view, setView] = useState<"table" | "schedule">("table");
   const [settings, setSettings] = useState<Mix55Settings | null>(null);
 
   useEffect(() => {
