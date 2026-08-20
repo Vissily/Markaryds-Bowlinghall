@@ -14,6 +14,7 @@ import {
   formatPoints,
   formatRoundDay,
   isThursday,
+  SERIES_PER_ROUND,
   type Mix55Score,
   type Mix55Settings,
   type Mix55Team,
@@ -143,7 +144,7 @@ const Mix55Manager = () => {
           team_id: t.id,
           round_number: round,
           pins: Number(draft[t.id].pins) || 0,
-          series: Number(draft[t.id].series) || 0,
+          series: SERIES_PER_ROUND,
         }));
 
       if (rows.length === 0) {
@@ -402,17 +403,9 @@ const Mix55Manager = () => {
                       })
                     }
                   />
-                  <Input
-                    type="number"
-                    placeholder="Serier"
-                    value={draft[team.id]?.series ?? ""}
-                    onChange={(e) =>
-                      setDraft({
-                        ...draft,
-                        [team.id]: { ...draft[team.id], series: e.target.value },
-                      })
-                    }
-                  />
+                  <div className="text-sm text-muted-foreground">
+                    Serier: {SERIES_PER_ROUND} (fast)
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     Poäng: {previewPoints[team.id] != null ? formatPoints(previewPoints[team.id]) : "–"}
                   </div>
