@@ -147,15 +147,6 @@ const Mix55 = () => {
               <CalendarDays className="w-4 h-4 mr-1" />
               Spelschema
             </Button>
-            <Button
-              variant={view === "bracket" ? "default" : "outline"}
-              size="sm"
-              className="rounded-full"
-              onClick={() => setView(view === "bracket" ? "table" : "bracket")}
-            >
-              <Trophy className="w-4 h-4 mr-1" />
-              Slutspel
-            </Button>
           </div>
 
           {loading ? (
