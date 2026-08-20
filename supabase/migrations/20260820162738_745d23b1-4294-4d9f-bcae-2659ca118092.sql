@@ -1,0 +1,1 @@
+ALTER TABLE public.mix55_scores ALTER COLUMN series SET DEFAULT 8; UPDATE public.mix55_scores SET series = 8 WHERE series <> 8;
