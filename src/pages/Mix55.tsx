@@ -97,6 +97,7 @@ const Mix55 = () => {
   );
 
   const top8 = standings.slice(0, PLAYOFF_CUTOFF);
+  const isTotal = selectedRound === "total";
 
   return (
     <main className="min-h-screen bg-background">
