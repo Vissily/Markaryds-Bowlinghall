@@ -1,0 +1,1 @@
+DELETE FROM public.mix55_scores WHERE round_number IN (1,2);
