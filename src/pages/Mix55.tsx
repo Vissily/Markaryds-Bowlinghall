@@ -14,7 +14,7 @@ import {
   type Mix55Score,
   type Mix55Team,
 } from "@/lib/mix55";
-import { Trophy, Medal, CalendarDays } from "lucide-react";
+import { Medal, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PLAYOFF_CUTOFF = 8;
