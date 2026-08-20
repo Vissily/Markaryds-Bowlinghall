@@ -14,6 +14,7 @@ import {
   formatPoints,
   formatRoundDay,
   isThursday,
+  SERIES_PER_ROUND,
   type Mix55Score,
   type Mix55Settings,
   type Mix55Team,
