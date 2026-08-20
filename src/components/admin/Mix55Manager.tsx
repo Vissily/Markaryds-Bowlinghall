@@ -92,6 +92,17 @@ const Mix55Manager = () => {
     [startDate, roundsCount],
   );
 
+  const savedRounds = useMemo(
+    () => new Set(scores.map((s) => s.round_number)),
+    [scores],
+  );
+
+  const roundOptions = useMemo(() => {
+    const maxRounds = Math.max(1, Number(roundsCount) || 1);
+    const highest = Math.max(maxRounds, round, ...Array.from(savedRounds, (r) => r));
+    return Array.from({ length: highest }, (_, i) => i + 1);
+  }, [roundsCount, round, savedRounds]);
+
   const addTeam = async () => {
     if (!newTeam.name.trim()) {
       toast({ title: "Fel", description: "Lagnamn krävs", variant: "destructive" });
