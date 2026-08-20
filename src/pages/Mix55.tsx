@@ -202,30 +202,6 @@ const Mix55 = () => {
                 ))
               )}
             </div>
-          ) : view === "bracket" ? (
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-4 text-center text-foreground">Slutspel – Topp 8</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {[0, 1, 2, 3].map((i) => {
-                  const home = top8[i];
-                  const away = top8[PLAYOFF_CUTOFF - 1 - i];
-                  return (
-                    <div key={i} className="bg-card border rounded-lg p-4">
-                      <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
-                        Kvartsfinal {i + 1}
-                      </div>
-                      <div className="flex items-center justify-between text-lg font-semibold text-foreground">
-                        <span className="truncate">{home ? `${i + 1}. ${home.team.name}` : "–"}</span>
-                        <span className="text-muted-foreground text-sm px-2">mot</span>
-                        <span className="truncate text-right">
-                          {away ? `${PLAYOFF_CUTOFF - i}. ${away.team.name}` : "–"}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           ) : (
             <div className="max-w-6xl mx-auto">
               {/* Desktop table */}
