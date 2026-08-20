@@ -4,8 +4,16 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 import { supabase } from "@/integrations/supabase/client";
-import { buildStandings, formatPoints, type Mix55Score, type Mix55Team } from "@/lib/mix55";
-import { Trophy, Medal } from "lucide-react";
+import {
+  buildStandings,
+  buildLaneSchedule,
+  formatPoints,
+  formatRoundDate,
+  type Mix55Round,
+  type Mix55Score,
+  type Mix55Team,
+} from "@/lib/mix55";
+import { Trophy, Medal, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PLAYOFF_CUTOFF = 8;
@@ -34,25 +42,32 @@ const Mix55 = () => {
   const [scores, setScores] = useState<Mix55Score[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRound, setSelectedRound] = useState<number | "total">("total");
-  const [showBracket, setShowBracket] = useState(false);
+  const [view, setView] = useState<"table" | "schedule" | "bracket">("table");
+  const [rounds, setRounds] = useState<Mix55Round[]>([]);
 
   useEffect(() => {
     let active = true;
     const load = async () => {
       try {
-        const [teamsRes, scoresRes] = await Promise.all([
+        const [teamsRes, scoresRes, roundsRes] = await Promise.all([
           supabase
             .from("mix55_teams")
             .select("id,name,player1,player2,sort_order")
             .order("sort_order", { ascending: true })
             .order("name", { ascending: true }),
           supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
+          supabase
+            .from("mix55_rounds")
+            .select("id,round_number,play_at,note")
+            .order("round_number", { ascending: true }),
         ]);
         if (teamsRes.error) throw teamsRes.error;
         if (scoresRes.error) throw scoresRes.error;
+        if (roundsRes.error) throw roundsRes.error;
         if (!active) return;
         setTeams((teamsRes.data as Mix55Team[]) ?? []);
         setScores((scoresRes.data as Mix55Score[]) ?? []);
+        setRounds((roundsRes.data as Mix55Round[]) ?? []);
       } catch (e) {
         console.error("Error loading Mix 55+ data:", e);
       } finally {
@@ -65,9 +80,12 @@ const Mix55 = () => {
     };
   }, []);
 
-  const rounds = useMemo(
-    () => Array.from(new Set(scores.map((s) => s.round_number))).sort((a, b) => a - b),
-    [scores],
+  const scoredRounds = useMemo(
+    () =>
+      Array.from(
+        new Set([...scores.map((s) => s.round_number), ...rounds.map((r) => r.round_number)]),
+      ).sort((a, b) => a - b),
+    [scores, rounds],
   );
 
   const standings = useMemo(
@@ -92,29 +110,44 @@ const Mix55 = () => {
           {/* Filter */}
           <div className="max-w-6xl mx-auto mb-6 flex flex-wrap gap-2 justify-center">
             <Button
-              variant={selectedRound === "total" ? "default" : "outline"}
+              variant={view === "table" && selectedRound === "total" ? "default" : "outline"}
               size="sm"
               className="rounded-full"
-              onClick={() => setSelectedRound("total")}
+              onClick={() => {
+                setView("table");
+                setSelectedRound("total");
+              }}
             >
               Totalt
             </Button>
-            {rounds.map((round) => (
+            {scoredRounds.map((round) => (
               <Button
                 key={round}
-                variant={selectedRound === round ? "default" : "outline"}
+                variant={view === "table" && selectedRound === round ? "default" : "outline"}
                 size="sm"
                 className="rounded-full"
-                onClick={() => setSelectedRound(round)}
+                onClick={() => {
+                  setView("table");
+                  setSelectedRound(round);
+                }}
               >
                 Omgång {round}
               </Button>
             ))}
             <Button
-              variant={showBracket ? "default" : "outline"}
+              variant={view === "schedule" ? "default" : "outline"}
               size="sm"
               className="rounded-full"
-              onClick={() => setShowBracket((v) => !v)}
+              onClick={() => setView(view === "schedule" ? "table" : "schedule")}
+            >
+              <CalendarDays className="w-4 h-4 mr-1" />
+              Spelschema
+            </Button>
+            <Button
+              variant={view === "bracket" ? "default" : "outline"}
+              size="sm"
+              className="rounded-full"
+              onClick={() => setView(view === "bracket" ? "table" : "bracket")}
             >
               <Trophy className="w-4 h-4 mr-1" />
               Slutspel
@@ -127,7 +160,43 @@ const Mix55 = () => {
             <p className="text-center text-muted-foreground py-12">
               Inga lag är inlagda ännu. Tabellen visas så snart serien startar.
             </p>
-          ) : showBracket ? (
+          ) : view === "schedule" ? (
+            <div className="max-w-4xl mx-auto space-y-6">
+              <h2 className="text-2xl font-bold text-center text-foreground">Spelschema</h2>
+              {rounds.length === 0 ? (
+                <p className="text-center text-muted-foreground">
+                  Inga speltillfällen är inlagda ännu.
+                </p>
+              ) : (
+                rounds.map((r) => (
+                  <div key={r.id} className="bg-card border rounded-lg p-4">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+                      <h3 className="text-xl font-bold text-foreground">Omgång {r.round_number}</h3>
+                      <span className="text-base text-muted-foreground">{formatRoundDate(r.play_at)}</span>
+                    </div>
+                    {r.note && <p className="text-sm text-muted-foreground mb-3">{r.note}</p>}
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {buildLaneSchedule(teams, r.round_number).map((lane) => (
+                        <div
+                          key={lane.lane}
+                          className="flex items-start gap-3 bg-muted/40 rounded-md px-3 py-2"
+                        >
+                          <span className="text-lg font-bold text-primary shrink-0">
+                            Bana {lane.lane}
+                          </span>
+                          <span className="text-base text-foreground">
+                            {lane.teams.length > 0
+                              ? lane.teams.map((t) => t.name).join(" – ")
+                              : "Ledig"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : view === "bracket" ? (
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 text-center text-foreground">Slutspel – Topp 8</h2>
               <div className="grid gap-4 sm:grid-cols-2">

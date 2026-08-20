@@ -118,3 +118,48 @@ export function buildStandings(
 export function formatPoints(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
+
+export const LANE_COUNT = 8;
+
+export type Mix55Round = {
+  id: string;
+  round_number: number;
+  play_at: string;
+  note: string | null;
+};
+
+export type LaneAssignment = {
+  lane: number;
+  teams: Mix55Team[];
+};
+
+/**
+ * 16 lag delas i 8 par (par 1 = lag 1 & 2, par 2 = lag 3 & 4, osv).
+ * Varje par flyttar en bana per omgång: par p spelar på bana ((p + omgång - 1) % 8) + 1.
+ */
+export function buildLaneSchedule(teams: Mix55Team[], roundNumber: number): LaneAssignment[] {
+  const lanes: LaneAssignment[] = Array.from({ length: LANE_COUNT }, (_, i) => ({
+    lane: i + 1,
+    teams: [],
+  }));
+
+  teams.forEach((team, index) => {
+    const pair = Math.floor(index / 2);
+    const lane = ((pair + (roundNumber - 1)) % LANE_COUNT + LANE_COUNT) % LANE_COUNT;
+    lanes[lane].teams.push(team);
+  });
+
+  return lanes;
+}
+
+export function formatRoundDate(playAt: string): string {
+  const date = new Date(playAt);
+  return new Intl.DateTimeFormat("sv-SE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
