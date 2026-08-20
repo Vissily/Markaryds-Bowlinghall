@@ -338,11 +338,20 @@ const Mix55 = () => {
                           <div className="text-xs text-muted-foreground">poäng</div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-                        <div className="bg-muted/50 rounded-md py-2">
-                          <div className="text-xs text-muted-foreground">Omg. slagning</div>
-                          <div className="text-lg font-semibold tabular-nums">{row.roundPins ?? "–"}</div>
-                        </div>
+                      <div
+                        className={cn(
+                          "grid gap-2 mt-3 text-center",
+                          isTotal ? "grid-cols-2" : "grid-cols-3",
+                        )}
+                      >
+                        {!isTotal && (
+                          <div className="bg-muted/50 rounded-md py-2">
+                            <div className="text-xs text-muted-foreground">Omg. slagning</div>
+                            <div className="text-lg font-semibold tabular-nums">
+                              {row.roundPins ?? "–"}
+                            </div>
+                          </div>
+                        )}
                         <div className="bg-muted/50 rounded-md py-2">
                           <div className="text-xs text-muted-foreground">Total slagning</div>
                           <div className="text-lg font-semibold tabular-nums">{row.totalPins}</div>
@@ -355,8 +364,10 @@ const Mix55 = () => {
                         </div>
                       </div>
                       <div className="mt-2 text-xs text-muted-foreground">
-                        Matcher: {row.matchesPlayed} · Serier: {row.totalSeries} · Omg. poäng:{" "}
-                        {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}
+                        Matcher: {row.matchesPlayed} · Serier: {row.totalSeries}
+                        {!isTotal && (
+                          <> · Omg. poäng: {row.roundPoints != null ? formatPoints(row.roundPoints) : "–"}</>
+                        )}
                       </div>
                     </div>
                   </div>
