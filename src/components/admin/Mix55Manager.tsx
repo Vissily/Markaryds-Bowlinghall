@@ -188,6 +188,22 @@ const Mix55Manager = () => {
     }
   };
 
+  const clearRound = async () => {
+    if (!window.confirm(`Rensa alla resultat för omgång ${round}? Detta kan inte ångras.`)) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("mix55_scores").delete().eq("round_number", round);
+      if (error) throw error;
+      await loadData();
+      toast({ title: "Rensat", description: `Alla resultat för omgång ${round} är borttagna` });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Fel", description: "Kunde inte rensa omgången", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
 
   const saveSettings = async () => {
     if (!startDate) {
@@ -410,11 +426,17 @@ const Mix55Manager = () => {
                 : `Omgång ${round} är öppen för inmatning.`}
             </p>
           </div>
-          <div>
+          <div className="flex flex-wrap gap-2">
             <Button onClick={saveRound} disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
               {saving ? "Sparar..." : `Spara omgång ${round}`}
             </Button>
+            {savedRounds.has(round) && (
+              <Button variant="destructive" onClick={clearRound} disabled={saving}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Rensa omgång {round}
+              </Button>
+            )}
           </div>
 
           {teams.length === 0 ? (
