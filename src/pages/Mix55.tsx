@@ -107,7 +107,7 @@ const Mix55 = () => {
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Korpen Mix 55+</h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Bowlingturnering för 16 lag med två spelare i varje lag. Topp 8 går vidare till slutspel.
+              Bowlingturnering för 14 lag med två spelare i varje lag. Topp 8 går vidare till slutspel.
             </p>
           </div>
 
@@ -159,7 +159,7 @@ const Mix55 = () => {
             <div className="max-w-4xl mx-auto space-y-6">
               <h2 className="text-2xl font-bold text-center text-foreground">Spelschema</h2>
               <p className="text-center text-muted-foreground">
-                Varannan torsdag. Lag 1–8 spelar 14:00–15:30, lag 9–16 spelar 15:30–17:00.
+                Varannan torsdag. Lag 1–7 spelar 14:00–15:30, lag 8–14 spelar 15:30–17:00.
               </p>
               {scheduleRounds.length === 0 ? (
                 <p className="text-center text-muted-foreground">

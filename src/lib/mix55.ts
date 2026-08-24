@@ -123,7 +123,7 @@ export function formatPoints(value: number): string {
 export const SERIES_PER_ROUND = 8;
 
 export const LANE_COUNT = 8;
-export const TEAMS_PER_SESSION = 8;
+export const TEAMS_PER_SESSION = 7;
 
 export type Mix55Settings = {
   id: string;
@@ -139,8 +139,8 @@ export type SessionInfo = {
 };
 
 export const MIX55_SESSIONS: SessionInfo[] = [
-  { index: 0, label: "Grupp 1 (lag 1–8)", startTime: "14:00", endTime: "15:30" },
-  { index: 1, label: "Grupp 2 (lag 9–16)", startTime: "15:30", endTime: "17:00" },
+  { index: 0, label: "Grupp 1 (lag 1–7)", startTime: "14:00", endTime: "15:30" },
+  { index: 1, label: "Grupp 2 (lag 8–14)", startTime: "15:30", endTime: "17:00" },
 ];
 
 export type LaneAssignment = {
@@ -178,7 +178,7 @@ export function isThursday(dateStr: string): boolean {
 }
 
 /**
- * Lag 1–8 spelar första passet, lag 9–16 andra passet (ordningen styrs i admin).
+ * Lag 1–7 spelar första passet, lag 8–14 andra passet (ordningen styrs i admin).
  * Varje lag har egen bana och flyttar en bana per omgång.
  */
 export function buildSessionSchedule(teams: Mix55Team[], roundNumber: number): SessionSchedule[] {
