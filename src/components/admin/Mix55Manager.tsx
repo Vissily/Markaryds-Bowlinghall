@@ -284,7 +284,7 @@ const Mix55Manager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Lag ({teams.length}/16)</CardTitle>
+          <CardTitle className="text-lg">Lag ({teams.length}/14)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
@@ -312,10 +312,10 @@ const Mix55Manager = () => {
             {teams.map((team, index) => (
               <React.Fragment key={team.id}>
                 {index === 0 && (
-                  <p className="text-sm font-semibold text-primary pt-2">Pass 1 · 14:00–15:30 (lag 1–8)</p>
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 1 · 14:00–15:30 (lag 1–7)</p>
                 )}
-                {index === 8 && (
-                  <p className="text-sm font-semibold text-primary pt-2">Pass 2 · 15:30–17:00 (lag 9–16)</p>
+                {index === 7 && (
+                  <p className="text-sm font-semibold text-primary pt-2">Pass 2 · 15:30–17:00 (lag 8–14)</p>
                 )}
               <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 items-center">
                 <div className="flex items-center gap-1">
@@ -456,7 +456,7 @@ const Mix55Manager = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Serien spelas varannan torsdag. Lag 1–8 spelar 14:00–15:30 och lag 9–16 spelar
+            Serien spelas varannan torsdag. Lag 1–7 spelar 14:00–15:30 och lag 8–14 spelar
             15:30–17:00 (ordningen styr du i listan ovan). Varje lag har egen bana och flyttar en
             bana per omgång.
           </p>
