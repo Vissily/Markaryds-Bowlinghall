@@ -57,7 +57,7 @@ const Mix55 = () => {
             .order("sort_order", { ascending: true })
             .order("name", { ascending: true }),
           supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
-          supabase.from("mix55_settings").select("id,start_date,rounds_count").limit(1).maybeSingle(),
+          supabase.from("mix55_settings").select("id,start_date,rounds_count,pause_after_round,resume_date").limit(1).maybeSingle(),
         ]);
         if (teamsRes.error) throw teamsRes.error;
         if (scoresRes.error) throw scoresRes.error;
@@ -79,7 +79,15 @@ const Mix55 = () => {
   }, []);
 
   const scheduleRounds = useMemo(
-    () => (settings ? buildRoundDates(settings.start_date, settings.rounds_count) : []),
+    () =>
+      settings
+        ? buildRoundDates(
+            settings.start_date,
+            settings.rounds_count,
+            settings.pause_after_round,
+            settings.resume_date,
+          )
+        : [],
     [settings],
   );
 

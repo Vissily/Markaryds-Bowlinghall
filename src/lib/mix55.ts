@@ -129,6 +129,8 @@ export type Mix55Settings = {
   id: string;
   start_date: string; // YYYY-MM-DD (en torsdag)
   rounds_count: number;
+  pause_after_round: number | null; // paus efter denna omgång (t.ex. juluppehåll)
+  resume_date: string | null; // YYYY-MM-DD (en torsdag)
 };
 
 export type SessionInfo = {
@@ -158,14 +160,36 @@ export type ScheduledRound = {
   date: Date;
 };
 
-/** Varannan torsdag från startdatumet. */
-export function buildRoundDates(startDate: string, roundsCount: number): ScheduledRound[] {
+/**
+ * Varannan torsdag från startdatumet. Om `pauseAfterRound` + `resumeDate` anges
+ * görs ett uppehåll efter den omgången och serien återupptas varannan torsdag
+ * från återstartsdatumet (t.ex. julpaus).
+ */
+export function buildRoundDates(
+  startDate: string,
+  roundsCount: number,
+  pauseAfterRound?: number | null,
+  resumeDate?: string | null,
+): ScheduledRound[] {
   if (!startDate || roundsCount < 1) return [];
   const [y, m, d] = startDate.split("-").map(Number);
+  const pauseAt =
+    pauseAfterRound != null && pauseAfterRound >= 1 && resumeDate ? pauseAfterRound : null;
+  let resume: Date | null = null;
+  if (pauseAt != null && resumeDate) {
+    const [ry, rm, rd] = resumeDate.split("-").map(Number);
+    resume = new Date(ry, (rm ?? 1) - 1, rd ?? 1);
+  }
   const rounds: ScheduledRound[] = [];
   for (let r = 1; r <= roundsCount; r++) {
-    const date = new Date(y, (m ?? 1) - 1, d ?? 1);
-    date.setDate(date.getDate() + 14 * (r - 1));
+    let date: Date;
+    if (pauseAt != null && resume && r > pauseAt) {
+      date = new Date(resume);
+      date.setDate(date.getDate() + 14 * (r - pauseAt - 1));
+    } else {
+      date = new Date(y, (m ?? 1) - 1, d ?? 1);
+      date.setDate(date.getDate() + 14 * (r - 1));
+    }
     rounds.push({ round_number: r, date });
   }
   return rounds;
