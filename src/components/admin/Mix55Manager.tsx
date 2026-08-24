@@ -32,6 +32,8 @@ const Mix55Manager = () => {
   const [settings, setSettings] = useState<Mix55Settings | null>(null);
   const [startDate, setStartDate] = useState("");
   const [roundsCount, setRoundsCount] = useState("10");
+  const [pauseAfterRound, setPauseAfterRound] = useState("");
+  const [resumeDate, setResumeDate] = useState("");
 
   const loadData = async () => {
     setLoading(true);
@@ -43,7 +45,7 @@ const Mix55Manager = () => {
           .order("sort_order", { ascending: true })
           .order("name", { ascending: true }),
         supabase.from("mix55_scores").select("id,team_id,round_number,pins,series"),
-        supabase.from("mix55_settings").select("id,start_date,rounds_count").limit(1).maybeSingle(),
+        supabase.from("mix55_settings").select("id,start_date,rounds_count,pause_after_round,resume_date").limit(1).maybeSingle(),
       ]);
       if (teamsRes.error) throw teamsRes.error;
       if (scoresRes.error) throw scoresRes.error;
@@ -55,6 +57,8 @@ const Mix55Manager = () => {
       if (s) {
         setStartDate(s.start_date);
         setRoundsCount(String(s.rounds_count));
+        setPauseAfterRound(s.pause_after_round != null ? String(s.pause_after_round) : "");
+        setResumeDate(s.resume_date ?? "");
       }
     } catch (e) {
       console.error(e);
@@ -87,9 +91,20 @@ const Mix55Manager = () => {
     return calculateRoundPoints(entries, Math.max(teams.length, 1));
   }, [teams, draft]);
 
+  const pauseAfter = useMemo(
+    () => (pauseAfterRound ? Math.max(1, Number(pauseAfterRound) || 0) : null),
+    [pauseAfterRound],
+  );
+
   const scheduleRounds = useMemo(
-    () => buildRoundDates(startDate, Math.max(1, Number(roundsCount) || 0)),
-    [startDate, roundsCount],
+    () =>
+      buildRoundDates(
+        startDate,
+        Math.max(1, Number(roundsCount) || 0),
+        pauseAfter,
+        resumeDate || null,
+      ),
+    [startDate, roundsCount, pauseAfter, resumeDate],
   );
 
   const savedRounds = useMemo(
@@ -214,8 +229,21 @@ const Mix55Manager = () => {
       toast({ title: "Fel", description: "Startdatumet måste vara en torsdag", variant: "destructive" });
       return;
     }
+    if (pauseAfter != null && !resumeDate) {
+      toast({ title: "Fel", description: "Välj datum för återstart efter pausen", variant: "destructive" });
+      return;
+    }
+    if (resumeDate && !isThursday(resumeDate)) {
+      toast({ title: "Fel", description: "Återstartsdatumet måste vara en torsdag", variant: "destructive" });
+      return;
+    }
     const count = Math.max(1, Number(roundsCount) || 1);
-    const payload = { start_date: startDate, rounds_count: count };
+    const payload = {
+      start_date: startDate,
+      rounds_count: count,
+      pause_after_round: pauseAfter,
+      resume_date: pauseAfter != null ? resumeDate : null,
+    };
     const { error } = settings
       ? await supabase.from("mix55_settings").update(payload).eq("id", settings.id)
       : await supabase.from("mix55_settings").insert(payload);
@@ -511,9 +539,44 @@ const Mix55Manager = () => {
             </Button>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-end">
+            <div className="space-y-1">
+              <Label htmlFor="mix55-pause-after">Paus efter omgång (valfritt)</Label>
+              <Input
+                id="mix55-pause-after"
+                type="number"
+                min={1}
+                placeholder="T.ex. 8"
+                value={pauseAfterRound}
+                onChange={(e) => setPauseAfterRound(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="mix55-resume-date">Återstart efter paus (torsdag)</Label>
+              <Input
+                id="mix55-resume-date"
+                type="date"
+                value={resumeDate}
+                onChange={(e) => setResumeDate(e.target.value)}
+              />
+              {resumeDate && !isThursday(resumeDate) && (
+                <p className="text-xs text-destructive">Välj en torsdag</p>
+              )}
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Lämna pausfälten tomma för spel varannan torsdag utan uppehåll.
+          </p>
+
           <div className="space-y-4">
             {scheduleRounds.map((r) => (
-              <div key={r.round_number} className="border rounded-lg p-3 space-y-3">
+              <React.Fragment key={r.round_number}>
+                {pauseAfter != null && resumeDate && r.round_number === pauseAfter + 1 && (
+                  <p className="text-sm font-semibold text-primary text-center py-1">
+                    — Paus (uppehåll) —
+                  </p>
+                )}
+              <div className="border rounded-lg p-3 space-y-3">
                 <div className="font-semibold">
                   Omgång {r.round_number} – {formatRoundDay(r.date)}
                 </div>
@@ -536,6 +599,7 @@ const Mix55Manager = () => {
                   </div>
                 ))}
               </div>
+              </React.Fragment>
             ))}
           </div>
         </CardContent>

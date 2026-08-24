@@ -407,6 +407,8 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          pause_after_round: number | null
+          resume_date: string | null
           rounds_count: number
           start_date: string
           updated_at: string
@@ -414,6 +416,8 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          pause_after_round?: number | null
+          resume_date?: string | null
           rounds_count?: number
           start_date: string
           updated_at?: string
@@ -421,6 +425,8 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          pause_after_round?: number | null
+          resume_date?: string | null
           rounds_count?: number
           start_date?: string
           updated_at?: string
