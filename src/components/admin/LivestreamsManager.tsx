@@ -412,8 +412,8 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
           <Input
             id="scheduled_start"
             type="datetime-local"
-            value={formData.scheduled_start?.slice(0, 16) || ''}
-            onChange={(e) => updateField('scheduled_start', e.target.value || null)}
+            value={toLocalInputValue(formData.scheduled_start)}
+            onChange={(e) => updateField('scheduled_start', fromLocalInputValue(e.target.value))}
           />
         </div>
         <div>
@@ -421,8 +421,8 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
           <Input
             id="scheduled_end"
             type="datetime-local"
-            value={formData.scheduled_end?.slice(0, 16) || ''}
-            onChange={(e) => updateField('scheduled_end', e.target.value || null)}
+            value={toLocalInputValue(formData.scheduled_end)}
+            onChange={(e) => updateField('scheduled_end', fromLocalInputValue(e.target.value))}
           />
         </div>
       </div>
