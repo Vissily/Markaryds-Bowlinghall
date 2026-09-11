@@ -27,6 +27,23 @@ interface Livestream {
   viewer_count: number;
 }
 
+// Konverterar lagrad UTC-tid till lokalt värde för datetime-local-fältet
+const toLocalInputValue = (value: string | null | undefined) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+// Konverterar lokalt inmatat värde till ISO (UTC) för lagring
+const fromLocalInputValue = (value: string) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return null;
+  return date.toISOString();
+};
+
 const LivestreamsManager = () => {
   const [livestreams, setLivestreams] = useState<Livestream[]>([]);
   const [loading, setLoading] = useState(true);
@@ -395,8 +412,8 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
           <Input
             id="scheduled_start"
             type="datetime-local"
-            value={formData.scheduled_start?.slice(0, 16) || ''}
-            onChange={(e) => updateField('scheduled_start', e.target.value || null)}
+            value={toLocalInputValue(formData.scheduled_start)}
+            onChange={(e) => updateField('scheduled_start', fromLocalInputValue(e.target.value))}
           />
         </div>
         <div>
@@ -404,8 +421,8 @@ const LivestreamForm: React.FC<LivestreamFormProps> = ({
           <Input
             id="scheduled_end"
             type="datetime-local"
-            value={formData.scheduled_end?.slice(0, 16) || ''}
-            onChange={(e) => updateField('scheduled_end', e.target.value || null)}
+            value={toLocalInputValue(formData.scheduled_end)}
+            onChange={(e) => updateField('scheduled_end', fromLocalInputValue(e.target.value))}
           />
         </div>
       </div>
