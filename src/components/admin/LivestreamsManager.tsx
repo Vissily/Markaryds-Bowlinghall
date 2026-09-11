@@ -27,6 +27,23 @@ interface Livestream {
   viewer_count: number;
 }
 
+// Konverterar lagrad UTC-tid till lokalt värde för datetime-local-fältet
+const toLocalInputValue = (value: string | null | undefined) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+// Konverterar lokalt inmatat värde till ISO (UTC) för lagring
+const fromLocalInputValue = (value: string) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return null;
+  return date.toISOString();
+};
+
 const LivestreamsManager = () => {
   const [livestreams, setLivestreams] = useState<Livestream[]>([]);
   const [loading, setLoading] = useState(true);
