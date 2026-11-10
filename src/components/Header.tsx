@@ -93,7 +93,7 @@ const Header = () => {
   ];
 
   const livescoreItems = [
-    { name: "Livescore", href: "/livescore" },
+    { name: "Livescore", href: "https://markaryds.bowlingscoring.se/" },
     { name: "Livestream", href: "/livestream" },
   ];
 
@@ -215,6 +215,8 @@ const Header = () => {
                     <a
                       key={item.name}
                       href={item.href}
+                      target={item.href.startsWith('http') ? '_blank' : undefined}
+                      rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       onClick={(e) => handleNavClick(e, item.href)}
                       className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors cursor-pointer"
                     >
@@ -351,6 +353,8 @@ const Header = () => {
                 <a
                   key={item.name}
                   href={item.href}
+                  target={item.href.startsWith('http') ? '_blank' : undefined}
+                  rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="text-foreground hover:text-primary transition-colors pl-4 py-1 block cursor-pointer"
                   onClick={(e) => handleNavClick(e, item.href)}
                 >
