@@ -28,7 +28,9 @@ Lokal bowlingserie med fem divisioner (Serie A–E) för alla nivåer.
 - **Telefon**: 0433-123 45
 - **E-post**: info@markarydsbowling.se
 - **Webb**: https://markarydsbowling.se
-- **Boka bowling**: https://boka.kimsoftbookings.se/markaryds-bowlinghall
+- **Boka bowling**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling
+- **Boka shuffleboard**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/shuffleboard
+- **Boka dart**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/dart
 - **Boka padel**: https://playtomic.com/clubs/padel-i-markaryd-markaryd
 
 ## Öppettider
