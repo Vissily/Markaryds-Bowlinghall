@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Calendar } from "lucide-react";
+import { useBookingDialog, type BookingActivity } from "@/components/BookingDialog";
 
 const Activities = () => {
+  const { bookingLinkProps } = useBookingDialog();
   const activities = [
     {
       title: "Bowling",
@@ -10,6 +12,7 @@ const Activities = () => {
       image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png",
       features: ["Professionella banor", "Modern utrustning", "Skor ingår", "Barnrännor"],
       bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling",
+      bookingActivity: "bowling" as BookingActivity,
       gradient: "from-primary to-primary-glow"
     },
     {
@@ -30,19 +33,19 @@ const Activities = () => {
     }
   ];
 
-  const otherActivities: { title: string; description: string; icon: string; image?: string; bookingUrl?: string }[] = [
+  const otherActivities: { title: string; description: string; icon: string; image?: string; bookingActivity?: BookingActivity }[] = [
     {
       title: "Dart",
       description: "Elektroniska darttavlor för tävlingar och roligt spel",
       icon: "🎯",
-      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/dart",
+      bookingActivity: "dart",
       image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png"
     },
     {
       title: "Shuffleboard",
       description: "Klassiskt shuffleboard-spel för alla åldrar",
       icon: "🏒",
-      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/shuffleboard",
+      bookingActivity: "shuffleboard",
       image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png"
     },
     {
@@ -92,9 +95,13 @@ const Activities = () => {
                 </ul>
 
                 <Button variant="bowling" className="w-full group" asChild>
-                  <a href={activity.bookingUrl} target="_blank" rel="noopener noreferrer">
+                  <a {...(activity.bookingActivity ? bookingLinkProps(activity.bookingActivity) : { href: activity.bookingUrl, target: "_blank", rel: "noopener noreferrer" })}>
                     Boka {activity.title}
-                    <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    {activity.bookingActivity ? (
+                      <Calendar className="w-4 h-4 ml-2" />
+                    ) : (
+                      <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    )}
                   </a>
                 </Button>
               </div>
@@ -126,11 +133,11 @@ const Activities = () => {
                 <div className="p-6 text-center">
                   <h4 className="text-xl font-semibold text-foreground mb-3">{activity.title}</h4>
                   <p className="text-muted-foreground">{activity.description}</p>
-                  {activity.bookingUrl && (
+                  {activity.bookingActivity && (
                     <Button variant="bowling" className="w-full group mt-4" asChild>
-                      <a href={activity.bookingUrl} target="_blank" rel="noopener noreferrer">
+                      <a {...bookingLinkProps(activity.bookingActivity)}>
                         Boka {activity.title.toLowerCase()}
-                        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        <Calendar className="w-4 h-4 ml-2" />
                       </a>
                     </Button>
                   )}
