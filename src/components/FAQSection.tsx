@@ -13,7 +13,7 @@ const faqItems = [
   },
   {
     question: "Hur bokar jag bowling eller padel?",
-    answer: "Bowling bokas enkelt online via vårt bokningssystem på boka.kimsoftbookings.se/markaryds-bowlinghall. Padel bokas via Playtomic. Du kan även ringa oss på 0433-123 45.",
+    answer: "Bowling, shuffleboard och dart bokas enkelt online via bokningssektionen här på sidan eller på boka.kimsoftbookings.se/markaryds-bowlinghall. Padel bokas via Playtomic. Du kan även ringa oss på 0433-123 45.",
   },
   {
     question: "Vilka aktiviteter erbjuder ni förutom bowling?",

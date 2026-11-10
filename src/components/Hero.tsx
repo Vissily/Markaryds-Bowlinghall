@@ -171,10 +171,12 @@ const Hero = () => {
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
               asChild
             >
-              <a 
-                href="https://boka.kimsoftbookings.se/markaryds-bowlinghall"
-                target="_blank"
-                rel="noopener noreferrer"
+              <a
+                href="/#booking"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+                }}
               >
                 Boka Nu
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

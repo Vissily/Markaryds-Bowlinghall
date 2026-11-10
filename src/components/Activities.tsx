@@ -9,7 +9,7 @@ const Activities = () => {
       description: "Professionella bowlingbanor med modern utrustning. Perfekt för familj, vänner eller företag.",
       image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png",
       features: ["Professionella banor", "Modern utrustning", "Skor ingår", "Barnrännor"],
-      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall",
+      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling",
       gradient: "from-primary to-primary-glow"
     },
     {
@@ -30,17 +30,19 @@ const Activities = () => {
     }
   ];
 
-  const otherActivities = [
+  const otherActivities: { title: string; description: string; icon: string; image?: string; bookingUrl?: string }[] = [
     {
       title: "Dart",
       description: "Elektroniska darttavlor för tävlingar och roligt spel",
       icon: "🎯",
+      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/dart",
       image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png"
     },
     {
       title: "Shuffleboard",
       description: "Klassiskt shuffleboard-spel för alla åldrar",
       icon: "🏒",
+      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall/shuffleboard",
       image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png"
     },
     {
@@ -124,6 +126,14 @@ const Activities = () => {
                 <div className="p-6 text-center">
                   <h4 className="text-xl font-semibold text-foreground mb-3">{activity.title}</h4>
                   <p className="text-muted-foreground">{activity.description}</p>
+                  {activity.bookingUrl && (
+                    <Button variant="bowling" className="w-full group mt-4" asChild>
+                      <a href={activity.bookingUrl} target="_blank" rel="noopener noreferrer">
+                        Boka {activity.title.toLowerCase()}
+                        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </Card>
             ))}

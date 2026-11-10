@@ -60,7 +60,9 @@ Vi arrangerar regelbundet evenemang som:
 
 ## Bokning
 
-- **Bowling**: https://boka.kimsoftbookings.se/markaryds-bowlinghall
+- **Bowling**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling
+- **Shuffleboard**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/shuffleboard
+- **Dart**: https://boka.kimsoftbookings.se/markaryds-bowlinghall/dart
 - **Padel**: https://playtomic.com/clubs/padel-i-markaryd-markaryd
 - **Övrigt**: Ring 0433-123 45
 
