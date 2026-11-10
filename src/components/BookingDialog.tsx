@@ -6,6 +6,13 @@ import { ExternalLink, Loader2, X } from "lucide-react";
 
 export type BookingActivity = "bowling" | "shuffleboard" | "dart";
 
+/**
+ * Kimsoft currently sends `X-Frame-Options: SAMEORIGIN`, which blocks the iframe.
+ * Set to true once Kimsoft allows markarydsbowling.se to embed the booking.
+ * While false, booking links open Kimsoft in a new tab instead of the dialog.
+ */
+export const BOOKING_EMBED_ENABLED = false;
+
 export const BOOKING_BASE_URL = "https://boka.kimsoftbookings.se/markaryds-bowlinghall";
 
 export const BOOKING_URLS: Record<BookingActivity, string> = {
@@ -54,6 +61,7 @@ export const BookingDialogProvider = ({ children }: { children: React.ReactNode 
       target: "_blank",
       rel: "noopener noreferrer",
       onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (!BOOKING_EMBED_ENABLED) return;
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
         openBooking(a);
