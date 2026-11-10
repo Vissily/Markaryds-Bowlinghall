@@ -12,18 +12,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const goToBooking = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setIsMenuOpen(false);
-    if (location.pathname === "/") {
-      document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate("/#booking");
-      setTimeout(() => {
-        document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    }
-  };
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -308,7 +296,7 @@ const Header = () => {
               className="hidden sm:flex text-xs lg:text-sm xl:text-base px-3 lg:px-4 xl:px-6 py-2"
               asChild
             >
-              <a href="/#booking" onClick={goToBooking}>
+              <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/" target="_blank" rel="noopener noreferrer">
                 Boka Nu
               </a>
             </Button>
@@ -407,7 +395,7 @@ const Header = () => {
               className="mt-4"
               asChild
             >
-              <a href="/#booking" onClick={goToBooking}>
+              <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/" target="_blank" rel="noopener noreferrer">
                 Boka Nu
               </a>
             </Button>

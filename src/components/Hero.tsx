@@ -172,11 +172,9 @@ const Hero = () => {
               asChild
             >
               <a
-                href="/#booking"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
-                }}
+                href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Boka Nu
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
