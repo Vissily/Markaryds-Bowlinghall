@@ -137,7 +137,7 @@ const Contact = () => {
                     className="w-full bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group justify-between"
                     asChild
                   >
-                    <a href="https://scoring.bowlres.se/markaryd" target="_blank" rel="noopener noreferrer">
+                    <a href="https://markaryds.bowlingscoring.se/" target="_blank" rel="noopener noreferrer">
                       <span>Live Scoring</span>
                       <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
