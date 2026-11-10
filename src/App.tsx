@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { useSessionTimeout } from "@/hooks/useSessionTimeout";
+import { BookingDialogProvider } from "@/components/BookingDialog";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
@@ -32,6 +33,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <BookingDialogProvider>
         <BrowserRouter>
           <ScrollToTop />
           <SessionGuard />
@@ -51,6 +53,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </BookingDialogProvider>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>

@@ -1,7 +1,9 @@
+import { useBookingDialog } from "@/components/BookingDialog";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Phone, Mail, MapPin } from "lucide-react";
+import { ExternalLink, Phone, Mail, MapPin, Calendar } from "lucide-react";
 
 const Footer = () => {
+  const { bookingLinkProps } = useBookingDialog();
   return (
     <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-4">
@@ -55,9 +57,9 @@ const Footer = () => {
                 className="w-full text-xs bg-transparent border-background/30 text-background hover:bg-background hover:text-foreground group"
                 asChild
               >
-                <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling" target="_blank" rel="noopener noreferrer">
+                <a {...bookingLinkProps("bowling")}>
                   <span>Bowling</span>
-                  <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <Calendar className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                 </a>
               </Button>
               

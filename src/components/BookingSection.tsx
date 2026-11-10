@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
+import { Calendar, Clock, Users } from "lucide-react";
+import { useBookingDialog, type BookingActivity } from "@/components/BookingDialog";
 
-const BOOKING_BASE = "https://boka.kimsoftbookings.se/markaryds-bowlinghall";
 
 // Priser – ändra här vid behov
 const PRICES = {
@@ -14,14 +14,15 @@ const PRICES = {
 
 const BOOKING_OPTIONS: {
   title: string; price: string; players: string; duration: string;
-  description?: string; cta: string; url: string; image: string; imagePosition?: string;
+  description?: string; cta: string; activity: BookingActivity; image: string; imagePosition?: string;
 }[] = [
-  { title: "Bowling", price: PRICES.bowling, players: "1–24 spelare", duration: "1 h eller 2 h", cta: "Boka bowling", url: `${BOOKING_BASE}/bowling`, image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png" },
-  { title: "Shuffleboard", price: PRICES.shuffleboard, players: "1–8 spelare", duration: "1 h eller 2 h", cta: "Boka shuffleboard", url: `${BOOKING_BASE}/shuffleboard`, image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png" },
-  { title: "Dart", price: PRICES.dart, players: "1–8 spelare", duration: "1 h eller 2 h", description: "Dart med Scolia – systemet håller koll på poängen åt er", cta: "Boka dart", url: `${BOOKING_BASE}/dart`, image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png", imagePosition: "center 30%" },
+  { title: "Bowling", price: PRICES.bowling, players: "1–24 spelare", duration: "1 h eller 2 h", cta: "Boka bowling", activity: "bowling", image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png" },
+  { title: "Shuffleboard", price: PRICES.shuffleboard, players: "1–8 spelare", duration: "1 h eller 2 h", cta: "Boka shuffleboard", activity: "shuffleboard", image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png" },
+  { title: "Dart", price: PRICES.dart, players: "1–8 spelare", duration: "1 h eller 2 h", description: "Dart med Scolia – systemet håller koll på poängen åt er", cta: "Boka dart", activity: "dart", image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png", imagePosition: "center 30%" },
 ];
 
 const BookingSection = () => {
+  const { bookingLinkProps } = useBookingDialog();
 
   return (
     <section id="booking" className="py-24 px-4 bg-card border-t-4 border-b-4 border-primary/20">
@@ -100,9 +101,9 @@ const BookingSection = () => {
                   ))}
                 </ul>
                 <Button variant="bowling" className="w-full group" asChild>
-                  <a href={option.url} target="_blank" rel="noopener noreferrer">
+                  <a {...bookingLinkProps(option.activity)}>
                     {option.cta}
-                    <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <Calendar className="w-4 h-4 ml-2" />
                   </a>
                 </Button>
               </div>
