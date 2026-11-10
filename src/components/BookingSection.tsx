@@ -3,11 +3,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, ExternalLink } from "lucide-react";
 
+const BOOKING_BASE = "https://boka.kimsoftbookings.se/markaryds-bowlinghall";
+
+// Priser – ändra här vid behov
+const PRICES = {
+  bowling: "från 190 kr/tim",
+  shuffleboard: "från 150 kr/tim",
+  dart: "från 200 kr/tim",
+};
+
+const BOOKING_OPTIONS: {
+  title: string; price: string; players: string; duration: string;
+  description?: string; cta: string; url: string; image: string; imagePosition?: string;
+}[] = [
+  { title: "Bowling", price: PRICES.bowling, players: "1–24 spelare", duration: "1 h eller 2 h", cta: "Boka bowling", url: `${BOOKING_BASE}/bowling`, image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png" },
+  { title: "Shuffleboard", price: PRICES.shuffleboard, players: "1–8 spelare", duration: "1 h eller 2 h", cta: "Boka shuffleboard", url: `${BOOKING_BASE}/shuffleboard`, image: "/lovable-uploads/fa0932f5-a4ea-4727-abe1-889222f079a3.png" },
+  { title: "Dart", price: PRICES.dart, players: "1–8 spelare", duration: "1 h eller 2 h", description: "Dart med Scolia – systemet håller koll på poängen åt er", cta: "Boka dart", url: `${BOOKING_BASE}/dart`, image: "/lovable-uploads/467dfd69-83bc-45f7-a2eb-8bd86e415a5b.png", imagePosition: "center 30%" },
+];
+
 const BookingSection = () => {
 
   return (
     <section id="booking" className="py-24 px-4 bg-card border-t-4 border-b-4 border-primary/20">
-      <div className="container mx-auto max-w-4xl">
+      <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Boka Din Upplevelse
@@ -55,24 +73,50 @@ const BookingSection = () => {
           </Card>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          {BOOKING_OPTIONS.map((option) => (
+            <Card key={option.title} className="group overflow-hidden shadow-card hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 border-2 flex flex-col">
+              <div className="relative">
+                <img
+                  src={option.image}
+                  alt={option.title}
+                  loading="lazy"
+                  className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+                  style={option.imagePosition ? { objectPosition: option.imagePosition } : undefined}
+                />
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <h3 className="text-2xl font-bold text-foreground mb-1">{option.title}</h3>
+                <p className="text-secondary font-semibold mb-3">{option.price}</p>
+                {option.description && (
+                  <p className="text-muted-foreground text-sm mb-3">{option.description}</p>
+                )}
+                <ul className="space-y-2 mb-6 flex-1">
+                  {[option.players, option.duration].map((f) => (
+                    <li key={f} className="flex items-center text-sm text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="bowling" className="w-full group" asChild>
+                  <a href={option.url} target="_blank" rel="noopener noreferrer">
+                    {option.cta}
+                    <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+
         <div className="text-center">
-          <Button 
-            size="xl" 
-            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto max-w-md mx-auto"
-            asChild
-          >
-            <a 
-              href="https://boka.kimsoftbookings.se/markaryds-bowlinghall"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3"
-            >
-              <Calendar className="w-5 h-5" />
-              <span>Boka Nu - Markaryds Bowling</span>
-              <ExternalLink className="w-4 h-4" />
+          <p className="text-sm text-muted-foreground">
+            Padel bokas via{" "}
+            <a href="https://playtomic.com/clubs/padel-i-markaryd-markaryd" target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-secondary/80 underline font-medium">
+              Playtomic
             </a>
-          </Button>
-          
+          </p>
           <p className="mt-6 text-muted-foreground">
             Har du frågor om bokningen? 
             <a href="tel:+46730740600" className="text-secondary hover:text-secondary/80 underline ml-1 font-medium">
