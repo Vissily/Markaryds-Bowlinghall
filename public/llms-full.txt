@@ -18,7 +18,7 @@ Hallen erbjuder:
 
 Våra 10 banor är utrustade med modern teknik. Vi erbjuder:
 - Drop-in bowling
-- Förbokning online via Meriq
+- Förbokning online via Kimsoft Bookings
 - Tävlingar och ligor (Markarydsligan med Serie A–E)
 - Bowling för alla åldrar
 
@@ -60,7 +60,7 @@ Vi arrangerar regelbundet evenemang som:
 
 ## Bokning
 
-- **Bowling**: https://secure.meriq.com/markaryd/
+- **Bowling**: https://boka.kimsoftbookings.se/markaryds-bowlinghall
 - **Padel**: https://playtomic.com/clubs/padel-i-markaryd-markaryd
 - **Övrigt**: Ring 0433-123 45
 

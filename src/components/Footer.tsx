@@ -55,7 +55,7 @@ const Footer = () => {
                 className="w-full text-xs bg-transparent border-background/30 text-background hover:bg-background hover:text-foreground group"
                 asChild
               >
-                <a href="https://secure.meriq.com/markaryd/" target="_blank" rel="noopener noreferrer">
+                <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall" target="_blank" rel="noopener noreferrer">
                   <span>Bowling</span>
                   <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                 </a>
