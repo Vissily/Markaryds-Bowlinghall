@@ -1,4 +1,3 @@
-import { useBookingDialog } from "@/components/BookingDialog";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,6 @@ interface OpeningHour {
 }
 
 const Hours = () => {
-  const { bookingLinkProps } = useBookingDialog();
   const [openingHours, setOpeningHours] = useState<OpeningHour[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -172,9 +170,9 @@ const Hours = () => {
                     className="w-full bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group"
                     asChild
                   >
-                    <a {...bookingLinkProps("bowling")}>
+                    <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling" target="_blank" rel="noopener noreferrer">
                       Boka Bowling
-                      <Calendar className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </a>
                   </Button>
 

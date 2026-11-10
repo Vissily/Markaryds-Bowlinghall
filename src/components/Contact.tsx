@@ -1,14 +1,12 @@
-import { useBookingDialog } from "@/components/BookingDialog";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, ExternalLink, Clock, Calendar } from "lucide-react";
+import { Phone, Mail, MapPin, ExternalLink, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const dayNames: Record<number, string> = { 0: 'Söndag', 1: 'Måndag', 2: 'Tisdag', 3: 'Onsdag', 4: 'Torsdag', 5: 'Fredag', 6: 'Lördag' };
 
 const Contact = () => {
-  const { bookingLinkProps } = useBookingDialog();
   const { data: openingHours } = useQuery({
     queryKey: ['opening-hours-contact'],
     queryFn: async () => {
@@ -117,9 +115,9 @@ const Contact = () => {
                     className="w-full bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group justify-between"
                     asChild
                   >
-                    <a {...bookingLinkProps("bowling")}>
+                    <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall/bowling" target="_blank" rel="noopener noreferrer">
                       <span>Boka Bowling</span>
-                      <Calendar className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
                   </Button>
 
