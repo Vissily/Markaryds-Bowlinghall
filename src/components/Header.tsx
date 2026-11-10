@@ -12,13 +12,16 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const goToBooking = (e: React.MouseEvent) => {
+  const goToBooking = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsMenuOpen(false);
     if (location.pathname === "/") {
       document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
     } else {
       navigate("/#booking");
+      setTimeout(() => {
+        document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   };
   const [scrolled, setScrolled] = useState(false);
