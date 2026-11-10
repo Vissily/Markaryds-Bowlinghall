@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
 import { ExternalLink } from "lucide-react";
+import KimsoftOverlay from "@/components/KimsoftOverlay";
 
 const SCORING_URL = "https://markaryds.bowlingscoring.se/";
 
@@ -41,6 +42,9 @@ const Livescore = () => {
               Öppna Helskärm
               <ExternalLink className="w-4 h-4 ml-2" />
             </a>
+          </div>
+          <div className="mb-8">
+            <KimsoftOverlay />
           </div>
           <div className="w-full border border-border rounded-lg bg-card p-8 md:p-12 text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
