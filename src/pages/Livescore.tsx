@@ -1,6 +1,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useSEO, createBreadcrumbJsonLd, createWebPageJsonLd } from "@/hooks/useSEO";
+import { ExternalLink } from "lucide-react";
+
+const SCORING_URL = "https://markaryds.bowlingscoring.se/";
 
 const Livescore = () => {
   useSEO({
@@ -30,21 +33,33 @@ const Livescore = () => {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold">Live Resultat</h1>
             <a
-              href="https://markaryds.bowlingscoring.se/"
+              href={SCORING_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
             >
               Öppna Helskärm
+              <ExternalLink className="w-4 h-4 ml-2" />
             </a>
           </div>
-          <div className="w-full h-[800px] border border-border rounded-lg overflow-hidden">
-            <iframe
-              src="https://markaryds.bowlingscoring.se/"
-              className="w-full h-full"
-              title="Live Bowling Resultat"
-              allowFullScreen
-            />
+          <div className="w-full border border-border rounded-lg bg-card p-8 md:p-12 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">
+              Resultat i realtid
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+              Alla matcher och tävlingar visas på vår livescore-sida. Öppna den i
+              en ny flik för att följa poängen direkt, eller visa den på
+              storbildsskärmen i hallen.
+            </p>
+            <a
+              href={SCORING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+            >
+              Öppna live resultat
+              <ExternalLink className="w-5 h-5 ml-3" />
+            </a>
           </div>
         </div>
       </div>
