@@ -30,7 +30,7 @@ const Livescore = () => {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold">Live Resultat</h1>
             <a
-              href="https://scoring.bowlres.se/markaryd"
+              href="https://markaryds.bowlingscoring.se/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
@@ -40,7 +40,7 @@ const Livescore = () => {
           </div>
           <div className="w-full h-[800px] border border-border rounded-lg overflow-hidden">
             <iframe
-              src="https://scoring.bowlres.se/markaryd"
+              src="https://markaryds.bowlingscoring.se/"
               className="w-full h-full"
               title="Live Bowling Resultat"
               allowFullScreen
