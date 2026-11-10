@@ -297,7 +297,7 @@ const Header = () => {
               asChild
             >
               <a 
-                href="https://secure.meriq.com/markaryd/"
+                href="https://boka.kimsoftbookings.se/markaryds-bowlinghall"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -400,7 +400,7 @@ const Header = () => {
               asChild
             >
               <a 
-                href="https://secure.meriq.com/markaryd/"
+                href="https://boka.kimsoftbookings.se/markaryds-bowlinghall"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsMenuOpen(false)}

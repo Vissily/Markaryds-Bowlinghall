@@ -9,7 +9,7 @@ const Activities = () => {
       description: "Professionella bowlingbanor med modern utrustning. Perfekt för familj, vänner eller företag.",
       image: "/lovable-uploads/d025f527-67a2-4533-9f7c-5f9b721eeae3.png",
       features: ["Professionella banor", "Modern utrustning", "Skor ingår", "Barnrännor"],
-      bookingUrl: "https://secure.meriq.com/markaryd/",
+      bookingUrl: "https://boka.kimsoftbookings.se/markaryds-bowlinghall",
       gradient: "from-primary to-primary-glow"
     },
     {

@@ -62,7 +62,7 @@ const BookingSection = () => {
             asChild
           >
             <a 
-              href="https://secure.meriq.com/markaryd/"
+              href="https://boka.kimsoftbookings.se/markaryds-bowlinghall"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-3"

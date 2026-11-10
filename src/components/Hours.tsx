@@ -170,7 +170,7 @@ const Hours = () => {
                     className="w-full bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group"
                     asChild
                   >
-                    <a href="https://secure.meriq.com/markaryd/" target="_blank" rel="noopener noreferrer">
+                    <a href="https://boka.kimsoftbookings.se/markaryds-bowlinghall" target="_blank" rel="noopener noreferrer">
                       Boka Bowling
                       <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </a>
