@@ -562,6 +562,27 @@ export type Database = {
         }
         Relationships: []
       }
+      request_log: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: number
+          ip: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: never
+          ip: string
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: never
+          ip?: string
+        }
+        Relationships: []
+      }
       role_audit_log: {
         Row: {
           action: string
@@ -619,6 +640,45 @@ export type Database = {
           table_name?: string
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_events: {
+        Row: {
+          alerted: boolean
+          created_at: string
+          detail: Json
+          endpoint: string
+          event_type: string
+          id: string
+          ip: string | null
+          severity: string
+          site: string
+          user_agent: string | null
+        }
+        Insert: {
+          alerted?: boolean
+          created_at?: string
+          detail?: Json
+          endpoint: string
+          event_type: string
+          id?: string
+          ip?: string | null
+          severity: string
+          site: string
+          user_agent?: string | null
+        }
+        Update: {
+          alerted?: boolean
+          created_at?: string
+          detail?: Json
+          endpoint?: string
+          event_type?: string
+          id?: string
+          ip?: string | null
+          severity?: string
+          site?: string
+          user_agent?: string | null
         }
         Relationships: []
       }
