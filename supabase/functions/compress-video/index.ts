@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { getClientIp, isRateLimited, logSecurityEvent } from "../_shared/security.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,6 +23,10 @@ serve(async (req) => {
   }
 
   try {
+    if (await isRateLimited(getClientIp(req), "compress-video", 10, 60)) {
+      await logSecurityEvent(req, "compress-video", "rate_limit", "medium");
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const compressionApiKey = Deno.env.get('VIDEO_COMPRESSION_API_KEY');

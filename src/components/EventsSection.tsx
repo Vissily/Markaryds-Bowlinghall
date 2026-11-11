@@ -35,6 +35,8 @@ const EventsSection = () => {
   
   const [loading, setLoading] = useState(true);
   const [interested, setInterested] = useState<Record<string, boolean>>({});
+  const [renderedAt] = useState(() => Date.now());
+  const [honeypot, setHoneypot] = useState('');
   const [regForms, setRegForms] = useState<Record<string, { company: string; contact: string; phone: string; team: string; loading: boolean }>>({});
 
   useEffect(() => {
@@ -134,19 +136,17 @@ const EventsSection = () => {
     }
     setRegForms(prev => ({ ...prev, [eventId]: { ...form, loading: true } }));
     try {
-      // Get current user session for security tracking
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const { error } = await (supabase as any)
-        .from('event_registrations')
-        .insert({
+      const { error } = await supabase.functions.invoke('submit-registration', {
+        body: {
           event_id: eventId,
           company_name: form.company,
           contact_person: form.contact,
           phone_number: form.phone,
           team_members: form.team || null,
-          user_id: session?.user?.id || null, // Track user if authenticated
-        });
+          website: honeypot,
+          rendered_at: renderedAt,
+        },
+      });
       if (error) throw error;
       toast.success('Tack! Din anmälan är skickad.');
       setRegForms(prev => ({ ...prev, [eventId]: { company: '', contact: '', phone: '', team: '', loading: false } }));
@@ -301,6 +301,16 @@ const EventsSection = () => {
                                     onSubmit={(e) => { e.preventDefault(); submitRegistration(event.id); }}
                                     className="grid md:grid-cols-2 gap-3"
                                   >
+                                    <input
+                                      type="text"
+                                      name="website"
+                                      tabIndex={-1}
+                                      autoComplete="off"
+                                      aria-hidden="true"
+                                      value={honeypot}
+                                      onChange={(e) => setHoneypot(e.target.value)}
+                                      style={{ position: 'absolute', left: '-10000px', width: '1px', height: '1px', overflow: 'hidden' }}
+                                    />
                                     <div className="space-y-1">
                                       <Label htmlFor={`company_${event.id}`}>Företagsnamn</Label>
                                       <Input

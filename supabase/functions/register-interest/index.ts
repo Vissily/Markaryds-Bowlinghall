@@ -1,3 +1,4 @@
+import { getClientIp, isRateLimited, logSecurityEvent, inspectFields } from "../_shared/security.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -26,6 +27,10 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    if (await isRateLimited(getClientIp(req), "register-interest", 30, 60)) {
+      await logSecurityEvent(req, "register-interest", "rate_limit", "medium");
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
@@ -36,6 +41,7 @@ Deno.serve(async (req) => {
 
     const { eventId } = await req.json();
     if (!eventId || !isValidUUID(eventId)) {
+      await logSecurityEvent(req, 'register-interest', 'invalid_input', 'low', { eventId });
       return new Response(JSON.stringify({ error: 'Invalid eventId' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
