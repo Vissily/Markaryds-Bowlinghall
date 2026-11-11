@@ -1,3 +1,4 @@
+import { getClientIp, isRateLimited, logSecurityEvent } from "../_shared/security.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
@@ -11,6 +12,10 @@ Deno.serve(async (req) => {
   }
 
   try {
+    if (await isRateLimited(getClientIp(req), "google-reviews", 30, 60)) {
+      await logSecurityEvent(req, "google-reviews", "rate_limit", "medium");
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const apiKey = Deno.env.get('GOOGLE_PLACES_API_KEY');
     if (!apiKey) {
       return new Response(
