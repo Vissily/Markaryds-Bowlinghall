@@ -1,3 +1,4 @@
+import { getClientIp, isRateLimited, logSecurityEvent, inspectFields } from "../_shared/security.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -36,6 +37,10 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    if (await isRateLimited(getClientIp(req), "log-analytics", 30, 60)) {
+      await logSecurityEvent(req, "log-analytics", "rate_limit", "medium");
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const supabase = getClient();
     const ip = getIp(req);
 
@@ -51,6 +56,13 @@ Deno.serve(async (req) => {
     const body = (await req.json()) as AnalyticsPayload | AnalyticsPayload[];
     const payloads = Array.isArray(body) ? body : [body];
 
+    for (const p of payloads) {
+      const hit = p && typeof p === 'object' ? inspectFields(p as Record<string, unknown>) : null;
+      if (hit) {
+        await logSecurityEvent(req, 'log-analytics', hit.type, 'high', { field: hit.field, value: (p as any)[hit.field] });
+        return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+    }
     for (const p of payloads) {
       if (p.kind === 'page_view') {
         await supabase.from('analytics_page_views').insert({
